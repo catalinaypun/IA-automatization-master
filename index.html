@@ -192,44 +192,29 @@
 
       // ── Thumbnail ──
       var thumb = document.createElement('div');
-      thumb.style.cssText = 'background:var(--color-gray-1100);padding:20px 16px 16px;display:flex;flex-direction:column;justify-content:space-between;min-height:140px;position:relative;border-radius:calc(var(--radius-400) - 1px) calc(var(--radius-400) - 1px) 0 0;';
+      thumb.style.cssText = 'background:var(--color-gray-1100);padding:16px;display:flex;flex-direction:column;justify-content:space-between;min-height:160px;border-radius:calc(var(--radius-400) - 1px) calc(var(--radius-400) - 1px) 0 0;';
 
-      // Project label
-      if (proj) {
-        var projLabel = document.createElement('span');
-        projLabel.className = 'text-body-small-bold';
-        projLabel.style.cssText = 'color:' + accent + ';text-transform:uppercase;letter-spacing:.07em;';
-        projLabel.textContent = proj.name;
-        thumb.appendChild(projLabel);
-      }
+      // Top row: project label left, status badge right
+      var thumbTop = document.createElement('div');
+      thumbTop.style.cssText = 'display:flex;align-items:center;justify-content:space-between;gap:8px;';
+      thumbTop.innerHTML =
+        '<span class="text-body-small-bold" style="color:' + accent + ';text-transform:uppercase;letter-spacing:.07em;">' + (proj ? proj.name : '') + '</span>' +
+        '<span class="badge ' + badge.cls + '">' + badge.label + '</span>';
+      thumb.appendChild(thumbTop);
 
-      // Flow name on thumbnail
-      var thumbName = document.createElement('div');
-      thumbName.className = 'text-title-xsmall';
-      thumbName.style.cssText = 'color:var(--color-white);font-weight:700;margin-top:8px;word-break:break-word;';
-      thumbName.textContent = flow.name;
-      thumb.appendChild(thumbName);
+      // Bottom: flow name + updated date
+      var thumbBottom = document.createElement('div');
+      thumbBottom.style.cssText = 'display:flex;flex-direction:column;gap:4px;';
+      thumbBottom.innerHTML =
+        '<span class="text-title-xsmall" style="color:var(--color-white);font-weight:700;word-break:break-word;">' + flow.name + '</span>' +
+        '<span class="text-body-small" style="color:var(--color-gray-400);">Updated ' + (flow.updated || '—') + '</span>';
+      thumb.appendChild(thumbBottom);
 
       card.appendChild(thumb);
 
-      // ── Card body ──
+      // ── Card body (actions only) ──
       var body = document.createElement('div');
-      body.style.cssText = 'padding:12px 14px 14px;display:flex;flex-direction:column;gap:8px;flex:1;';
-
-      // Name + badge row
-      var nameRow = document.createElement('div');
-      nameRow.style.cssText = 'display:flex;align-items:flex-start;justify-content:space-between;gap:6px;';
-      nameRow.innerHTML =
-        '<span class="text-body-medium-bold" style="flex:1;color:var(--color-gray-1100);">' + flow.name + '</span>' +
-        '<span class="badge ' + badge.cls + '" style="flex-shrink:0;">' + badge.label + '</span>';
-      body.appendChild(nameRow);
-
-      // Updated date
-      var date = document.createElement('p');
-      date.className = 'text-body-small';
-      date.style.cssText = 'color:var(--color-gray-400);margin:0;';
-      date.textContent = 'Updated ' + (flow.updated || '—');
-      body.appendChild(date);
+      body.style.cssText = 'padding:12px 14px 14px;display:flex;flex-direction:column;gap:8px;';
 
       // Action links
       var actions = document.createElement('div');
