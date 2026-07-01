@@ -33,6 +33,20 @@ Every flow lives in `/flows/{flow-name}/` and must contain:
 
 (These rules will be expanded in later steps.)
 
+## Requirements Rules
+
+1. Every time you **CREATE** a flow prototype, you must also generate
+   `/flows/{flow-name}/requirements.md` following the template at
+   `/docs/templates/requirements-template.md`, deriving user stories and
+   acceptance criteria from what was discussed in the session.
+2. Every time you **MODIFY** a flow, update `requirements.md` so it always
+   reflects the current behavior of the prototype. Requirements and prototype
+   must never contradict each other.
+3. Write requirements in English, in language a Salesforce developer can
+   implement from directly.
+4. If the session did not discuss enough detail to fill a section, add it to
+   "Open Questions" — never invent requirements.
+
 ## Design System Updates
 `assets/ds/` is a vendored copy of the VDS repo. It is not a git submodule — its files
 are regular tracked files of this repo. To update it:
