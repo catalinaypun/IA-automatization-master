@@ -33,6 +33,19 @@ Every flow lives in `/flows/{flow-name}/` and must contain:
 
 (These rules will be expanded in later steps.)
 
+## States Rules
+
+1. Every flow must include `prototype-tools.js` and declare at minimum three states:
+   `default`, one error/validation state, and one empty or edge-case state.
+2. Every state in the prototype must exist in:
+   - The **States & Edge Cases** table in `requirements.md`
+   - The **`states`** array in the flow's `flow.json` entry
+   - The **`states.md`** file in the flow folder
+   All three must always match — if one changes, update the others in the same task.
+3. Create `/flows/{flow-name}/states.md` documenting each state: trigger, expected
+   behavior, and its deep link (`?state=x`).
+4. Use `?presenter=true` to hide the toolbar for stakeholder demos and recordings.
+
 ## Ecosystem Rules
 
 1. Every new flow must be registered in `flow.json` in the same task that creates it.
