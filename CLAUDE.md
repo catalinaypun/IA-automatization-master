@@ -77,13 +77,22 @@ and their HTML twins `requirements.html`, `CHANGELOG.html` (generated views).
 
 ## Changelog Rules
 
-1. Every task that creates or modifies a flow must append an entry to that
-   flow's `/flows/{flow-name}/CHANGELOG.md` before the task is considered done.
-   Use the template at `/docs/templates/changelog-template.md`.
-2. Entries are written for stakeholders, not developers: describe the design
-   change and the reason ("Changed reschedule trigger from button to inline
-   link per stakeholder feedback"), not the code change.
-3. Also make a git commit per task with a conventional commit message:
+1. A flow's `CHANGELOG.md` records **only** functional and design changes to that
+   prototype: behavior, interactions, UI changes, states, copy, requirements.
+   It is read by stakeholders as the history of design decisions.
+2. **Never** record ecosystem or infrastructure work in a flow's `CHANGELOG.md`.
+   The following do NOT belong there — they live in git history only:
+   - Dashboard/viewer updates, `flow.json` registration, embedded manifest sync
+   - HTML doc twin regeneration, template changes, file moves/renames
+   - Audits, tooling, git housekeeping
+3. If a task mixes both (e.g. a design change that also triggers a manifest sync),
+   the changelog entry describes **only** the design change.
+4. **Litmus test** for every entry: "Would a stakeholder reviewing the design care
+   about this?" If not, it does not belong in `CHANGELOG.md`.
+5. Entries are written for stakeholders: describe the change and the reason
+   ("Changed reschedule trigger from button to inline link per stakeholder
+   feedback"), never the code change.
+6. Also make a git commit per task with a conventional commit message:
    `feat|fix|docs|chore({flow-name}): short description`.
 
 ## Requirements Rules
