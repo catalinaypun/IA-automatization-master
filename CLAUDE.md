@@ -32,3 +32,10 @@ Every flow lives in `/flows/{flow-name}/` and must contain:
 - `states.md`
 
 (These rules will be expanded in later steps.)
+
+## Design System Updates
+`assets/ds/` is a vendored copy of the VDS repo. It is not a git submodule — its files
+are regular tracked files of this repo. To update it:
+1. Replace the files in `assets/ds/` manually with the latest version from the source repo.
+2. Commit the change with a changelog-style message describing what changed in the DS,
+   e.g. `chore(ds): update VDS to vX.Y — added foo token, removed bar class`.
