@@ -33,6 +33,13 @@ Every flow lives in `/flows/{flow-name}/` and must contain:
 
 (These rules will be expanded in later steps.)
 
+## Ecosystem Rules
+
+1. Every new flow must be registered in `flow.json` in the same task that creates it.
+   `flow.json` must never be out of date with the flows that exist on disk.
+2. When a flow's status changes (draft → in-review → approved), update `flow.json`
+   and commit the change.
+
 ## Changelog Rules
 
 1. Every task that creates or modifies a flow must append an entry to that

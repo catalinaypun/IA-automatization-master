@@ -7,7 +7,276 @@
   <link rel="stylesheet" href="./assets/ds/design-system.css">
 </head>
 <body>
-  <!-- Dashboard / viewer — placeholder, will be built in later steps -->
-  <h1>Prototype Viewer</h1>
+
+  <!-- ============================================================
+       HEADER
+  ============================================================ -->
+  <header style="background:var(--color-black);padding:var(--spacing-400) var(--spacing-600);display:flex;align-items:center;gap:var(--spacing-300);">
+    <span style="display:inline-block;width:28px;height:28px;">
+      <svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <rect width="28" height="28" rx="4" fill="#e10014"/>
+        <path d="M7 8h14l-7 12L7 8z" fill="#fff"/>
+      </svg>
+    </span>
+    <h1 class="text-title-xsmall" style="color:var(--color-white);font-weight:700;margin:0;">
+      Prototype Viewer <span style="color:var(--color-gray-400);font-weight:400;">— Verizon C360</span>
+    </h1>
+  </header>
+
+  <!-- ============================================================
+       MAIN
+  ============================================================ -->
+  <main style="max-width:1200px;margin:0 auto;padding:var(--spacing-600);">
+
+    <div id="error-banner" class="notification notification--error" style="display:none;margin-bottom:var(--spacing-400);">
+      <div class="notification__body">
+        <strong>Could not load flow.json.</strong> — Make sure you are serving this folder with a local HTTP server.
+        See <code>LOCAL.md</code> for instructions.
+      </div>
+    </div>
+
+    <!-- Stats bar -->
+    <div id="stats-bar" style="display:none;margin-bottom:var(--spacing-500);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:var(--spacing-300);">
+      <p class="text-body-medium" style="color:var(--color-gray-600);margin:0;" id="stats-text"></p>
+      <div style="display:flex;gap:var(--spacing-200);" id="filter-bar"></div>
+    </div>
+
+    <!-- Flow grid -->
+    <div id="flow-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:var(--spacing-400);"></div>
+
+    <!-- Empty state -->
+    <div id="empty-state" style="display:none;text-align:center;padding:var(--spacing-800) 0;">
+      <p class="text-title-xsmall" style="color:var(--color-gray-400);margin-bottom:var(--spacing-200);">No flows yet</p>
+      <p class="text-body-medium" style="color:var(--color-gray-600);">
+        Add a flow to <code>flow.json</code> and create its folder under <code>/flows/</code>.
+      </p>
+    </div>
+
+  </main>
+
+  <!-- ============================================================
+       MD VIEWER MODAL
+  ============================================================ -->
+  <div id="md-modal" style="display:none;position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,.55);overflow-y:auto;">
+    <div style="max-width:760px;margin:var(--spacing-600) auto;background:var(--color-white);border-radius:var(--radius-400);padding:var(--spacing-600);position:relative;">
+      <button id="md-modal-close" class="btn btn--ghost btn--small" style="position:absolute;top:var(--spacing-300);right:var(--spacing-300);" aria-label="Close">✕ Close</button>
+      <div id="md-content" style="padding-top:var(--spacing-400);"></div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       SCRIPT
+  ============================================================ -->
+  <script>
+    // ── Badge config ─────────────────────────────────────────────
+    const STATUS_BADGE = {
+      'draft':     { cls: 'badge--gray-low', label: 'Draft'     },
+      'in-review': { cls: 'badge--yellow',   label: 'In Review' },
+      'approved':  { cls: 'badge--green',    label: 'Approved'  },
+    };
+
+    // ── Minimal Markdown → HTML renderer ────────────────────────
+    function renderMd(md) {
+      // Escape HTML first
+      const esc = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+
+      const lines = md.split('\n');
+      const out = [];
+      let inPre = false, inUl = false, inOl = false, inTable = false;
+
+      const closeLists = () => {
+        if (inUl) { out.push('</ul>'); inUl = false; }
+        if (inOl) { out.push('</ol>'); inOl = false; }
+        if (inTable) { out.push('</tbody></table>'); inTable = false; }
+      };
+
+      const inline = s =>
+        esc(s)
+          .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+          .replace(/\*(.+?)\*/g,     '<em>$1</em>')
+          .replace(/`(.+?)`/g,       '<code>$1</code>')
+          .replace(/\[(.+?)\]\((.+?)\)/g, '<a href="$2">$1</a>');
+
+      for (let i = 0; i < lines.length; i++) {
+        const raw = lines[i];
+        const line = raw.trimEnd();
+
+        if (line.startsWith('```')) {
+          closeLists();
+          if (!inPre) {
+            out.push('<pre style="background:var(--color-gray-100);padding:var(--spacing-300);border-radius:var(--radius-200);overflow-x:auto;"><code>');
+            inPre = true;
+          } else {
+            out.push('</code></pre>');
+            inPre = false;
+          }
+          continue;
+        }
+        if (inPre) { out.push(esc(line)); continue; }
+
+        // Headings
+        const hm = line.match(/^(#{1,6})\s+(.*)/);
+        if (hm) {
+          closeLists();
+          const lvl = hm[1].length;
+          const cls = ['text-title-small','text-title-xsmall','text-title-2xsmall','text-body-large-bold','text-body-medium-bold','text-body-small-bold'][lvl-1] || 'text-body-medium-bold';
+          const mt  = lvl === 1 ? 'var(--spacing-600)' : 'var(--spacing-400)';
+          out.push(`<h${lvl} class="${cls}" style="margin-top:${mt};margin-bottom:var(--spacing-200);">${inline(hm[2])}</h${lvl}>`);
+          continue;
+        }
+
+        // HR
+        if (/^---+$/.test(line.trim())) {
+          closeLists();
+          out.push('<hr style="border:none;border-top:1px solid var(--color-border);margin:var(--spacing-400) 0;">');
+          continue;
+        }
+
+        // Table row
+        if (line.startsWith('|')) {
+          const cells = line.split('|').slice(1,-1).map(c => c.trim());
+          if (/^\|[-| :]+\|$/.test(line)) {
+            // separator row — skip
+            continue;
+          }
+          if (!inTable) {
+            closeLists();
+            out.push('<table style="width:100%;border-collapse:collapse;margin:var(--spacing-300) 0;font-size:13px;"><tbody>');
+            inTable = true;
+          }
+          const tag = (!inTable || out.filter(l=>l==='<tr>').length === 0) ? 'th' : 'td';
+          out.push('<tr>' + cells.map(c => `<td style="border:1px solid var(--color-border);padding:6px 10px;">${inline(c)}</td>`).join('') + '</tr>');
+          continue;
+        }
+
+        // Ordered list
+        const olm = line.match(/^\d+\.\s+(.*)/);
+        if (olm) {
+          if (inUl) { out.push('</ul>'); inUl = false; }
+          if (inTable) { out.push('</tbody></table>'); inTable = false; }
+          if (!inOl) { out.push('<ol style="padding-left:var(--spacing-400);margin:var(--spacing-200) 0;">'); inOl = true; }
+          out.push(`<li class="text-body-medium" style="margin-bottom:var(--spacing-100);">${inline(olm[1])}</li>`);
+          continue;
+        }
+
+        // Unordered list
+        const ulm = line.match(/^[-*]\s+(.*)/);
+        if (ulm) {
+          if (inOl) { out.push('</ol>'); inOl = false; }
+          if (inTable) { out.push('</tbody></table>'); inTable = false; }
+          if (!inUl) { out.push('<ul style="padding-left:var(--spacing-400);margin:var(--spacing-200) 0;">'); inUl = true; }
+          out.push(`<li class="text-body-medium" style="margin-bottom:var(--spacing-100);">${inline(ulm[1])}</li>`);
+          continue;
+        }
+
+        // Blank line
+        if (line.trim() === '') {
+          closeLists();
+          out.push('');
+          continue;
+        }
+
+        // Paragraph
+        closeLists();
+        out.push(`<p class="text-body-medium" style="margin:var(--spacing-200) 0;">${inline(line)}</p>`);
+      }
+      closeLists();
+      if (inPre) out.push('</code></pre>');
+      return out.join('\n');
+    }
+
+    // ── MD Modal ─────────────────────────────────────────────────
+    const modal      = document.getElementById('md-modal');
+    const mdContent  = document.getElementById('md-content');
+    const modalClose = document.getElementById('md-modal-close');
+
+    async function openMd(path, title) {
+      mdContent.innerHTML = `<p class="text-body-medium" style="color:var(--color-gray-600);">Loading…</p>`;
+      modal.style.display = 'block';
+      document.body.style.overflow = 'hidden';
+      try {
+        const res = await fetch(path);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const text = await res.text();
+        mdContent.innerHTML = renderMd(text);
+      } catch (e) {
+        mdContent.innerHTML = `<p class="text-body-medium" style="color:var(--color-error);">Could not load <code>${path}</code>: ${e.message}</p>`;
+      }
+    }
+
+    function closeMdModal() {
+      modal.style.display = 'none';
+      document.body.style.overflow = '';
+    }
+
+    modalClose.addEventListener('click', closeMdModal);
+    modal.addEventListener('click', e => { if (e.target === modal) closeMdModal(); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeMdModal(); });
+
+    // ── Card renderer ─────────────────────────────────────────────
+    function renderCard(flow) {
+      const badge = STATUS_BADGE[flow.status] || { cls: 'badge--gray', label: flow.status };
+      const card  = document.createElement('div');
+      card.className = 'card card--elevated';
+      card.style.cssText = 'padding:var(--spacing-400);display:flex;flex-direction:column;gap:var(--spacing-300);';
+
+      card.innerHTML = `
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:var(--spacing-200);">
+          <h2 class="text-title-2xsmall" style="margin:0;flex:1;">${flow.name}</h2>
+          <span class="badge ${badge.cls}">${badge.label}</span>
+        </div>
+        <p class="text-body-medium" style="color:var(--color-gray-600);margin:0;flex:1;">${flow.description || '—'}</p>
+        <p class="text-body-small" style="color:var(--color-gray-400);margin:0;">Updated: ${flow.updated || '—'}</p>
+        <div style="display:flex;flex-direction:column;gap:var(--spacing-200);">
+          <a href="${flow.path}" class="btn btn--primary btn--medium" target="_blank" rel="noopener">Open prototype</a>
+          <div style="display:flex;gap:var(--spacing-200);">
+            ${flow.requirements ? `<button class="btn btn--secondary btn--small" data-md="${flow.requirements}" data-title="Requirements — ${flow.name}" style="flex:1;">Requirements</button>` : ''}
+            ${flow.changelog    ? `<button class="btn btn--secondary btn--small" data-md="${flow.changelog}"    data-title="Changelog — ${flow.name}"    style="flex:1;">Changelog</button>`    : ''}
+          </div>
+        </div>
+      `;
+
+      card.querySelectorAll('[data-md]').forEach(btn => {
+        btn.addEventListener('click', () => openMd(btn.dataset.md, btn.dataset.title));
+      });
+
+      return card;
+    }
+
+    // ── Boot ─────────────────────────────────────────────────────
+    (async () => {
+      const grid    = document.getElementById('flow-grid');
+      const empty   = document.getElementById('empty-state');
+      const errBanner = document.getElementById('error-banner');
+      const statsBar  = document.getElementById('stats-bar');
+      const statsText = document.getElementById('stats-text');
+
+      let flows;
+      try {
+        const res = await fetch('./flow.json');
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
+        flows = data.flows || [];
+      } catch (e) {
+        errBanner.style.display = '';
+        return;
+      }
+
+      if (flows.length === 0) {
+        empty.style.display = '';
+        return;
+      }
+
+      // Stats
+      const counts = flows.reduce((acc, f) => { acc[f.status] = (acc[f.status]||0)+1; return acc; }, {});
+      statsText.textContent = `${flows.length} flow${flows.length!==1?'s':''} · ` +
+        Object.entries(counts).map(([s,n]) => `${n} ${s}`).join(' · ');
+      statsBar.style.display = 'flex';
+
+      // Render cards
+      flows.forEach(flow => grid.appendChild(renderCard(flow)));
+    })();
+  </script>
+
 </body>
 </html>
