@@ -186,13 +186,13 @@
       var accent  = proj ? proj.accent : 'var(--color-gray-600)';
 
       var card = document.createElement('div');
-      card.style.cssText = 'background:var(--color-white);border-radius:var(--radius-400);overflow:hidden;border:1px solid var(--color-border);display:flex;flex-direction:column;transition:box-shadow .15s;cursor:pointer;';
+      card.style.cssText = 'background:var(--color-white);border-radius:var(--radius-400);border:1px solid var(--color-border);display:flex;flex-direction:column;transition:box-shadow .15s;cursor:pointer;';
       card.addEventListener('mouseenter', function () { card.style.boxShadow = '0 4px 16px rgba(0,0,0,.12)'; });
       card.addEventListener('mouseleave', function () { card.style.boxShadow = 'none'; });
 
       // ── Thumbnail ──
       var thumb = document.createElement('div');
-      thumb.style.cssText = 'background:var(--color-gray-1100);padding:20px 16px 16px;display:flex;flex-direction:column;justify-content:space-between;min-height:140px;position:relative;';
+      thumb.style.cssText = 'background:var(--color-gray-1100);padding:20px 16px 16px;display:flex;flex-direction:column;justify-content:space-between;min-height:140px;position:relative;border-radius:calc(var(--radius-400) - 1px) calc(var(--radius-400) - 1px) 0 0;';
 
       // Project label
       if (proj) {
