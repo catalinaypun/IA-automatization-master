@@ -50,9 +50,12 @@ Every flow lives in `/flows/{flow-name}/` and must contain:
 
 1. Every new flow must be registered in `flow.json` in the same task that creates it.
    `flow.json` must never be out of date with the flows that exist on disk.
-2. When a flow's status changes (draft → in-review → approved), update `flow.json`
+2. Every flow entry must include a `"project"` field matching one of the ids in the
+   top-level `"projects"` array (`"c360"` or `"valucal"`). The viewer uses this to
+   filter flows per project in the left sidebar.
+3. When a flow's status changes (draft → in-review → approved), update `flow.json`
    and commit the change.
-3. Every task that updates `flow.json` must also update the embedded manifest block in
+4. Every task that updates `flow.json` must also update the embedded manifest block in
    `index.html` (the `<script type="application/json" id="flow-manifest">` block) so
    they never drift. The viewer reads from that block — it does not fetch `flow.json`
    at runtime.

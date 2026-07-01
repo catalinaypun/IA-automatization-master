@@ -1,7 +1,12 @@
 {
+  "projects": [
+    { "id": "c360",    "name": "C360",     "accent": "#e10014" },
+    { "id": "valucal", "name": "VaLu Cal", "accent": "#0089ec" }
+  ],
   "flows": [
     {
       "id": "_demo-states",
+      "project": "c360",
       "name": "State Switcher Demo",
       "description": "Demonstrates the prototype-tools.js state switcher pattern — default, error, and empty states.",
       "status": "draft",
