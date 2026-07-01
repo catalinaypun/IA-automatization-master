@@ -1,0 +1,3233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Job Detail — Split Edit View | Verizon C360</title>
+  <link rel="stylesheet" href="./assets/ds/design-system.css">
+  <style>
+    /* ============================================================
+       RESET & BASE
+    ============================================================ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: var(--font-family-base, 'VerizonNHGDS', sans-serif);
+      font-size: var(--font-size-body-small);
+      line-height: var(--line-height-body-small);
+      color: var(--color-gray-1100);
+      background: var(--color-gray-100);
+    }
+    a { color: inherit; }
+    .mt-2 { margin-top: 2px; }
+    .mt-4 { margin-top: 4px; }
+    .lbl  { font-weight: 700; }
+    .sec  { color: #716f6d; }
+
+    /* ============================================================
+       SALESFORCE SHELL
+    ============================================================ */
+    .sf-topbar {
+      position: fixed; top: 0; left: 0; right: 0; height: 50px;
+      background: #153c4b; display: flex; align-items: center;
+      justify-content: space-between; padding: 0 20px; z-index: 900;
+    }
+    .sf-topbar__logo { color: #fff; font-size: 18px; font-weight: 700; letter-spacing: -0.3px; }
+    .sf-topbar__right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .sf-sim-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #fff;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    /* Sim toggles: green track when checked */
+    .toggle__input:checked ~ .toggle__track {
+      background: #2ecc71 !important;
+    }
+    .sf-sim-select {
+      height: 30px;
+      min-width: 130px;
+      border: 1px solid rgba(255, 255, 255, 0.55);
+      border-radius: 16px;
+      padding: 0 28px 0 10px;
+      color: #fff;
+      background: rgba(255, 255, 255, 0.08);
+      font-size: 12px;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      -webkit-appearance: none;
+      appearance: none;
+      background-image: linear-gradient(45deg, transparent 50%, #fff 50%), linear-gradient(135deg, #fff 50%, transparent 50%);
+      background-position: calc(100% - 14px) 12px, calc(100% - 9px) 12px;
+      background-size: 5px 5px, 5px 5px;
+      background-repeat: no-repeat;
+    }
+    .sf-sim-select:focus {
+      outline: 2px solid rgba(255, 255, 255, 0.65);
+      outline-offset: 1px;
+    }
+    .sf-sim-select option {
+      color: #1d1c1c;
+      background: #fff;
+    }
+    .sf-topbar__avatar {
+      width: 32px; height: 32px; border-radius: 50%; background: #0076ce;
+      color: #fff; font-size: 13px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .sf-secbar {
+      position: fixed; top: 50px; left: 0; right: 0; height: 37px;
+      background: #fff; border-bottom: 2px solid #0076ce;
+      display: flex; align-items: center; gap: 16px; padding: 0 24px; z-index: 900;
+    }
+    .sf-secbar__pill { height: 20px; border-radius: 10px; background: #dddad4; display: inline-block; }
+    .sf-secbar__pill:nth-child(1) { width: 80px; }
+    .sf-secbar__pill:nth-child(2) { width: 110px; }
+    .sf-secbar__pill:nth-child(3) { width: 90px; }
+    .sf-secbar__pill:nth-child(4) { width: 70px; }
+    .sf-secbar__pill:nth-child(5) { width: 95px; }
+
+    /* ============================================================
+       BODY LAYOUT
+    ============================================================ */
+    .page-body { padding-top: 87px; background: #f8f7f5; min-height: 100vh; }
+    .content-card {
+      max-width: 1440px; margin: 0 auto; background: #fff;
+      padding: 24px; min-height: calc(100vh - 87px);
+    }
+
+    /* ============================================================
+       BREADCRUMB
+    ============================================================ */
+    .breadcrumb { font-size: 12px; color: #716f6d; margin-bottom: 16px; }
+    .breadcrumb__sep { margin: 0 6px; color: #aaa8a3; }
+    .breadcrumb__current { color: #1d1c1c; font-weight: 700; }
+
+    /* ============================================================
+       JOB HEADER CARD
+    ============================================================ */
+    .job-header {
+      display: flex; align-items: flex-start; justify-content: space-between;
+      margin-bottom: 24px; padding: 16px;
+      background: var(--color-white); border: none;
+      border-radius: var(--radius-card); box-shadow: none;
+    }
+    .job-header__left { display: flex; align-items: flex-start; gap: 12px; }
+    .job-wrench { width: 32px; height: 32px; flex-shrink: 0; margin-top: 2px; opacity: 0.6; }
+    .job-back-btn {
+      width: 44px; height: 44px; border-radius: 50%; border: none; background: #000;
+      cursor: pointer; color: #fff; display: flex; align-items: center;
+      justify-content: center; flex-shrink: 0;
+    }
+    .job-back-btn:hover { background: #1d1c1c; }
+    .job-back-btn svg { display: block; width: 30px; height: 30px; }
+    .job-title-col { display: flex; flex-direction: column; gap: 4px; }
+    .job-title-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+    .job-title {
+      font-family: var(--font-family-display); font-size: 20px;
+      font-weight: 700; color: var(--color-gray-1100); line-height: 24px;
+    }
+    .job-meta-row { font-size: 13px; color: #716f6d; display: flex; align-items: center; flex-wrap: wrap; gap: 4px; }
+    .job-meta-sep { margin: 0 6px; color: #aaa8a3; }
+    .job-meta-value { color: #1d1c1c; font-weight: 400; }
+    .job-meta-changed { color: #e87722; font-weight: 700; }
+    .job-meta-reschedule { color: #e87722; font-size: 12px; font-weight: 600; margin-left: 6px; }
+    .job-header__right { flex-shrink: 0; }
+    .btn-cancel-job { color: var(--color-brand-red) !important; border-color: var(--color-brand-red) !important; }
+    .btn-cancel-job:hover { background: #fff0f0 !important; }
+
+    /* ============================================================
+       SECTION HEADER
+    ============================================================ */
+    .section-header {
+      display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;
+    }
+    .section-title {
+      font-family: var(--font-family-display); font-size: 20px;
+      font-weight: 700; color: var(--color-gray-1100); line-height: 24px;
+    }
+    .section-actions { display: flex; gap: 8px; align-items: center; }
+
+    /* ============================================================
+       EDIT SUMMARY BAR
+    ============================================================ */
+    .edit-summary-bar {
+      display: none;
+      background: #fff; border: 1px solid #dddad4; border-radius: 8px;
+      padding: 12px 14px; margin-bottom: 12px;
+      position: sticky; top: 99px; z-index: 50;
+      align-items: stretch; gap: 0;
+      transition: box-shadow 0.18s ease, border-color 0.18s ease;
+    }
+    .edit-summary-bar.visible { display: flex; }
+    .edit-summary-bar.summary-is-stuck {
+      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.12);
+      border-color: #c8c6c4;
+    }
+    .edit-summary-panel {
+      flex: 1; display: flex; flex-direction: column; gap: 4px;
+      padding: 6px 22px;
+    }
+    .edit-summary-panel + .edit-summary-panel { border-left: 1px solid #dddad4; }
+    .edit-summary-label { font-size: 12px; color: #716f6d; font-weight: 400; line-height: 1.2; }
+    .edit-summary-value { font-size: 16px; font-weight: 700; color: #1d1c1c; line-height: 1.2; }
+    .edit-summary-duration-row { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+    .edit-summary-duration-note {
+      display: none;
+      font-size: 12px;
+      color: #e87722;
+      font-weight: 400;
+      line-height: 1.2;
+    }
+    .edit-summary-sub   { font-size: 12px; color: #716f6d; line-height: 1.2; }
+    .edit-summary-note  {
+      font-size: 12px;
+      color: #7c4300;
+      font-weight: 700;
+      line-height: 1.2;
+      display: none;
+      align-items: center;
+      gap: 6px;
+      align-self: flex-start;
+      background: #fff3e0;
+      border-left: 3px solid #f57c00;
+      border-radius: 4px;
+      padding: 4px 8px;
+      margin-top: 2px;
+    }
+    .val-changed { color: #e87722; }
+    .val-added   { color: #008331; }
+    .val-removed { color: #e10014; }
+
+    @media (max-width: 900px) {
+      .edit-summary-bar { flex-direction: column; }
+      .edit-summary-panel + .edit-summary-panel { border-left: none; border-top: 1px solid #dddad4; }
+      .edit-summary-label { font-size: 12px; }
+      .edit-summary-value { font-size: 16px; }
+      .edit-summary-sub { font-size: 12px; }
+    }
+
+    /* ============================================================
+       VEHICLE BLOCKS
+    ============================================================ */
+    .split-table-wrapper { overflow-x: hidden; }
+    #split-table-wrapper.edit-mode-active { overflow: visible; }
+    .vehicles-container {
+      display: flex; flex-direction: column; gap: var(--space-3x); min-width: 0;
+    }
+    .split-scheduled-wrapper {
+      border: none; border-radius: var(--radius-100); overflow: hidden;
+      display: flex; flex-direction: column;
+    }
+
+    .vehicle-block {
+      border: none; border-bottom: 1px solid #dddad4;
+      border-radius: 0; overflow: visible;
+      --vh-w-vehicle: 348px;
+      --vh-w-install-info: 122px;
+      --vh-w-traits: 56px;
+      --vh-w-name: 160px;
+      --vh-w-hw: 114px;
+      --col-ship: 130px;
+      --col-delivery: 138px;
+      --col-ticket: 96px;
+      --vh-w-inst: 175px;
+      --col-inst: 145px;
+      --vh-w-action: 44px;
+      --sub-w-sub:      var(--vh-w-vehicle);
+      --sub-w-cat:      var(--vh-w-install-info);
+      --sub-w-hw:       calc(var(--vh-w-traits) + var(--vh-w-name));
+      --sub-w-type:     var(--vh-w-hw);
+      --sub-w-ship:     var(--col-ship);
+      --sub-w-delivery: var(--col-delivery);
+      --sub-w-ticket:   var(--col-ticket);
+      --sub-w-inst:     var(--col-inst);
+      --sub-w-idate:    92px;
+      --sub-w-sact:     var(--vh-w-action);
+    }
+    .edit-mode-active .vehicle-block {
+      --vh-w-inst: 235px;
+      --col-inst: 205px;
+      --sub-w-sub: var(--vh-w-vehicle);
+      --sub-w-idate: 92px;
+      --sub-w-inst: calc(var(--vh-w-inst) - var(--sub-w-idate));
+    }
+    .edit-mode-active.sim-standard .vehicle-block {
+      --vh-w-vehicle: 270px;
+      --vh-w-install-info: 126px;
+      --vh-w-traits: 58px;
+      --vh-w-name: 166px;
+      --sub-w-inst: calc(var(--vh-w-inst) - var(--sub-w-idate) + var(--vh-w-action) + 14px);
+    }
+    .edit-mode-active.sim-standard .subs-section .sub-line:not(:first-child) .sub-dcell {
+      border-top: none !important;
+    }
+    .edit-mode-active .vehicle-block[data-change="added"] {
+      box-shadow: inset 4px 0 0 #008331;
+      border-left: 4px solid #008331;
+    }
+    .edit-mode-active .vehicle-block[data-change="removed"] {
+      box-shadow: inset 4px 0 0 #e10014;
+      border-left: 4px solid #e10014;
+    }
+    .vehicle-block:last-child { border-bottom: none; }
+
+    .vehicle-header-row {
+      display: grid;
+      width: 100%;
+      align-items: stretch;
+      grid-template-columns:
+        var(--vh-w-vehicle)
+        var(--vh-w-install-info)
+        var(--vh-w-traits)
+        var(--vh-w-name)
+        var(--vh-w-hw)
+        var(--col-ship)
+        calc(var(--col-delivery) + var(--col-ticket))
+        var(--vh-w-inst)
+        var(--vh-w-action);
+      background: var(--color-gray-100); border-bottom: 1px solid #dddad4;
+      position: relative; overflow: visible;
+    }
+    /* Highlight scheduled vehicles in scheduled block */
+    .vehicle-block[data-section="scheduled"] .vehicle-header-row { background: #f8f7f5; }
+    /* Match header background across scheduled/available blocks */
+    .vehicle-block[data-section="available"] .vehicle-header-row { background: #f8f7f5; }
+
+    .vh-cell {
+      padding: 12px 10px; border-right: none;
+      font-size: 12px; line-height: 16px;
+      display: flex; flex-direction: column; justify-content: flex-start;
+      align-items: flex-start; min-width: 0; overflow-wrap: anywhere;
+    }
+    .vh-cell:last-child { border-right: none; }
+
+    .vh-cell--edit-action  { display: none; }
+    .vh-cell--vehicle      { grid-column: 1; }
+    .vh-cell--install-info { grid-column: 2; }
+    .vh-cell--traits       { grid-column: 3; }
+    .vh-cell--name         { grid-column: 4; }
+    .vh-cell--hw-status    { grid-column: 5; }
+    .vh-cell--ship-status  { grid-column: 6; }
+    .vh-cell--address      { grid-column: 7; }
+    .vh-cell--inst-status  { grid-column: 8; }
+    .vh-cell--action       { grid-column: 9; min-width: var(--vh-w-action); align-items: center; justify-content: center; padding: 0; display: flex; overflow: visible; }
+
+    .vh-actions { display: flex; align-items: center; justify-content: flex-end; width: 100%; height: 100%; gap: 2px; padding-right: 0; overflow: visible; }
+    .vh-actions-divider { width: 1px; height: 40px; background: #dddad4; margin: 0 2px; flex-shrink: 0; }
+
+    /* View mode: keep only chevron at row end */
+    .split-action-btn,
+    .vh-actions-divider { display: none; }
+    .edit-mode-active .split-action-btn { display: flex; }
+    .edit-mode-active .vh-actions-divider { display: none; }
+    #split-table-wrapper:not(.edit-mode-active) .vh-cell--action .split-action-btn { display: none !important; }
+    #split-table-wrapper:not(.edit-mode-active) .vh-cell--action .vh-actions-divider { display: none !important; }
+    #split-table-wrapper:not(.edit-mode-active) .vh-cell--action .accordion-btn { display: flex !important; }
+
+    /* Edit mode: keep action controls on the right side */
+    .edit-mode-active .vehicle-header-row {
+      grid-template-columns:
+        var(--vh-w-vehicle)
+        var(--vh-w-install-info)
+        var(--vh-w-traits)
+        var(--vh-w-name)
+        var(--vh-w-hw)
+        var(--col-ship)
+        calc(var(--col-delivery) + var(--col-ticket))
+        var(--vh-w-inst)
+        var(--vh-w-action);
+    }
+    .edit-mode-active .vh-cell--edit-action {
+      display: none;
+    }
+    .edit-mode-active .vh-cell--vehicle      { grid-column: 1; }
+    .edit-mode-active .vh-cell--install-info { grid-column: 2; }
+    .edit-mode-active .vh-cell--traits       { grid-column: 3; }
+    .edit-mode-active .vh-cell--name         { grid-column: 4; }
+    .edit-mode-active .vh-cell--hw-status    { grid-column: 5; }
+    .edit-mode-active .vh-cell--ship-status  { grid-column: 6; }
+    .edit-mode-active .vh-cell--address      { grid-column: 7; }
+    .edit-mode-active .vh-cell--inst-status  { grid-column: 8; }
+    .edit-mode-active .vh-cell--action       { grid-column: 9; }
+
+    .vh-vehicle-name-row { display: flex; align-items: center; gap: 6px; margin-bottom: 2px; }
+    .vh-vehicle-icon { flex-shrink: 0; }
+    .vh-vehicle-name { font-weight: 700; font-size: 12px; text-decoration: underline; cursor: pointer; color: #1d1c1c; }
+    .vh-vin { font-size: 11px; color: #716f6d; margin-bottom: 4px; }
+    .vh-meta { font-size: 12px; color: #1d1c1c; }
+    .vh-install-type { font-weight: 700; margin-right: 4px; }
+    .note-text {
+      display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+      overflow: hidden; color: #716f6d; font-size: 12px; margin-top: 2px;
+    }
+    .address-text { font-size: 11px; color: #716f6d; margin-top: 2px; }
+    .priority-text { font-size: 11px; color: #716f6d; margin-top: 4px; }
+
+    /* ============================================================
+       ACTION BUTTONS (Trash / Plus / Accordion)
+    ============================================================ */
+    .trash-btn, .plus-btn, .accordion-btn {
+      width: 32px; height: 32px; border-radius: 50%; background: transparent;
+      border: none; cursor: pointer; display: flex; align-items: center;
+      justify-content: center; transition: background 0.15s, color 0.15s;
+      flex-shrink: 0; font-size: 18px; font-family: inherit; line-height: 1;
+      min-width: 0; min-height: 0; padding: 0;
+      box-shadow: none; outline: none;
+      -webkit-appearance: none; appearance: none;
+    }
+    /* DS tooltip compact variant for action icons */
+    .tooltip.tooltip--compact .tooltip__popup {
+      width: auto;
+      min-height: 0;
+      max-height: none;
+      padding: 8px 10px;
+      white-space: nowrap;
+    }
+    .vh-cell--action .tooltip:hover,
+    .vh-cell--action .tooltip:focus-within { z-index: 180; }
+    .vh-cell--action .tooltip .tooltip__popup { z-index: 220; }
+    .edit-mode-active .vh-cell--action .tooltip {
+      position: relative;
+      z-index: 180;
+    }
+    .edit-mode-active .vh-cell--action .tooltip .tooltip__popup {
+      left: 50%;
+      right: auto;
+      top: auto;
+      bottom: calc(100% + 8px);
+      transform: translateX(-50%);
+      z-index: 260;
+    }
+    .edit-mode-active.sim-partial .sub-inline-action.tooltip {
+      position: relative;
+      z-index: 180;
+    }
+    .edit-mode-active.sim-partial .sub-inline-action.tooltip .tooltip__popup {
+      left: 50%;
+      right: auto;
+      top: auto;
+      bottom: calc(100% + 8px);
+      transform: translateX(-50%);
+      z-index: 260;
+    }
+
+    /* ============================================================
+       DRAG & DROP
+    ============================================================ */
+    .edit-mode-active .vehicle-block[draggable="true"] { cursor: grab; }
+    .edit-mode-active .vehicle-block[draggable="true"]:active { cursor: grabbing; }
+    .vehicle-block.dragging { opacity: 0.35; }
+
+    /* Drop zone highlight */
+    .split-scheduled-wrapper.drop-target,
+    .split-available-wrapper.drop-target {
+      outline: 2px dashed var(--color-gray-1100);
+      outline-offset: -2px;
+      background: rgba(0,0,0,0.03);
+      transition: background 0.1s;
+    }
+
+    /* Trash — disabled in view mode */
+    .trash-btn { color: #c8c6c4; cursor: default; pointer-events: none; }
+    .trash-btn img { opacity: 0.35; }
+    .edit-mode-active .trash-btn { color: #716f6d; cursor: pointer; pointer-events: auto; }
+    .edit-mode-active .trash-btn img { opacity: 1; }
+    .edit-mode-active .trash-btn:hover { background: #fff0f2; color: #e10014; }
+
+    /* Plus — disabled in view mode */
+    .plus-btn { color: #c8c6c4; cursor: default; pointer-events: none; }
+    .edit-mode-active .plus-btn { color: #008331; cursor: pointer; pointer-events: auto; }
+    .edit-mode-active .plus-btn:hover { background: #f0fff5; color: #005a23; }
+
+    /* Accordion */
+    .accordion-btn { color: var(--color-gray-600); transition: background 0.15s, transform 0.15s; }
+    .accordion-btn:hover { background: var(--color-gray-100); }
+    .accordion-btn:focus,
+    .accordion-btn:focus-visible {
+      outline: none;
+      box-shadow: none;
+      border: none;
+    }
+    .accordion-btn.collapsed { transform: rotate(-90deg); }
+    .accordion-btn img { display: block; }
+
+    /* ============================================================
+       SUBSCRIPTIONS SECTION
+    ============================================================ */
+    .vehicle-block.collapsed .subs-section { display: none; }
+    .subs-section {
+      width: 100%;
+    }
+    .subs-header-row {
+      display: grid;
+      grid-template-columns: var(--sub-w-sub) var(--sub-w-cat) var(--sub-w-hw) var(--sub-w-type) var(--sub-w-ship) var(--sub-w-delivery) var(--sub-w-ticket) var(--sub-w-inst) var(--sub-w-idate);
+      background: #f8f7f5; border-bottom: 1px solid #dddad4;
+      min-height: 34px; align-items: center;
+    }
+    .subs-section.subs-partial .subs-header-row {
+      grid-template-columns: var(--sub-w-sub) var(--sub-w-cat) var(--sub-w-hw) var(--sub-w-type) var(--sub-w-ship) var(--sub-w-delivery) var(--sub-w-ticket) var(--sub-w-inst) var(--sub-w-idate) var(--sub-w-sact);
+    }
+    .sub-hcell {
+      padding: 0 8px; font-size: 11px; font-weight: 700; letter-spacing: 0.3px;
+      line-height: 14px; border-right: 1px solid #dddad4;
+      display: flex; align-items: center; min-height: 34px; min-width: 0;
+    }
+    .sub-hcell:last-child { border-right: none; }
+    .sub-hcell--sub      { grid-column: 1; }
+    .sub-hcell--cat      { grid-column: 2; }
+    .sub-hcell--hw       { grid-column: 3; }
+    .sub-hcell--type     { grid-column: 4; }
+    .sub-hcell--ship     { grid-column: 5; }
+    .sub-hcell--delivery { grid-column: 6; }
+    .sub-hcell--ticket   { grid-column: 7; }
+    .sub-hcell--inst     { grid-column: 8; }
+    .sub-hcell--idate    { grid-column: 9; }
+    .sub-hcell--action   { grid-column: 10; justify-content: center; }
+    .sub-hcell--idate,
+    .sub-dcell--idate {
+      white-space: nowrap;
+      overflow-wrap: normal;
+      word-break: normal;
+    }
+    .sub-hcell--action,
+    .sub-dcell--action { display: none !important; }
+    .subs-section.subs-partial .sub-hcell--action,
+    .subs-section.subs-partial .sub-dcell--action { display: flex !important; }
+
+    .sub-group {
+      display: grid;
+      grid-template-columns: var(--sub-w-sub) var(--sub-w-cat) var(--sub-w-hw) var(--sub-w-type) var(--sub-w-ship) var(--sub-w-delivery) var(--sub-w-ticket) var(--sub-w-inst) var(--sub-w-idate);
+      border-bottom: 1px solid #dddad4; background: #fff;
+    }
+    .subs-section.subs-partial .sub-group {
+      grid-template-columns: var(--sub-w-sub) var(--sub-w-cat) var(--sub-w-hw) var(--sub-w-type) var(--sub-w-ship) var(--sub-w-delivery) var(--sub-w-ticket) var(--sub-w-inst) var(--sub-w-idate) var(--sub-w-sact);
+    }
+    .sub-group:last-child { border-bottom: none; }
+    .sub-line { display: contents; }
+    .sub-dcell {
+      padding: 10px 8px; font-size: 12px; line-height: 16px;
+      border-right: 1px solid #dddad4;
+      display: flex; flex-direction: column; justify-content: flex-start;
+      align-items: flex-start; min-width: 0; min-height: 44px; overflow-wrap: anywhere;
+    }
+    .sub-dcell:last-child { border-right: none; }
+    .sub-dcell--sub      { grid-column: 1; grid-row: 1 / 3; }
+    .sub-dcell--cat      { grid-column: 2; }
+    .sub-dcell--hw       { grid-column: 3; }
+    .sub-dcell--type     { grid-column: 4; }
+    .sub-dcell--ship     { grid-column: 5; }
+    .sub-dcell--delivery { grid-column: 6; }
+    .sub-dcell--ticket   { grid-column: 7; }
+    .sub-dcell--inst     { grid-column: 8; }
+    .sub-dcell--idate    { grid-column: 9; }
+    .sub-dcell--action   {
+      grid-column: 10;
+      align-items: center;
+      justify-content: flex-end;
+      padding: 6px 0;
+    }
+
+    /* Edit mode: subscription first column absorbs left action space while keeping status alignment */
+    .sub-dcell--sub-empty { display: none; }
+    .sub-line:not(:first-child) .sub-dcell { border-top: 1px solid #f0efec; }
+    .sub-sub-main { display: flex; align-items: flex-start; gap: 8px; width: 100%; }
+    .sub-sub-content { min-width: 0; }
+    .sub-inline-action { display: none; flex-shrink: 0; margin-top: 2px; }
+    .sub-name   { font-weight: 600; color: #1d1c1c; }
+    .sub-id     { color: #716f6d; }
+    .ticket-link { color: #0076ce; text-decoration: underline; cursor: pointer; font-size: 12px; }
+
+    /* ============================================================
+       SPLIT TABLE — BLOCK HEADERS & DIVIDER
+    ============================================================ */
+    .split-block-header {
+      display: flex; align-items: center; gap: 8px;
+      padding: 12px 12px; background: var(--color-gray-1100);
+      border-radius: var(--radius-100);
+    }
+    /* Headers inside wrappers: no radius, separator underneath */
+    .split-scheduled-wrapper .split-block-header,
+    .split-available-wrapper .split-block-header { border-radius: 0; border-bottom: 1px solid var(--color-gray-200); }
+    .split-block-header__label {
+      font-size: 11px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.5px; color: var(--color-white);
+    }
+    .split-block-header--scheduled .split-block-header__label {
+      font-size: 16px;
+      text-transform: none;
+      letter-spacing: 0;
+    }
+    .split-block-header--available .split-block-header__label {
+      font-size: 16px;
+      text-transform: none;
+      letter-spacing: 0;
+    }
+    .split-block-header__count {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 22px;
+      height: 20px;
+      padding: 0 8px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.2);
+      color: #ffffff;
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 1;
+    }
+
+    /* Available wrapper */
+    .split-available-wrapper {
+      border: none; border-radius: var(--radius-100); overflow: hidden;
+    }
+    #split-table-wrapper.edit-mode-active .split-scheduled-wrapper,
+    #split-table-wrapper.edit-mode-active .split-available-wrapper {
+      overflow: visible;
+    }
+
+    /* Hidden in view mode */
+    .split-block-header--scheduled,
+    .split-available-wrapper,
+    .vehicle-block[data-section="available"] { display: none; }
+
+    .edit-mode-active .split-block-header--scheduled { display: flex; }
+    .edit-mode-active .split-available-wrapper { display: block; }
+    .edit-mode-active .vehicle-block[data-section="available"] { display: block; }
+
+    /* Keep the same appointment/order layout in Partial as in Standard while editing */
+    .edit-mode-active.sim-partial .split-block-header--scheduled { display: flex; }
+    .edit-mode-active.sim-partial .split-available-wrapper { display: block; }
+    .edit-mode-active.sim-partial .vehicle-block[data-section="available"] { display: block; }
+    .edit-mode-active.sim-partial .vehicle-block {
+      --vh-w-vehicle: 270px;
+      --vh-w-install-info: 126px;
+      --vh-w-traits: 58px;
+      --vh-w-name: 166px;
+      --vh-w-inst: 250px;
+      --sub-w-sub: var(--vh-w-vehicle);
+      --sub-w-idate: 88px;
+      --sub-w-sact: var(--vh-w-action);
+    }
+    .edit-mode-active.sim-partial .subs-section.subs-partial .subs-header-row,
+    .edit-mode-active.sim-partial .subs-section.subs-partial .sub-group {
+      grid-template-columns: var(--sub-w-sub) var(--sub-w-cat) var(--sub-w-hw) var(--sub-w-type) var(--sub-w-ship) var(--sub-w-delivery) var(--sub-w-ticket) var(--sub-w-inst) var(--sub-w-idate) var(--sub-w-sact);
+    }
+    .edit-mode-active.sim-partial .subs-section.subs-partial,
+    .edit-mode-active.sim-partial .subs-section.subs-partial .subs-header-row,
+    .edit-mode-active.sim-partial .subs-section.subs-partial .sub-group {
+      background: #fff !important;
+    }
+    .edit-mode-active.sim-partial .subs-section.subs-partial .sub-hcell--action,
+    .edit-mode-active.sim-partial .subs-section.subs-partial .sub-dcell--action { display: flex !important; }
+    .edit-mode-active.sim-partial .subs-section.subs-partial .sub-inline-action { display: none !important; }
+    .edit-mode-active.sim-partial .subs-section.subs-partial .sub-line:not(:first-child) .sub-dcell {
+      border-top: none !important;
+    }
+    .edit-mode-active.sim-partial .subs-section.subs-partial .sub-hcell--action,
+    .edit-mode-active.sim-partial .subs-section.subs-partial .sub-dcell--action {
+      background: #fff !important;
+      border-top: none !important;
+      border-bottom: none !important;
+      border-left: none !important;
+      border-right: 1px solid #dddad4 !important;
+      box-shadow: none !important;
+    }
+    .edit-mode-active.sim-partial .subs-section.subs-partial .sub-line:not(:first-child) .sub-dcell--action {
+      border-top: none !important;
+    }
+
+    /* Address group accordions — connected, no gap between them */
+    .split-addr-group { border-top: 1px solid var(--color-gray-200); }
+    .split-block-header--available + .split-addr-group,
+    #empty-available ~ .split-addr-group:first-child { border-top: none; }
+    .split-addr-header {
+      display: flex; align-items: center; justify-content: space-between; gap: 12px;
+      background: #f8f3e9; padding: 8px 12px; cursor: pointer; user-select: none;
+    }
+    .split-addr-header__left { display: flex; align-items: center; gap: 8px; min-width: 0; }
+    .split-addr-header__info { min-width: 0; overflow: hidden; }
+    .split-addr-header__label {
+      font-size: 11px; font-weight: 700; letter-spacing: 0.5px;
+      color: var(--color-gray-600); text-transform: uppercase; line-height: 1.2; margin-bottom: 2px;
+    }
+    .split-addr-header__address {
+      font-size: 13px; color: var(--color-gray-1100);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .split-addr-header__right { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+    .split-addr-count { font-size: 12px; color: var(--color-gray-600); white-space: nowrap; }
+    .split-addr-toggle {
+      width: 28px; height: 28px; border-radius: var(--radius-max); background: transparent;
+      border: none; cursor: pointer; display: flex; align-items: center; justify-content: center;
+      transition: background 0.15s, transform 0.15s; transform: rotate(180deg);
+      flex-shrink: 0; padding: 0;
+    }
+    .split-addr-toggle:hover { background: rgba(0,0,0,0.07); }
+    .split-addr-group.collapsed .split-addr-toggle { transform: rotate(0deg); }
+    .split-addr-vehicles { border-top: 1px solid var(--color-gray-200); }
+    .split-addr-group.collapsed .split-addr-vehicles { display: none; }
+
+    /* Empty states inside the split table */
+    .split-empty-row {
+      padding: 20px 16px; font-size: 13px; color: #aaa8a3;
+      text-align: center; background: #fff; font-style: italic;
+    }
+
+    /* ============================================================
+       BADGE OVERRIDES
+    ============================================================ */
+    .badge--gray-custom { background: #e8e6e3; color: #3d3c3a; }
+
+    /* ============================================================
+       MODALS
+    ============================================================ */
+    .modal-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.45);
+      z-index: 100000; display: none; align-items: center; justify-content: center;
+      padding: 16px;
+    }
+    .modal-overlay.open {
+      display: flex;
+      opacity: 1;
+      pointer-events: auto;
+    }
+    body.modal-open { overflow: hidden; }
+    body.modal-open .sf-topbar,
+    body.modal-open .sf-secbar { pointer-events: none; }
+
+    .modal-card {
+      background: var(--color-white); border-radius: var(--radius-card);
+      width: 100%; max-width: 560px; display: flex; flex-direction: column;
+      max-height: 90vh; overflow: hidden; box-shadow: var(--shadow-high);
+    }
+    .modal-card--wide { max-width: 640px; }
+
+    .modal-header {
+      padding: 20px 24px 16px; border-bottom: 1px solid #dddad4;
+      display: flex; justify-content: space-between; align-items: center; flex-shrink: 0;
+    }
+    .modal-header__title {
+      font-family: var(--font-family-display); font-size: 16px;
+      font-weight: 700; color: #1d1c1c; line-height: 20px;
+    }
+    .modal-close {
+      width: 32px; height: 32px; border-radius: 50%; border: none; background: transparent;
+      font-size: 20px; cursor: pointer; color: #716f6d; display: flex;
+      align-items: center; justify-content: center;
+    }
+    .modal-close:hover { background: #f8f7f5; }
+
+    .modal-body { padding: 20px 24px; overflow-y: auto; flex: 1; }
+    .modal-desc { font-size: 14px; color: #1d1c1c; line-height: 20px; margin-bottom: 16px; }
+
+    .modal-footer {
+      padding: 16px 24px; border-top: 1px solid #dddad4;
+      display: flex; justify-content: flex-end; gap: 8px; flex-shrink: 0;
+    }
+
+    /* Option cards (selectable) */
+    .option-cards { display: flex; flex-direction: column; gap: 10px; }
+    .option-card {
+      border: 2px solid #dddad4; border-radius: 8px; padding: 14px 16px;
+      cursor: pointer; transition: border-color 0.15s, background 0.15s;
+      display: flex; align-items: flex-start; gap: 12px;
+    }
+    .option-card:hover { border-color: #aaa8a3; background: #fafafa; }
+    .option-card.selected { border-color: #1d1c1c; background: #f8f7f5; }
+    .option-card__radio {
+      width: 18px; height: 18px; border-radius: 50%; border: 2px solid #aaa8a3;
+      flex-shrink: 0; margin-top: 2px; transition: border-color 0.15s;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .option-card.selected .option-card__radio { border-color: #1d1c1c; }
+    .option-card.selected .option-card__radio::after {
+      content: ''; width: 8px; height: 8px; border-radius: 50%; background: #1d1c1c;
+    }
+    .option-card__body { flex: 1; }
+    .option-card__title { font-size: 14px; font-weight: 700; color: #1d1c1c; line-height: 18px; }
+    .option-card__sub   { font-size: 12px; color: #716f6d; margin-top: 4px; line-height: 16px; }
+
+    /* Availability modal — loading */
+    .avail-loading {
+      display: flex; flex-direction: column; align-items: center;
+      gap: 14px; padding: 32px 0; text-align: center;
+    }
+    .avail-spinner {
+      width: 36px; height: 36px; border: 3px solid #dddad4;
+      border-top-color: #1d1c1c; border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .avail-loading-text { font-size: 14px; color: #716f6d; }
+
+    /* Availability modal — slots */
+    .avail-slots { display: flex; flex-direction: column; gap: 10px; }
+    .avail-slot {
+      border: 1px solid #dddad4; border-radius: 8px; padding: 14px 16px;
+      display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    }
+    .avail-slot__info { flex: 1; }
+    .avail-slot__vendor { font-size: 13px; font-weight: 700; color: #1d1c1c; }
+    .avail-slot__date   { font-size: 13px; color: #1d1c1c; margin-top: 3px; }
+    .avail-slot__time   { font-size: 12px; color: #716f6d; margin-top: 2px; }
+
+    /* ============================================================
+       DATE PICKER
+    ============================================================ */
+    .dp-modal-card { max-width: 820px !important; }
+    .dp-modal-card .modal-body { overflow: hidden; }
+    .dp-layout { display: flex; gap: 32px; align-items: flex-start; }
+    .dp-cal-panel { flex-shrink: 0; width: 360px; background: #fff; border: 1px solid #dddad4; border-radius: 12px; padding: 20px 16px; }
+    .dp-time-panel { flex: 1; min-width: 0; overflow-y: auto; max-height: 520px; padding-right: 4px; }
+
+    .dp-nav { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+    .dp-nav-btn { width: 32px; height: 32px; border: none; background: none; cursor: pointer; font-size: 20px; color: #1a1a1a; display: flex; align-items: center; justify-content: center; font-family: inherit; border-radius: 4px; }
+    .dp-nav-btn:hover { background: #f8f7f5; }
+    .dp-month-label { font-weight: 700; font-size: 20px; letter-spacing: -0.3px; }
+
+    .dp-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 0; text-align: center; }
+    .dp-dow { font-size: 13px; font-weight: 700; color: #1a1a1a; padding: 6px 0 10px; }
+    .dp-day {
+      height: 40px; width: 40px; border: none; background: none; border-radius: 8px;
+      font-size: 15px; cursor: pointer; font-family: inherit;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 2px; transition: background 0.1s; position: relative; color: #1a1a1a;
+      margin: 3px auto;
+    }
+    .dp-day:hover:not([disabled]):not(.dp-empty) { background: #f0efec; }
+    .dp-day.dp-selected { background: #b01c1c; color: #fff !important; border-radius: 8px; }
+    .dp-day.dp-selected .dp-dot { background: #fff !important; }
+    .dp-day.dp-today:not(.dp-selected) { color: #b01c1c; font-weight: 700; }
+    .dp-day[disabled] { color: #c8c6c4; cursor: default; }
+    .dp-day[disabled] .dp-dot { opacity: 0.3; }
+    .dp-day.dp-empty { pointer-events: none; }
+    .dp-dot { width: 5px; height: 5px; border-radius: 50%; background: #1a1a1a; flex-shrink: 0; }
+
+    .dp-time-header { font-size: 14px; margin-bottom: 4px; }
+    .dp-duration { font-size: 13px; font-weight: 700; margin-bottom: 14px; }
+    .dp-mileage-banner {
+      display: flex; align-items: center; gap: 8px;
+      background: #f8f7f5; border-radius: 6px; padding: 10px 12px;
+      font-size: 13px; margin-bottom: 16px; color: #3d3c3a;
+    }
+    .dp-mileage-banner a { color: #0076ce; text-decoration: none; }
+    .dp-mileage-banner a:hover { text-decoration: underline; }
+
+    .time-slots { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    .time-slot {
+      display: flex; align-items: center; gap: 10px;
+      padding: 12px 14px; border: 1px solid #dddad4; border-radius: 8px;
+      background: #fff; font-size: 13px; cursor: pointer; font-family: inherit;
+      text-align: left; transition: border-color 0.15s, box-shadow 0.15s; color: #1a1a1a;
+    }
+    .time-slot:hover { border-color: #999; }
+    .time-slot.selected { border-color: #1a1a1a; box-shadow: 0 0 0 1px #1a1a1a; }
+    .ts-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+    .ts-dot--green { background: #3a7a3a; }
+    .ts-dot--red { background: #c0392b; }
+    .ts-dot--yellow { background: #c8960c; }
+
+    .dp-vendor-group { margin-bottom: 20px; }
+    .dp-vendor-group:last-child { margin-bottom: 0; }
+    .dp-vendor-group-label { font-size: 12px; font-weight: 700; color: #716f6d; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+    .dp-vendor-current-badge { background: #1a1a1a; color: #fff; font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 20px; text-transform: uppercase; letter-spacing: .3px; }
+
+    @keyframes loader-spin { to { transform: rotate(360deg); } }
+
+    /* Toast */
+    .toast {
+      position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+      background: #1d1c1c; color: #fff; border-radius: 6px;
+      padding: 10px 20px; font-size: 13px; font-weight: 600;
+      z-index: 3000; opacity: 0; transition: opacity 0.3s; pointer-events: none;
+      white-space: nowrap;
+    }
+    .toast.visible { opacity: 1; }
+
+    .jump-available-btn {
+      display: none;
+      align-self: flex-end;
+      margin: 14px 12px 10px;
+      border-radius: 999px;
+      padding-left: 14px;
+      padding-right: 14px;
+      white-space: nowrap;
+    }
+    .edit-mode-active .jump-available-btn { display: inline-flex; }
+
+    /* ============================================================
+       INFO MODULE CARDS
+    ============================================================ */
+    .info-modules-row {
+      display: grid; grid-template-columns: 1fr 1.2fr 1fr;
+      gap: 16px; margin-bottom: 24px; align-items: start;
+    }
+    .info-module-card {
+      background: #fff; border: 1px solid #dddad4; border-radius: 8px;
+      padding: 16px; min-height: 130px; position: relative; overflow: hidden;
+    }
+    .info-mod-header {
+      display: flex; align-items: flex-start; justify-content: space-between;
+      gap: 8px; margin-bottom: 10px;
+    }
+    .info-mod-title {
+      font-size: 20px; font-weight: 700; color: #1d1c1c;
+      line-height: 24px; display: flex; align-items: center; gap: 6px; letter-spacing: 0.1px;
+    }
+    .info-mod-title .mod-icon { width: 16px; height: 16px; flex-shrink: 0; }
+    .info-mod-title .optional { font-size: 11px; font-weight: 400; color: #716f6d; }
+    .info-mod-body { font-size: 13px; color: #1d1c1c; line-height: 1.5; }
+    .info-mod-body .placeholder { font-size: 12px; color: #aaa8a3; font-style: italic; line-height: 1.45; }
+    .info-mod-btn {
+      font-size: 12px; font-weight: 700; color: #1d1c1c;
+      background: transparent; border: 1px solid #1d1c1c; border-radius: 20px;
+      padding: 3px 12px; min-height: 28px; cursor: pointer;
+      display: inline-flex; align-items: center; flex-shrink: 0;
+      transition: box-shadow 0.15s; white-space: nowrap; font-family: inherit;
+    }
+    .info-mod-btn:hover { box-shadow: 0 0 0 1px #1d1c1c; }
+
+    /* ============================================================
+       SUMMARY SECTION
+    ============================================================ */
+    .summary-section {
+      margin-bottom: 24px; border: none;
+      border-radius: 8px; overflow: hidden;
+    }
+    .summary-sec-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 16px; cursor: pointer; background: var(--color-gray-100); user-select: none;
+      border-radius: 0 0 8px 8px;
+    }
+    .summary-sec-header.is-collapsed { border-radius: 0 0 8px 8px; }
+    .summary-sec-title { font-size: 20px; font-weight: 700; color: #1d1c1c; line-height: 24px; }
+    .summary-chevron {
+      width: 20px; height: 20px; color: #716f6d;
+      transition: transform 0.2s; display: inline-flex;
+      align-items: center; justify-content: center;
+      transform: rotate(180deg);
+    }
+    .summary-chevron img { display: block; width: 16px; height: 16px; }
+    .summary-chevron.collapsed { transform: rotate(0deg); }
+    .summary-sec-body { padding: 16px; background: #fff; border-top: none; }
+    .summary-sec-body.hidden { display: none; }
+    .summary-view-wrap { margin-bottom: 16px; position: relative; display: flex; align-items: center; gap: 12px; width: 100%; }
+    .summary-view-select {
+      width: 320px; max-width: 100%; height: 36px; border: 1px solid #dddad4; border-radius: 4px;
+      padding: 0 32px 0 10px; font-size: var(--font-size-body-medium); font-family: var(--font-family-etext); cursor: pointer;
+      -webkit-appearance: none; appearance: none;
+      background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath fill='%23716f6d' d='M4 6l4 4 4-4'/%3E%3C/svg%3E") no-repeat right 8px center;
+    }
+    .summary-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+    .summary-table th {
+      text-align: left; padding: 10px 12px; border-bottom: 2px solid #dddad4;
+      font-weight: 700; color: #1d1c1c; white-space: nowrap; background: #f8f7f5;
+    }
+    .summary-table td { padding: 10px 12px; border-bottom: 1px solid #dddad4; color: #1d1c1c; }
+    .summary-table tr:last-child td { border-bottom: none; }
+    .summary-table td:first-child { font-weight: 600; }
+    .summary-bundle-sub { font-size: 11px; color: #716f6d; font-weight: 400; }
+
+    .vendor-info-section {
+      border: none;
+      border-radius: 0;
+      overflow: visible;
+      margin-top: 8px;
+      background: #fff;
+    }
+    .vendor-info-header {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      padding: 18px 20px;
+      border-bottom: 1px solid #dddad4;
+    }
+    .vendor-info-left { min-width: 200px; }
+    .vendor-info-name { font-size: 15px; font-weight: 700; }
+    .vendor-info-divider { width: 1px; background: #dddad4; align-self: stretch; }
+    .vendor-info-po { min-width: 160px; }
+    .vendor-info-po-label { font-size: 12px; font-weight: 700; letter-spacing: .3px; margin-bottom: 4px; }
+    .vendor-info-po-number { font-size: 13px; color: #0076ce; font-weight: 600; }
+
+    .vendor-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .vendor-table th {
+      text-align: left;
+      padding: 12px 16px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .3px;
+      background: #f8f7f5;
+      border-bottom: 2px solid #dddad4;
+      color: #1d1c1c;
+    }
+    .vendor-table td { padding: 12px 16px; border-bottom: 1px solid #f0efec; color: #1d1c1c; vertical-align: top; }
+    .vendor-table tr:last-child td { border-bottom: none; }
+    .vendor-table-id { font-size: 11px; color: #716f6d; margin-top: 2px; }
+
+    .fee-modal-footer { justify-content: flex-end; }
+    .fee-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 14px 0;
+      border-bottom: 1px solid #f0efec;
+    }
+    .fee-row__body {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .fee-row__meta { display: flex; flex-direction: column; gap: 2px; }
+    .fee-row__name { font-size: 13px; font-weight: 600; color: #1d1c1c; }
+    .fee-row__code { font-size: 11px; color: #716f6d; }
+    .fee-row__input-wrap { display: flex; flex-direction: column; gap: 4px; align-items: flex-end; }
+    .fee-row__input-label { font-size: 11px; color: #716f6d; font-weight: 600; }
+    .fee-row__input { width: 120px; text-align: right; }
+    .btn-delete-fee {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px 8px;
+      color: #716f6d;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: color .15s, background .15s;
+    }
+    .btn-delete-fee:hover { background: #fff0f2; }
+    .btn-delete-fee:hover img { opacity: 0.6; }
+  </style>
+</head>
+<body>
+
+<!-- ============================================================
+     SALESFORCE SHELL
+============================================================ -->
+<div class="sf-topbar">
+  <span class="sf-topbar__logo">Verizon</span>
+  <div class="sf-topbar__right">
+    <label style="display:flex;align-items:center;gap:8px;cursor:pointer;opacity:0.55;" title="Prototype: simulate late cancellation">
+      <span style="font-size:11px;color:#fff;letter-spacing:.3px;">sim &lt;24h</span>
+      <input class="toggle__input" type="checkbox" id="toggle-late-cancel" onchange="cancelToggleLate()" style="position:absolute;opacity:0;width:0;height:0;">
+      <div class="toggle__track" style="background:rgba(255,255,255,0.25);"><div class="toggle__knob"></div></div>
+    </label>
+    <div class="sf-sim-wrap">
+      <label for="simulations-select">Simulations</label>
+      <select id="simulations-select" class="sf-sim-select" aria-label="Simulations">
+        <option value="standard" selected>Standard</option>
+        <option value="partial">Partial</option>
+      </select>
+    </div>
+    <div class="sf-topbar__avatar">JD</div>
+  </div>
+</div>
+<div class="sf-secbar">
+  <span class="sf-secbar__pill"></span>
+  <span class="sf-secbar__pill"></span>
+  <span class="sf-secbar__pill"></span>
+  <span class="sf-secbar__pill"></span>
+  <span class="sf-secbar__pill"></span>
+</div>
+
+<!-- ============================================================
+     PAGE
+============================================================ -->
+<div class="page-body">
+<div class="content-card">
+
+  <!-- Breadcrumb -->
+  <nav class="breadcrumb" aria-label="Breadcrumb">
+    <span>Orders</span>
+    <span class="breadcrumb__sep">›</span>
+    <span>Order ORD-2026-04821</span>
+    <span class="breadcrumb__sep">›</span>
+    <span class="breadcrumb__current">Job S000267425</span>
+  </nav>
+
+  <!-- Job Header -->
+  <div class="job-header" id="job-header-block">
+    <div class="job-header__left">
+      <button class="job-back-btn" title="Back" aria-label="Back">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M4 12H20" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+          <path d="M11 5L4 12L11 19" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+      <img class="job-wrench" src="./assets/ds/icons/tools.svg" alt="">
+      <div class="job-title-col">
+        <div class="job-title-row">
+          <span class="job-title">Job S000267425</span>
+          <span class="badge badge--green" id="job-badge">Scheduled</span>
+        </div>
+        <!-- Meta row — updated live by JS -->
+        <div class="job-meta-row" id="job-meta-row">
+          <span>Install Level:</span>
+          <span class="job-meta-value" id="meta-level">1</span>
+          <span class="job-meta-sep">&middot;</span>
+          <span>Installation type: <span class="job-meta-value">Standard</span></span>
+          <span class="job-meta-sep">&middot;</span>
+          <span>Vehicle/Assets: <span class="job-meta-value" id="meta-count">5</span></span>
+        </div>
+      </div>
+    </div>
+    <div class="job-header__right">
+      <button class="btn btn--secondary btn--small btn-cancel-job" id="btn-cancel-job">Cancel Job</button>
+    </div>
+  </div>
+
+  <!-- Info Module Cards -->
+  <div class="info-modules-row">
+
+    <!-- Installation Date -->
+    <div class="info-module-card" id="module-date">
+      <div class="info-mod-header">
+        <div class="info-mod-title">
+          <img class="mod-icon" src="./assets/ds/icons/calendar.svg" alt="">
+          Installation Date
+        </div>
+        <button class="info-mod-btn" id="btn-change-date">Reschedule</button>
+      </div>
+      <div class="info-mod-body" id="module-date-body">
+        <div><strong>Jun 20, 2026</strong></div>
+        <div>9:00 AM – 11:30 AM</div>
+        <div style="color:#716f6d;font-size:12px;">(2 hr 30 min)</div>
+      </div>
+    </div>
+
+    <!-- Installation Information -->
+    <div class="info-module-card" id="module-address-contact">
+      <div class="info-mod-header">
+        <div class="info-mod-title">
+          <img class="mod-icon" src="./assets/ds/icons/location.svg" alt="">
+          Installation Information
+        </div>
+        <button class="info-mod-btn" id="btn-edit-address">Edit</button>
+      </div>
+      <div class="info-mod-body" style="display:flex;gap:16px;">
+        <div id="module-address-body" style="flex:1;">
+          742 Evergreen Terrace,<br>Springfield, IL 62704, USA
+        </div>
+        <div style="width:1px;background:#dddad4;flex-shrink:0;"></div>
+        <div id="module-contact-body" style="flex:1;">
+          <div><strong>Sabrina Swift</strong></div>
+          <div>(301) 555-0192</div>
+          <div>sabrina.swift@gmail.com</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Site Notes -->
+    <div class="info-module-card" id="module-notes">
+      <div class="info-mod-header">
+        <div class="info-mod-title">
+          <img class="mod-icon" src="./assets/ds/icons/school-notebook.svg" alt="">
+          Site Notes <span class="optional">(optional)</span>
+        </div>
+        <button class="info-mod-btn" id="btn-edit-notes">Add</button>
+      </div>
+      <div class="info-mod-body" id="module-notes-body">
+        <span class="placeholder">Provide specific details about door codes, parking, or site-specific navigation to help the installer.</span>
+      </div>
+    </div>
+
+  </div><!-- /info-modules-row -->
+
+  <!-- Summary Section -->
+  <div class="summary-section" id="summary-section">
+    <div class="summary-sec-header" id="summary-toggle">
+      <span class="summary-sec-title">Summary</span>
+      <span class="summary-chevron" id="summary-chevron" aria-hidden="true"><img src="./assets/ds/icons/down-caret.svg" alt="" width="16" height="16"></span>
+    </div>
+    <div class="summary-sec-body" id="summary-body">
+      <div class="summary-view-wrap">
+        <select class="summary-view-select" id="summary-view-select">
+          <option value="job" selected>Job</option>
+          <option value="vendor">PO and Additional Charges</option>
+          <option value="customer" id="summary-view-customer-option" style="display:none;">Customer</option>
+        </select>
+        <button class="btn btn--secondary btn--small" id="btn-vendor-add" style="display:none;margin-left:auto;">Add Fees</button>
+      </div>
+      <table class="summary-table">
+        <thead>
+          <tr>
+            <th>Bundle</th>
+            <th>Scheduled</th>
+            <th>Needs Action</th>
+            <th>Installed</th>
+            <th>Not Installed</th>
+            <th>Customer No Show Billed</th>
+            <th>Vendor No Show Billed</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>VTS<br><span class="summary-bundle-sub">(QL-21326432)</span></td>
+            <td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td>
+          </tr>
+          <tr>
+            <td>VTS<br><span class="summary-bundle-sub">(QL-21326433)</span></td>
+            <td>5</td><td>0</td><td>0</td><td>5</td><td>5</td><td>5</td>
+          </tr>
+          <tr>
+            <td>Asset Powered<br><span class="summary-bundle-sub">(QL-21326434)</span></td>
+            <td>1</td><td>0</td><td>0</td><td>1</td><td>1</td><td>1</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="vendor-info-section" id="vendor-info-section" style="display:none;">
+        <div class="vendor-info-header">
+          <div class="vendor-info-left">
+            <div class="vendor-info-name">DRIG LLC</div>
+            <div style="display:flex;align-items:center;gap:24px;flex-wrap:wrap;margin-top:6px;">
+              <div>
+                <div style="font-size:11px;font-weight:700;color:#716f6d;margin-bottom:2px;">Phone</div>
+                <div style="font-size:13px;">(555) 876-5432</div>
+              </div>
+              <div style="width:1px;height:32px;background:#dddad4;flex-shrink:0;"></div>
+              <div>
+                <div style="font-size:11px;font-weight:700;color:#716f6d;margin-bottom:2px;">Email</div>
+                <div style="font-size:13px;">drig@example.com</div>
+              </div>
+            </div>
+          </div>
+          <div class="vendor-info-divider"></div>
+          <div class="vendor-info-po">
+            <div class="vendor-info-po-label" style="margin-bottom:8px;">Purchase order</div>
+            <div style="display:flex;align-items:center;gap:24px;flex-wrap:wrap;">
+              <div>
+                <div style="font-size:11px;font-weight:700;color:#716f6d;margin-bottom:2px;">PO Number</div>
+                <div class="vendor-info-po-number">PO-2026-00123</div>
+              </div>
+              <div style="width:1px;height:32px;background:#dddad4;flex-shrink:0;"></div>
+              <div>
+                <div style="font-size:11px;font-weight:700;color:#716f6d;margin-bottom:4px;">PO Status</div>
+                <span class="badge badge--green" style="font-size:11px;padding:2px 8px;">Open</span>
+              </div>
+              <div style="width:1px;height:32px;background:#dddad4;flex-shrink:0;"></div>
+              <div>
+                <div style="font-size:11px;font-weight:700;color:#716f6d;margin-bottom:2px;">Created Date</div>
+                <div style="font-size:13px;">06/15/2026</div>
+              </div>
+              <div style="width:1px;height:32px;background:#dddad4;flex-shrink:0;"></div>
+              <div>
+                <div style="font-size:11px;font-weight:700;color:#716f6d;margin-bottom:2px;">Last Updated</div>
+                <div style="font-size:13px;">06/17/2026</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <table class="vendor-table">
+          <thead>
+            <tr>
+              <th>Service</th>
+              <th>Status</th>
+              <th>QTY</th>
+              <th>U/M</th>
+              <th>Billable Distance</th>
+              <th>Installed QTY</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><div>Multi Vehicle</div><div class="vendor-table-id">1300000125</div></td>
+              <td><span class="badge badge--yellow" style="font-size:11px;">Pending</span></td>
+              <td>2</td>
+              <td>EA</td>
+              <td>N/A</td>
+              <td>0</td>
+            </tr>
+            <tr>
+              <td><div>Single asset</div><div class="vendor-table-id">1300000024</div></td>
+              <td><span class="badge badge--yellow" style="font-size:11px;">Pending</span></td>
+              <td>1</td>
+              <td>EA</td>
+              <td>N/A</td>
+              <td>0</td>
+            </tr>
+            <tr>
+              <td><div>Single asset</div><div class="vendor-table-id">1300000024</div></td>
+              <td><span class="badge badge--yellow" style="font-size:11px;">Pending</span></td>
+              <td>100</td>
+              <td>Miles</td>
+              <td>25</td>
+              <td>N/A</td>
+            </tr>
+          </tbody>
+        </table>
+        <div id="vendor-noshow-section" style="display:none; border-top:2px solid #dddad4;">
+          <div style="padding:14px 16px 6px;font-size:18px;font-weight:700;color:#1d1c1c;">No Show summary</div>
+          <table class="vendor-table" id="vendor-noshow-table">
+            <thead>
+              <tr>
+                <th>Process Code</th>
+                <th>Service</th>
+                <th>QTY</th>
+                <th>Fee</th>
+                <th>Reason</th>
+              </tr>
+            </thead>
+            <tbody id="vendor-noshow-tbody"></tbody>
+          </table>
+        </div>
+        <div id="vendor-fees-section" style="display:none; border-top:2px solid #dddad4;">
+          <div style="padding:14px 16px 6px;font-size:18px;font-weight:700;color:#1d1c1c;">Vendor Fees</div>
+          <table class="vendor-table" id="vendor-fees-table">
+            <thead>
+              <tr>
+                <th>Type</th>
+                <th>Value</th>
+                <th>Creation Date</th>
+                <th style="width:48px;"></th>
+              </tr>
+            </thead>
+            <tbody id="vendor-fees-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="vendor-info-section" id="customer-info-section" style="display:none;">
+        <div class="vendor-info-header" style="padding:14px 20px;">
+          <div class="vendor-info-left">
+            <div class="vendor-info-name">Customer Summary</div>
+            <div style="font-size:12px;color:#716f6d;margin-top:4px;">No Show details billed to customer.</div>
+          </div>
+        </div>
+        <table class="vendor-table" id="customer-summary-table">
+          <thead>
+            <tr>
+              <th>Code</th>
+              <th>Service</th>
+              <th>QTY</th>
+              <th>Fee</th>
+              <th>Reason</th>
+            </tr>
+          </thead>
+          <tbody id="customer-summary-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div><!-- /summary-section -->
+
+  <!-- Section Header -->
+  <div class="section-header">
+    <div style="display:flex;align-items:baseline;gap:8px;">
+      <span class="section-title">Vehicles / Assets</span>
+      <span style="font-size:13px;color:#716f6d;" id="section-count-label">5 vehicles</span>
+    </div>
+    <div class="section-actions" id="section-actions">
+      <button class="btn btn--secondary btn--small" id="btn-cancel" style="display:none;">Cancel</button>
+      <button class="btn btn--primary btn--small" id="btn-save">Save changes</button>
+      <button class="btn btn--secondary btn--small" id="btn-edit">Edit scope</button>
+    </div>
+  </div>
+
+  <!-- Edit Summary Bar -->
+  <div class="edit-summary-bar" id="edit-summary-bar">
+    <div class="edit-summary-panel">
+      <span class="edit-summary-label">Current appointment</span>
+      <div class="edit-summary-duration-row">
+        <span class="edit-summary-value" id="summary-current-duration">1 hr 30 min</span>
+        <span class="edit-summary-sub" id="summary-current-meta">20 vehicles · Level 1</span>
+      </div>
+    </div>
+    <div class="edit-summary-panel">
+      <span class="edit-summary-label">Total with edits</span>
+      <div class="edit-summary-duration-row">
+        <span class="edit-summary-value val-added" id="summary-after-duration">1 hr 30 min</span>
+        <span class="edit-summary-duration-note" id="summary-after-duration-note">Needs rescheduling</span>
+        <span class="edit-summary-sub" id="summary-after-meta">20 vehicles · Level 1</span>
+      </div>
+      <span class="edit-summary-note" id="summary-reschedule-note">
+        <img src="./assets/ds/icons/warning-bold.svg" alt="Alert" width="14" height="14" style="display:block;flex-shrink:0;">
+        <span>Needs reschedule</span>
+      </span>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       SPLIT TABLE
+  ============================================================ -->
+  <div class="split-table-wrapper" id="split-table-wrapper">
+    <div class="vehicles-container" id="split-container">
+
+      <!-- ── SCHEDULED BLOCK ───────────────────────────────── -->
+      <div class="split-scheduled-wrapper">
+        <button class="btn btn--secondary btn--small jump-available-btn" id="btn-jump-available" aria-label="Add vehicles">
+          Add Vehicles
+        </button>
+        <div class="split-block-header split-block-header--scheduled">
+          <span class="split-block-header__label">In this Appointment</span>
+          <span class="split-block-header__count" id="scheduled-count-badge">5</span>
+        </div>
+
+        <!-- Scheduled vehicles injected by JS -->
+
+        <!-- Empty state (shown when all scheduled vehicles removed) -->
+        <div class="split-empty-row" id="empty-scheduled" style="display:none;">
+          No vehicles in this appointment. Add vehicles from the list below.
+        </div>
+      </div>
+
+      <!-- ── AVAILABLE BLOCK ───────────────────────────────── -->
+      <div class="split-available-wrapper" id="split-available-wrapper">
+        <div class="split-block-header split-block-header--available" id="split-divider">
+          <span class="split-block-header__label">Available in this Order</span>
+          <span class="split-block-header__count" id="available-count-badge">6</span>
+        </div>
+
+        <!-- Addr groups + available vehicles injected by JS -->
+
+        <!-- Empty state -->
+        <div class="split-empty-row" id="empty-available" style="display:none;">
+          All vehicles in this order are already in the appointment.
+        </div>
+      </div>
+
+    </div><!-- /split-container -->
+  </div><!-- /split-table-wrapper -->
+
+</div><!-- /content-card -->
+</div><!-- /page-body -->
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<!-- LOADER OVERLAY: Fetching vendor availability -->
+<div id="schedule-loader-overlay" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(255,255,255,0.82);backdrop-filter:blur(2px);align-items:center;justify-content:center;flex-direction:column;">
+  <div style="position:relative;width:128px;height:128px;display:flex;align-items:center;justify-content:center;">
+    <svg width="128" height="128" viewBox="0 0 128 128" aria-hidden="true" style="transform:rotate(-90deg);">
+      <circle cx="60" cy="60" r="52" stroke="#e6e6e6" stroke-width="8" fill="none"></circle>
+      <circle id="schedule-loader-arc" cx="60" cy="60" r="52" stroke="#3a7a3a" stroke-width="8" stroke-linecap="round"
+              fill="none" stroke-dasharray="326.7" stroke-dashoffset="326.7"></circle>
+    </svg>
+    <span id="schedule-loader-pct" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;color:#1a1a1a;font-family:inherit;">0%</span>
+  </div>
+  <div style="margin-top:16px;font-size:16px;font-weight:600;color:#1a1a1a;">Checking availability...</div>
+</div>
+
+<!-- ============================================================
+     MODAL 1: APPOINTMENT CHANGES DETECTED
+============================================================ -->
+<div class="modal-overlay" id="modal-changes" role="dialog" aria-modal="true" aria-labelledby="changes-title">
+  <div class="modal-card" style="max-width:500px;">
+    <div class="modal-header">
+      <span class="modal-header__title" id="changes-title">Appointment time updated</span>
+    </div>
+    <div class="modal-body" style="display:flex;flex-direction:column;gap:16px;">
+      <p style="font-size:14px;color:#3a3631;line-height:1.6;margin:0;">Based on your changes, the estimated appointment duration has increased. Please review the new appointment time below.</p>
+      <div style="background:#f0f7ff;border:1px solid #b8d9f5;border-radius:8px;padding:14px 16px;display:flex;flex-direction:column;gap:4px;">
+        <div style="font-size:12px;font-weight:700;color:#716f6d;text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px;">New appointment</div>
+        <div style="font-size:15px;font-weight:700;color:#1a1a1a;" id="tc-new-time">Jun 08, 2026 &middot; 1:00 PM &ndash; 3:00 PM</div>
+        <div style="font-size:13px;color:#716f6d;" id="tc-duration">2 hr total</div>
+      </div>
+      <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;font-size:14px;color:#1a1a1a;line-height:1.5;">
+        <input type="checkbox" id="chk-time-change-ack" style="margin-top:2px;flex-shrink:0;width:16px;height:16px;accent-color:#1d1c1c;cursor:pointer;">
+        <span>I have coordinated this change with the vendor and the new appointment time has been agreed upon.</span>
+      </label>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn--secondary btn--medium" id="btn-tc-explore">Explore other availabilities</button>
+      <button class="btn btn--primary btn--medium" id="btn-tc-accept" disabled>Accept</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     MODAL: EDIT INSTALLATION DATE (date picker)
+============================================================ -->
+<div class="modal-overlay" id="modal-edit-date" role="dialog" aria-modal="true" aria-labelledby="edit-date-title">
+  <div class="modal-card dp-modal-card">
+    <div class="modal-header">
+      <span class="modal-header__title" id="edit-date-title">Schedule Installation</span>
+      <button class="modal-close" data-close="modal-edit-date" aria-label="Close">&times;</button>
+    </div>
+    <div class="modal-body dp-layout">
+      <div class="dp-cal-panel">
+        <div class="dp-nav">
+          <button class="dp-nav-btn" id="dp-prev-btn">&#8249;</button>
+          <span class="dp-month-label" id="dp-month-label">June 2026</span>
+          <button class="dp-nav-btn" id="dp-next-btn">&#8250;</button>
+        </div>
+        <div class="dp-grid" id="dp-grid"></div>
+      </div>
+
+      <div class="dp-time-panel">
+        <div class="dp-time-header" style="margin-bottom:2px;">Vendor: <strong>Acme Tech Services</strong></div>
+        <div class="dp-time-header">Select an available time for <strong id="dp-selected-date-label">Jun 8, 2026</strong></div>
+        <div class="dp-duration"><strong>Duration:</strong> 1 hr 30 min</div>
+        <div class="dp-mileage-banner">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="7" stroke="#3d3c3a" stroke-width="1.5"/><path d="M8 7v5" stroke="#3d3c3a" stroke-width="1.5" stroke-linecap="round"/><circle cx="8" cy="5" r="0.75" fill="#3d3c3a"/></svg>
+          Learn more about mileage indicators <a href="#">here</a>
+        </div>
+
+        <div id="dp-slots-current-vendor">
+          <div class="time-slots" id="time-slots">
+            <button class="time-slot" data-time="8:00 AM – 9:30 AM"><span class="ts-dot ts-dot--green"></span>8:00 AM – 9:30 AM</button>
+            <button class="time-slot" data-time="9:00 AM – 10:30 AM"><span class="ts-dot ts-dot--green"></span>9:00 AM – 10:30 AM</button>
+            <button class="time-slot" data-time="10:00 AM – 11:30 AM"><span class="ts-dot ts-dot--red"></span>10:00 AM – 11:30 AM</button>
+            <button class="time-slot" data-time="11:00 AM – 12:30 PM"><span class="ts-dot ts-dot--yellow"></span>11:00 AM – 12:30 PM</button>
+            <button class="time-slot" data-time="12:00 PM – 1:30 PM"><span class="ts-dot ts-dot--yellow"></span>12:00 PM – 1:30 PM</button>
+            <button class="time-slot selected" data-time="1:00 PM – 2:30 PM"><span class="ts-dot ts-dot--green"></span>1:00 PM – 2:30 PM</button>
+          </div>
+        </div>
+
+        <button class="btn btn--secondary btn--small" id="btn-expand-vendor-search" style="margin-top:16px;width:100%;display:flex;align-items:center;justify-content:center;gap:8px;">
+          Check all vendors
+        </button>
+
+        <div id="dp-slots-all-vendors" style="display:none;">
+          <div class="dp-vendor-group">
+            <div class="dp-vendor-group-label">Acme Tech Services <span class="dp-vendor-current-badge">Current</span></div>
+            <div class="time-slots">
+              <button class="time-slot" data-time="8:00 AM – 9:30 AM"><span class="ts-dot ts-dot--green"></span>8:00 AM – 9:30 AM</button>
+              <button class="time-slot" data-time="9:00 AM – 10:30 AM"><span class="ts-dot ts-dot--green"></span>9:00 AM – 10:30 AM</button>
+              <button class="time-slot" data-time="10:00 AM – 11:30 AM"><span class="ts-dot ts-dot--red"></span>10:00 AM – 11:30 AM</button>
+              <button class="time-slot" data-time="11:00 AM – 12:30 PM"><span class="ts-dot ts-dot--yellow"></span>11:00 AM – 12:30 PM</button>
+              <button class="time-slot" data-time="12:00 PM – 1:30 PM"><span class="ts-dot ts-dot--yellow"></span>12:00 PM – 1:30 PM</button>
+              <button class="time-slot selected" data-time="1:00 PM – 2:30 PM"><span class="ts-dot ts-dot--green"></span>1:00 PM – 2:30 PM</button>
+            </div>
+          </div>
+          <div class="dp-vendor-group">
+            <div class="dp-vendor-group-label">Other vendors</div>
+            <div class="time-slots">
+              <button class="time-slot" data-time="7:00 AM – 8:30 AM"><span class="ts-dot ts-dot--green"></span>7:00 AM – 8:30 AM</button>
+              <button class="time-slot" data-time="7:30 AM – 9:00 AM"><span class="ts-dot ts-dot--yellow"></span>7:30 AM – 9:00 AM</button>
+              <button class="time-slot" data-time="8:00 AM – 9:30 AM"><span class="ts-dot ts-dot--yellow"></span>8:00 AM – 9:30 AM</button>
+              <button class="time-slot" data-time="8:30 AM – 10:00 AM"><span class="ts-dot ts-dot--green"></span>8:30 AM – 10:00 AM</button>
+              <button class="time-slot" data-time="9:00 AM – 10:30 AM"><span class="ts-dot ts-dot--green"></span>9:00 AM – 10:30 AM</button>
+              <button class="time-slot" data-time="9:30 AM – 11:00 AM"><span class="ts-dot ts-dot--green"></span>9:30 AM – 11:00 AM</button>
+              <button class="time-slot" data-time="10:00 AM – 11:30 AM"><span class="ts-dot ts-dot--red"></span>10:00 AM – 11:30 AM</button>
+              <button class="time-slot" data-time="10:30 AM – 12:00 PM"><span class="ts-dot ts-dot--green"></span>10:30 AM – 12:00 PM</button>
+              <button class="time-slot" data-time="11:00 AM – 12:30 PM"><span class="ts-dot ts-dot--green"></span>11:00 AM – 12:30 PM</button>
+              <button class="time-slot" data-time="11:30 AM – 1:00 PM"><span class="ts-dot ts-dot--yellow"></span>11:30 AM – 1:00 PM</button>
+              <button class="time-slot" data-time="12:00 PM – 1:30 PM"><span class="ts-dot ts-dot--green"></span>12:00 PM – 1:30 PM</button>
+              <button class="time-slot" data-time="12:30 PM – 2:00 PM"><span class="ts-dot ts-dot--green"></span>12:30 PM – 2:00 PM</button>
+              <button class="time-slot" data-time="1:00 PM – 2:30 PM"><span class="ts-dot ts-dot--green"></span>1:00 PM – 2:30 PM</button>
+              <button class="time-slot" data-time="1:30 PM – 3:00 PM"><span class="ts-dot ts-dot--red"></span>1:30 PM – 3:00 PM</button>
+              <button class="time-slot" data-time="2:00 PM – 3:30 PM"><span class="ts-dot ts-dot--yellow"></span>2:00 PM – 3:30 PM</button>
+              <button class="time-slot" data-time="2:30 PM – 4:00 PM"><span class="ts-dot ts-dot--green"></span>2:30 PM – 4:00 PM</button>
+              <button class="time-slot" data-time="3:00 PM – 4:30 PM"><span class="ts-dot ts-dot--green"></span>3:00 PM – 4:30 PM</button>
+              <button class="time-slot" data-time="3:30 PM – 5:00 PM"><span class="ts-dot ts-dot--yellow"></span>3:30 PM – 5:00 PM</button>
+              <button class="time-slot" data-time="4:00 PM – 5:30 PM"><span class="ts-dot ts-dot--green"></span>4:00 PM – 5:30 PM</button>
+              <button class="time-slot" data-time="4:30 PM – 6:00 PM"><span class="ts-dot ts-dot--green"></span>4:30 PM – 6:00 PM</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn--secondary btn--medium" data-close="modal-edit-date">Cancel</button>
+      <button class="btn btn--primary btn--medium" id="btn-confirm-date">Confirm date &amp; time</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     MODAL: CONFIGURE FEES
+============================================================ -->
+<div class="modal-overlay" id="modal-configure-fees" role="dialog" aria-modal="true" aria-labelledby="configure-fees-title">
+  <div class="modal-card" style="max-width:560px;">
+    <div class="modal-header">
+      <span class="modal-header__title" id="configure-fees-title">Add Fees</span>
+      <button class="modal-close" data-close="modal-configure-fees" aria-label="Close">&times;</button>
+    </div>
+    <div class="modal-body" style="padding-bottom:8px;">
+      <div class="fee-row" id="fee-row-mileage">
+        <div class="fee-row__body">
+          <div class="fee-row__meta">
+            <span class="fee-row__name">Mileage fee</span>
+            <span class="fee-row__code">1300000047 · Roundtrip</span>
+          </div>
+          <div class="fee-row__input-wrap">
+            <label class="fee-row__input-label" for="fee-distance">Distance (mi)</label>
+            <input class="input fee-row__input" id="fee-distance" type="number" min="0" placeholder="0">
+          </div>
+        </div>
+      </div>
+      <div class="fee-row" id="fee-row-hotel">
+        <div class="fee-row__body">
+          <div class="fee-row__meta">
+            <span class="fee-row__name">Hotel fee</span>
+            <span class="fee-row__code">1300000005 · Flat Rate</span>
+          </div>
+          <div class="fee-row__input-wrap">
+            <label class="fee-row__input-label" for="fee-nights">Number of nights</label>
+            <input class="input fee-row__input" id="fee-nights" type="number" min="0" placeholder="0">
+          </div>
+        </div>
+      </div>
+      <div class="fee-row" id="fee-row-amount" style="border-bottom:none;">
+        <div class="fee-row__body">
+          <div class="fee-row__meta">
+            <span class="fee-row__name">Amount fee</span>
+            <span class="fee-row__code">1300000018 · Flat Rate</span>
+          </div>
+          <div class="fee-row__input-wrap">
+            <label class="fee-row__input-label" for="fee-amount">Amount ($)</label>
+            <input class="input fee-row__input" id="fee-amount" type="number" min="0" placeholder="0.00">
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer fee-modal-footer">
+      <button class="btn btn--primary btn--medium" id="btn-save-fees">Add Fees</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     MODAL: CANCEL APPOINTMENT
+============================================================ -->
+<div class="modal-overlay" id="modal-cancel" role="dialog" aria-modal="true" aria-labelledby="cancel-title">
+  <div class="modal-card" style="max-width:600px;">
+    <div class="modal-header">
+      <span class="modal-header__title" id="cancel-title">Cancel Appointment</span>
+      <button class="modal-close" data-close="modal-cancel" aria-label="Close">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-field">
+        <label class="label text-body-small" for="cancel-reason-select" style="display:block;margin-bottom:4px;">Reason for cancellation <span style="color:#e10014;">*</span></label>
+        <select class="select" id="cancel-reason-select" onchange="cancelValidate()" style="width:100%;">
+          <option value="" disabled selected>Select a reason&hellip;</option>
+          <option value="no-show-customer">Customer No-Show / Unavailable</option>
+          <option value="no-show-vendor">Vendor No-Show</option>
+          <option value="equipment">Equipment Missing</option>
+          <option value="customer-cancelled">Customer Cancelled Request</option>
+          <option value="weather">Weather / Act of God</option>
+        </select>
+      </div>
+
+      <div id="late-cancel-section" style="display:none;">
+        <div id="late-warn-box" class="late-warn-box" style="display:flex;background:#fff3e0;border-left-color:#f57c00;color:#7c4300;">
+          <img src="./assets/ds/icons/warning-bold.svg" alt="warning" style="width:16px;height:16px;flex-shrink:0;margin-top:1px;">
+          <div><strong>Late Cancellation Detected (&lt; 24 Hours)</strong> — Additional penalties may apply.</div>
+        </div>
+
+        <div style="margin-top:16px;">
+          <label class="checkbox" for="chk-assess-penalty">
+            <input type="checkbox" class="checkbox__input" id="chk-assess-penalty" onchange="cancelTogglePenalty()">
+            <span class="checkbox__label" style="font-weight:600;">Assess Bulk No-Show Penalty</span>
+          </label>
+        </div>
+
+        <div id="penalty-details" style="display:none;margin-top:16px;padding:16px;border:1px solid #dddad4;border-radius:8px;background:#f8f7f5;">
+          <div style="font-size:13px;color:#3d3c3a;margin-bottom:14px;padding:10px 12px;background:#fff8e1;border-radius:6px;border-left:3px solid #f57c00;">
+            This vehicle-level fee will be applied in bulk to all <strong id="cancel-veh-count">3</strong> vehicles currently scheduled on this job.
+          </div>
+
+          <div class="form-field">
+            <label class="label text-body-small" for="fee-type-select" style="display:block;margin-bottom:4px;">Fee type <span style="color:#e10014;">*</span></label>
+            <select class="select" id="fee-type-select" onchange="updateFeeTotal(); cancelValidate();" style="width:100%;">
+              <option value="" disabled>Select fee type&hellip;</option>
+              <option value="150" selected>Installation - No Show (1–2 devices) — $150.00</option>
+              <option value="300">Installation - No Show (3–4 devices) — $300.00</option>
+              <option value="450">Installation - No Show (5 or more devices) — $450.00</option>
+            </select>
+          </div>
+
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:4px;">
+            <div>
+              <label class="checkbox" for="chk-bill-customer">
+                <input type="checkbox" class="checkbox__input" id="chk-bill-customer" checked onchange="updateFeeTotal(); cancelToggleBillCustomer(); cancelValidate();">
+                <span class="checkbox__label">Bill Customer</span>
+              </label>
+              <div id="waive-reason-wrap" class="waive-reason-wrap" style="display:none;">
+                <select class="select" id="waive-reason-select" onchange="cancelValidate()" style="width:100%;">
+                  <option value="" disabled selected>Select waive reason&hellip;</option>
+                  <option value="sufficient-notice">Customer provided sufficient notice</option>
+                  <option value="concession">Sales Concession</option>
+                  <option value="vendor-fault">Vendor Fault</option>
+                </select>
+              </div>
+            </div>
+            <div>
+              <label class="checkbox" for="chk-pay-vendor">
+                <input type="checkbox" class="checkbox__input" id="chk-pay-vendor" checked onchange="updateFeeTotal(); toggleVendorPanel();">
+                <span class="checkbox__label">Pay Vendor</span>
+              </label>
+            </div>
+          </div>
+
+          <div id="vendor-panel" style="margin-top:14px;">
+            <div style="display:flex;align-items:flex-start;gap:24px;padding-bottom:14px;border-bottom:1px solid var(--color-gray-300,#dddad4);">
+              <div style="flex:1;">
+                <div style="font-weight:700;font-size:14px;">DRIG LLC</div>
+                <div style="font-size:13px;margin-top:2px;"><strong>Phone:</strong> (555) 876-5432</div>
+                <div style="font-size:13px;"><strong>Email:</strong> drig@example.com</div>
+              </div>
+              <div style="width:1px;background:var(--color-gray-300,#dddad4);align-self:stretch;"></div>
+              <div style="flex:1;">
+                <div style="font-weight:700;font-size:12px;">Purchase order</div>
+                <div style="color:#0076ce;font-size:13px;margin-top:2px;">PO-2026-00123</div>
+              </div>
+              <button class="btn btn--secondary btn--small" id="btn-add-fee">Configure vendor payment</button>
+            </div>
+            <table style="width:100%;border-collapse:collapse;font-size:12px;margin-top:4px;">
+              <thead>
+                <tr style="border-bottom:2px solid var(--color-gray-300,#dddad4);">
+                  <th style="text-align:left;padding:8px 6px;font-weight:700;font-size:12px;">Service</th>
+                  <th style="text-align:left;padding:8px 6px;font-weight:700;font-size:12px;">QTY</th>
+                  <th style="text-align:left;padding:8px 6px;font-weight:700;font-size:12px;">U/M</th>
+                  <th style="text-align:left;padding:8px 6px;font-weight:700;font-size:12px;">Billable Distance</th>
+                  <th style="text-align:left;padding:8px 6px;font-weight:700;font-size:12px;">Installed QTY</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr style="border-bottom:1px solid var(--color-gray-200,#f0efec);">
+                  <td style="padding:8px 6px;"><div>Multi Vehicle</div><div style="color:#716f6d;">1300000125</div></td>
+                  <td style="padding:8px 6px;">2</td><td style="padding:8px 6px;">EA</td><td style="padding:8px 6px;">N/A</td><td style="padding:8px 6px;">0</td>
+                </tr>
+                <tr style="border-bottom:1px solid var(--color-gray-200,#f0efec);">
+                  <td style="padding:8px 6px;"><div>Single asset</div><div style="color:#716f6d;">1300000024</div></td>
+                  <td style="padding:8px 6px;">1</td><td style="padding:8px 6px;">EA</td><td style="padding:8px 6px;">N/A</td><td style="padding:8px 6px;">0</td>
+                </tr>
+                <tr>
+                  <td style="padding:8px 6px;"><div>Single asset</div><div style="color:#716f6d;">1300000024</div></td>
+                  <td style="padding:8px 6px;">100</td><td style="padding:8px 6px;">Miles</td><td style="padding:8px 6px;">25</td><td style="padding:8px 6px;">N/A</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="fee-total-row" style="margin-top:14px;padding-top:14px;border-top:1px solid #dddad4;">
+            <span id="fee-total-label">3 qty &times; $300.00</span>
+            <span>= <strong id="fee-total-display">$900.00</strong></span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn--secondary btn--medium" data-close="modal-cancel">Cancel</button>
+      <button class="btn btn--brand btn--medium" id="btn-confirm-cancel" disabled>Confirm cancellation</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     JAVASCRIPT
+============================================================ -->
+<script>
+(function() {
+
+  /* ----------------------------------------------------------
+     SVG ICONS
+  ---------------------------------------------------------- */
+  var trashSVG = '<img src="./assets/ds/icons/trash.svg" alt="" width="18" height="18" style="display:block;">';
+  var plusSVG  = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.6"/><path d="M12 7.5V16.5M7.5 12H16.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>';
+
+  /* ----------------------------------------------------------
+     VEHICLE DATA
+  ---------------------------------------------------------- */
+  var scheduledVehicles = [
+    { id:'sv-0', name:'2022 Toyota Camry',     vin:'3N1AB6AP6BL646634', installType:'VMI', body:'Crash truck',   traits:'LW', fleetName:'Fleet Unit A-1',  licensePlate:'ABC 1234', note:'Vehicle requires special handling. Driver reported intermittent GPS signal loss.', hwBadge:'badge--green', hwStatus:'Ready',     priority:'Priority 1', shipBadge:'badge--green', shipStatus:'Delivered',   shipDate:'06/10/2026', address:'Same as Installation Address', instBadge:'badge--green', instStatus:'Scheduled', instDate:'06/20/2026', level:1 },
+    { id:'sv-1', name:'2021 RAM 1500',          vin:'1C6RR7FG9MS654321', installType:'VMI', body:'Pickup',        traits:'HW', fleetName:'Fleet Unit B-2',  licensePlate:'DEF 5678', note:'Priority install — fleet manager approved expedited processing.',                   hwBadge:'badge--green', hwStatus:'Ready',     priority:'Priority 2', shipBadge:'badge--green', shipStatus:'Delivered',   shipDate:'06/08/2026', address:'742 Evergreen Terrace,\nSpringfield, IL 62704', instBadge:'badge--green', instStatus:'Scheduled', instDate:'06/20/2026', level:1 },
+    { id:'sv-2', name:'2020 Ford F-150',        vin:'1FTFW1E5XLKD12345', installType:'VMI', body:'Pickup',        traits:'LW', fleetName:'Fleet Unit C-3',  licensePlate:'GHI 9012', note:'Last scheduled before maintenance window.',                                         hwBadge:'badge--green', hwStatus:'Ready',     priority:'Priority 1', shipBadge:'badge--green', shipStatus:'Delivered',   shipDate:'06/09/2026', address:'Same as Installation Address', instBadge:'badge--green', instStatus:'Scheduled', instDate:'06/20/2026', level:1 },
+    { id:'sv-3', name:'2022 Honda CR-V',        vin:'2HKRW2H53NH234567', installType:'VMI', body:'SUV',           traits:'LW', fleetName:'Fleet Unit D-4',  licensePlate:'JKL 3456', note:'Standard install, no special requirements.',                                        hwBadge:'badge--green', hwStatus:'Ready',     priority:'Priority 1', shipBadge:'badge--green', shipStatus:'Delivered',   shipDate:'06/11/2026', address:'Same as Installation Address', instBadge:'badge--green', instStatus:'Scheduled', instDate:'06/20/2026', level:1 },
+    { id:'sv-4', name:'2019 Chevy Silverado',   vin:'3GCPWDED5KG345678', installType:'VMI', body:'Pickup',        traits:'HW', fleetName:'Fleet Unit E-5',  licensePlate:'MNO 7890', note:'Driver confirmed availability for installation window.',                            hwBadge:'badge--green', hwStatus:'Ready',     priority:'Priority 2', shipBadge:'badge--green',shipStatus:'Delivered',  shipDate:'06/18/2026', address:'1400 Commerce Blvd,\nAustin, TX 78701', instBadge:'badge--green', instStatus:'Scheduled', instDate:'06/20/2026', level:1 },
+    { id:'sv-5', name:'2021 Nissan Rogue',      vin:'5N1AT3CB9MC123450', installType:'VMI', body:'SUV',           traits:'LW', fleetName:'Fleet Unit F-6',  licensePlate:'PQR 1122', note:'Scheduled with standard hardware kit.',                                           hwBadge:'badge--green', hwStatus:'Ready',     priority:'Priority 1', shipBadge:'badge--green', shipStatus:'Delivered',   shipDate:'06/12/2026', address:'Same as Installation Address', instBadge:'badge--green', instStatus:'Scheduled', instDate:'06/20/2026', level:1 },
+    { id:'sv-6', name:'2020 GMC Sierra 1500',   vin:'1GTU9DED1LZ234561', installType:'VMI', body:'Pickup',        traits:'HW', fleetName:'Fleet Unit G-7',  licensePlate:'STU 3344', note:'Fleet admin requested morning install window.',                                  hwBadge:'badge--green', hwStatus:'Ready',     priority:'Priority 2', shipBadge:'badge--green', shipStatus:'Delivered',   shipDate:'06/13/2026', address:'1400 Commerce Blvd,\nAustin, TX 78701', instBadge:'badge--green', instStatus:'Scheduled', instDate:'06/20/2026', level:1 },
+    { id:'sv-7', name:'2023 Hyundai Tucson',    vin:'5NMJB3AE8PH345672', installType:'VMI', body:'SUV',           traits:'LW', fleetName:'Fleet Unit H-8',  licensePlate:'VWX 5566', note:'No site restrictions reported by dispatcher.',                                  hwBadge:'badge--green', hwStatus:'Ready',     priority:'Priority 1', shipBadge:'badge--green', shipStatus:'Delivered',   shipDate:'06/14/2026', address:'Same as Installation Address', instBadge:'badge--green', instStatus:'Scheduled', instDate:'06/20/2026', level:1 },
+    { id:'sv-8', name:'2022 Jeep Grand Cherokee', vin:'1C4RJFBG2NC456783', installType:'VMI', body:'SUV',         traits:'HW', fleetName:'Fleet Unit I-9',  licensePlate:'YZA 7788', note:'High-priority account vehicle.',                                                hwBadge:'badge--green', hwStatus:'Ready',     priority:'Priority 2', shipBadge:'badge--green', shipStatus:'Delivered',   shipDate:'06/15/2026', address:'742 Evergreen Terrace,\nSpringfield, IL 62704', instBadge:'badge--green', instStatus:'Scheduled', instDate:'06/20/2026', level:1 },
+    { id:'sv-9', name:'2021 Chevrolet Equinox', vin:'3GNAXUEV7ML567894', installType:'VMI', body:'SUV',           traits:'LW', fleetName:'Fleet Unit J-10', licensePlate:'BCD 9900', note:'Vehicle pre-check complete.',                                                     hwBadge:'badge--green', hwStatus:'Ready',     priority:'Priority 1', shipBadge:'badge--green', shipStatus:'Delivered',   shipDate:'06/15/2026', address:'Same as Installation Address', instBadge:'badge--green', instStatus:'Scheduled', instDate:'06/20/2026', level:1 },
+    { id:'sv-10', name:'2020 Toyota Tacoma',    vin:'3TMCZ5AN2LM678905', installType:'VMI', body:'Pickup',        traits:'HW', fleetName:'Fleet Unit K-11', licensePlate:'EFG 1123', note:'Assigned installer has prior site access.',                                      hwBadge:'badge--green', hwStatus:'Ready',     priority:'Priority 2', shipBadge:'badge--green', shipStatus:'Delivered',   shipDate:'06/16/2026', address:'1400 Commerce Blvd,\nAustin, TX 78701', instBadge:'badge--green', instStatus:'Scheduled', instDate:'06/20/2026', level:1 },
+    { id:'sv-11', name:'2022 Ford Escape',      vin:'1FMCU0G67NUB78916', installType:'VMI', body:'SUV',           traits:'LW', fleetName:'Fleet Unit L-12', licensePlate:'HIJ 2244', note:'Standard install prep complete.',                                                hwBadge:'badge--green', hwStatus:'Ready',     priority:'Priority 1', shipBadge:'badge--green', shipStatus:'Delivered',   shipDate:'06/16/2026', address:'Same as Installation Address', instBadge:'badge--green', instStatus:'Scheduled', instDate:'06/20/2026', level:1 },
+    { id:'sv-12', name:'2023 Honda Pilot',      vin:'5FNYG1H74PB890127', installType:'VMI', body:'SUV',           traits:'HW', fleetName:'Fleet Unit M-13', licensePlate:'KLM 3355', note:'Requires dashcam calibration during install.',                                   hwBadge:'badge--green', hwStatus:'Ready',     priority:'Priority 2', shipBadge:'badge--green', shipStatus:'Delivered',   shipDate:'06/17/2026', address:'742 Evergreen Terrace,\nSpringfield, IL 62704', instBadge:'badge--green', instStatus:'Scheduled', instDate:'06/20/2026', level:1 },
+    { id:'sv-13', name:'2021 Subaru Forester',  vin:'JF2SKAJC9MH901238', installType:'VMI', body:'SUV',           traits:'LW', fleetName:'Fleet Unit N-14', licensePlate:'NOP 4466', note:'Confirmed vehicle arrival at depot.',                                            hwBadge:'badge--green', hwStatus:'Ready',     priority:'Priority 1', shipBadge:'badge--green', shipStatus:'Delivered',   shipDate:'06/17/2026', address:'Same as Installation Address', instBadge:'badge--green', instStatus:'Scheduled', instDate:'06/20/2026', level:1 },
+    { id:'sv-14', name:'2019 Ford Ranger',      vin:'1FTER4FH7KLA01249', installType:'VMI', body:'Pickup',        traits:'HW', fleetName:'Fleet Unit O-15', licensePlate:'QRS 5577', note:'Install ticket approved by operations lead.',                                   hwBadge:'badge--green', hwStatus:'Ready',     priority:'Priority 2', shipBadge:'badge--green', shipStatus:'Delivered',   shipDate:'06/18/2026', address:'1400 Commerce Blvd,\nAustin, TX 78701', instBadge:'badge--green', instStatus:'Scheduled', instDate:'06/20/2026', level:1 },
+    { id:'sv-15', name:'2022 Kia Sorento',      vin:'5XYRKDLF9NG123450', installType:'VMI', body:'SUV',           traits:'LW', fleetName:'Fleet Unit P-16', licensePlate:'TUV 6688', note:'Normal installation workflow.',                                                  hwBadge:'badge--green', hwStatus:'Ready',     priority:'Priority 1', shipBadge:'badge--green', shipStatus:'Delivered',   shipDate:'06/18/2026', address:'Same as Installation Address', instBadge:'badge--green', instStatus:'Scheduled', instDate:'06/20/2026', level:1 },
+    { id:'sv-16', name:'2020 Mazda CX-9',       vin:'JM3TCBCY4L0123461', installType:'VMI', body:'SUV',           traits:'HW', fleetName:'Fleet Unit Q-17', licensePlate:'WXY 7799', note:'Customer requested arrival call 30 minutes before install.',                    hwBadge:'badge--green', hwStatus:'Ready',     priority:'Priority 2', shipBadge:'badge--green', shipStatus:'Delivered',   shipDate:'06/19/2026', address:'742 Evergreen Terrace,\nSpringfield, IL 62704', instBadge:'badge--green', instStatus:'Scheduled', instDate:'06/20/2026', level:1 },
+    { id:'sv-17', name:'2023 Volkswagen Tiguan', vin:'3VV2B7AX7PM234572', installType:'VMI', body:'SUV',          traits:'LW', fleetName:'Fleet Unit R-18', licensePlate:'ZAB 8811', note:'Site coordinator validated parking access.',                                     hwBadge:'badge--green', hwStatus:'Ready',     priority:'Priority 1', shipBadge:'badge--green', shipStatus:'Delivered',   shipDate:'06/19/2026', address:'Same as Installation Address', instBadge:'badge--green', instStatus:'Scheduled', instDate:'06/20/2026', level:1 },
+    { id:'sv-18', name:'2021 Toyota RAV4',      vin:'2T3P1RFV6MW345683', installType:'VMI', body:'SUV',           traits:'HW', fleetName:'Fleet Unit S-19', licensePlate:'CDE 9922', note:'Hardware bundle verified at warehouse.',                                         hwBadge:'badge--green', hwStatus:'Ready',     priority:'Priority 2', shipBadge:'badge--green', shipStatus:'Delivered',   shipDate:'06/19/2026', address:'1400 Commerce Blvd,\nAustin, TX 78701', instBadge:'badge--green', instStatus:'Scheduled', instDate:'06/20/2026', level:1 },
+    { id:'sv-19', name:'2022 Nissan Frontier',  vin:'1N6ED1EK5NN456794', installType:'VMI', body:'Pickup',        traits:'LW', fleetName:'Fleet Unit T-20', licensePlate:'FGH 1033', note:'Final vehicle added to this appointment batch.',                                hwBadge:'badge--green', hwStatus:'Ready',     priority:'Priority 1', shipBadge:'badge--green', shipStatus:'Delivered',   shipDate:'06/19/2026', address:'Same as Installation Address', instBadge:'badge--green', instStatus:'Scheduled', instDate:'06/20/2026', level:1 }
+  ];
+
+  var availableVehicles = [
+    { id:'av-0', name:'2021 Ford Transit',     vin:'1FTBR1C82MKA12345', installType:'VMI', body:'Cargo Van',     traits:'LW', fleetName:'Fleet Unit D-9',  licensePlate:'GHI 3456', note:'Unscheduled vehicle available to add to this appointment.', hwBadge:'badge--green', hwStatus:'Ready', priority:'Priority 1', shipBadge:'badge--green', shipStatus:'Delivered', shipDate:'06/12/2026', address:'Same as Installation Address',               instBadge:'badge--gray', instStatus:'Never Scheduled', instDate:'—', level:1, addrGroup:0 },
+    { id:'av-1', name:'2019 Chevy Express',    vin:'1GCWGAFG3K1203456', installType:'VMI', body:'Passenger Van', traits:'HW', fleetName:'Fleet Unit E-2',  licensePlate:'JKL 7890', note:'Unscheduled vehicle waiting for assignment.',                  hwBadge:'badge--green', hwStatus:'Ready', priority:'Priority 2', shipBadge:'badge--green', shipStatus:'Delivered', shipDate:'06/18/2026', address:'1400 Commerce Blvd,\nAustin, TX 78701',      instBadge:'badge--gray', instStatus:'Never Scheduled', instDate:'—', level:1, addrGroup:1 },
+    { id:'av-2', name:'2020 Kia Telluride',    vin:'5XYP3DHC5LG023456', installType:'VMI', body:'SUV',           traits:'LW', fleetName:'Fleet Unit U-21', licensePlate:'FGH 1122', note:'Unscheduled vehicle available to add.',                         hwBadge:'badge--green', hwStatus:'Ready', priority:'Priority 1', shipBadge:'badge--green', shipStatus:'Delivered', shipDate:'06/18/2026', address:'Same as Installation Address',               instBadge:'badge--gray', instStatus:'Never Scheduled', instDate:'—', level:1, addrGroup:0 },
+    { id:'av-3', name:'2021 Mazda CX-5',       vin:'JM3KFBCM6M0456789', installType:'VMI', body:'SUV',           traits:'HW', fleetName:'Fleet Unit V-22', licensePlate:'IJK 3344', note:'Unscheduled vehicle available to add.',                         hwBadge:'badge--green', hwStatus:'Ready', priority:'Priority 2', shipBadge:'badge--green', shipStatus:'Delivered', shipDate:'06/17/2026', address:'Same as Installation Address',               instBadge:'badge--gray', instStatus:'Never Scheduled', instDate:'—', level:1, addrGroup:0 },
+    { id:'av-4', name:'2023 Subaru Outback',   vin:'4S4BTANC8P3567890', installType:'VMI', body:'Wagon',         traits:'LW', fleetName:'Fleet Unit W-23', licensePlate:'LMN 5566', note:'Unscheduled vehicle available to add.',                         hwBadge:'badge--green', hwStatus:'Ready', priority:'Priority 1', shipBadge:'badge--green', shipStatus:'Delivered', shipDate:'06/19/2026', address:'Same as Installation Address',               instBadge:'badge--gray', instStatus:'Never Scheduled', instDate:'—', level:1, addrGroup:0 },
+    { id:'av-5', name:'2022 Volkswagen Atlas', vin:'1V2WR2CA4NC678901', installType:'VMI', body:'SUV',           traits:'HW', fleetName:'Fleet Unit X-24', licensePlate:'OPQ 7788', note:'Unscheduled vehicle available to add.',                         hwBadge:'badge--green', hwStatus:'Ready', priority:'Priority 2', shipBadge:'badge--green', shipStatus:'Delivered', shipDate:'06/16/2026', address:'742 Evergreen Terrace,\nSpringfield, IL 62704', instBadge:'badge--gray', instStatus:'Never Scheduled', instDate:'—', level:1, addrGroup:0 }
+  ];
+
+  var addrGroupData = [
+    { id: 0, address: '742 Evergreen Terrace, Springfield, IL 62704, USA', contact: 'Sabrina Swift' },
+    { id: 1, address: '1400 Commerce Blvd, Austin, TX 78701',              contact: '' }
+  ];
+
+  /* ----------------------------------------------------------
+     STATE
+  ---------------------------------------------------------- */
+  var ORIGINAL_SCHEDULED_COUNT = scheduledVehicles.length; // 20
+  var ORIGINAL_SCHEDULED_IDS = scheduledVehicles.reduce(function(acc, v) { acc[v.id] = true; return acc; }, {});
+  var ORIGINAL_APPOINTMENT_MINUTES = 90;
+  var APPOINTMENT_INSTALL_DATE = (scheduledVehicles[0] && scheduledVehicles[0].instDate) || '06/20/2026';
+  var inEditMode = false;
+  var selectedOption = null; // 'coordinated' | 'explore'
+  var dateModalContext = null; // 'direct' | 'vehicle'
+  var toastTimer = null;
+
+  /* ----------------------------------------------------------
+     LEVEL CALCULATION
+  ---------------------------------------------------------- */
+  function getLevel(count) {
+    if (count <= 10) return 1;
+    return 2;
+  }
+
+  function formatDuration(totalMinutes) {
+    var safeMinutes = Math.max(0, totalMinutes || 0);
+    var hours = Math.floor(safeMinutes / 60);
+    var minutes = safeMinutes % 60;
+    if (hours > 0 && minutes > 0) return hours + ' hr ' + minutes + ' min';
+    if (hours > 0) return hours + ' hr';
+    return minutes + ' min';
+  }
+
+  function getAppointmentMinutes(count) {
+    var deltaVehicles = count - ORIGINAL_SCHEDULED_COUNT;
+    var minutes = ORIGINAL_APPOINTMENT_MINUTES + (deltaVehicles * 15);
+    return Math.max(30, minutes);
+  }
+
+  function setActionButtonState(btn, isScheduled) {
+    var actionLabel = isScheduled ? 'Remove from Appointment' : 'Add to Appointment';
+    var actionClass = isScheduled ? 'trash-btn' : 'plus-btn';
+    var actionIcon = isScheduled ? trashSVG : plusSVG;
+
+    btn.className = actionClass + ' split-action-btn tooltip tooltip--compact';
+    btn.setAttribute('aria-label', actionLabel);
+    btn.setAttribute('title', actionLabel);
+    btn.innerHTML = actionIcon + '<span class="tooltip__popup">' + actionLabel + '</span>';
+  }
+
+  function setSubActionButtonState(btn, isScheduled) {
+    if (!btn) return;
+    var actionLabel = isScheduled ? 'Remove from Appointment' : 'Add to Appointment';
+    var actionClass = isScheduled ? 'trash-btn' : 'plus-btn';
+    var actionIcon = isScheduled ? trashSVG : plusSVG;
+
+    btn.className = actionClass + ' sub-split-action-btn tooltip tooltip--compact';
+    btn.setAttribute('aria-label', actionLabel);
+    btn.setAttribute('title', actionLabel);
+    btn.innerHTML = actionIcon + '<span class="tooltip__popup">' + actionLabel + '</span>';
+  }
+
+  function setSubActionButtonsState(block, isScheduled) {
+    if (!block) return;
+    block.querySelectorAll('.sub-split-action-btn').forEach(function(btn) {
+      setSubActionButtonState(btn, isScheduled);
+      btn.disabled = !inEditMode;
+    });
+  }
+
+  function applyInstallationState(block, isScheduled) {
+    var badgeClass = isScheduled ? 'badge--green' : 'badge--gray';
+    var statusText = isScheduled ? 'Scheduled' : 'Never Scheduled';
+    var dateText = isScheduled ? APPOINTMENT_INSTALL_DATE : '—';
+
+    var vehicleBadge = block.querySelector('.vh-cell--inst-status .badge');
+    var vehicleDate = block.querySelector('.vh-cell--inst-status .sec');
+    if (vehicleBadge) {
+      vehicleBadge.className = 'badge ' + badgeClass;
+      vehicleBadge.textContent = statusText;
+    }
+    if (vehicleDate) vehicleDate.textContent = dateText;
+
+    var subBadge = block.querySelector('.subs-section .sub-line:first-child .sub-dcell--inst .badge');
+    var subDate = block.querySelector('.subs-section .sub-line:first-child .sub-dcell--idate');
+    if (subBadge) {
+      subBadge.className = 'badge ' + badgeClass;
+      subBadge.textContent = statusText;
+    }
+    if (subDate) subDate.textContent = dateText;
+  }
+
+  function setVehicleChangeState(block) {
+    var vehicleId = block.getAttribute('data-vehicle-id');
+    var isOriginallyScheduled = !!ORIGINAL_SCHEDULED_IDS[vehicleId];
+    var isNowScheduled = block.getAttribute('data-section') === 'scheduled';
+    var changeState = 'none';
+
+    if (isOriginallyScheduled && !isNowScheduled) changeState = 'removed';
+    if (!isOriginallyScheduled && isNowScheduled) changeState = 'added';
+
+    block.setAttribute('data-change', changeState);
+  }
+
+  function refreshVehicleChangeStates() {
+    container.querySelectorAll('.vehicle-block').forEach(function(block) {
+      setVehicleChangeState(block);
+    });
+  }
+
+  /* ----------------------------------------------------------
+     BUILD SUBSCRIPTION HTML
+  ---------------------------------------------------------- */
+  function buildSubsHTML(v, section) {
+    var isScheduled = section === 'scheduled';
+    var actionLabel = isScheduled ? 'Remove from Appointment' : 'Add to Appointment';
+    var actionIcon = isScheduled ? trashSVG : plusSVG;
+    var actionClass = isScheduled ? 'trash-btn' : 'plus-btn';
+    var isHW = v.traits === 'HW';
+    var vidx = parseInt(v.id.replace(/[^\d]/g,''), 10) || 0;
+    var subId     = '12243' + (24220 + vidx);
+    var trfMain   = subId + '-23241' + (10 + vidx);
+    var ticketNum = 'W000' + (117880 + vidx * 2);
+    var subName   = isHW ? 'AI Dash Cam Subscription' : 'Vehicle Tracking Subscription';
+    var hwMain = 'VTU | Xirgo 6383 | VZW FGUS3 (112324200)';
+    var hwAccessory = isHW ? 'AI Dashcam Road NA 64-3w (112324201)' : 'Y-Cable Kit | Xirgo 9pin (112324200)';
+
+    return '<div class="subs-header-row">' +
+      '<div class="sub-hcell sub-hcell--sub">Subscription</div>' +
+      '<div class="sub-hcell sub-hcell--cat">Category</div>' +
+      '<div class="sub-hcell sub-hcell--hw">Hardware</div>' +
+      '<div class="sub-hcell sub-hcell--type">Type</div>' +
+      '<div class="sub-hcell sub-hcell--ship">Shipping Status</div>' +
+      '<div class="sub-hcell sub-hcell--delivery">Delivery Date</div>' +
+      '<div class="sub-hcell sub-hcell--ticket">Work ticket</div>' +
+      '<div class="sub-hcell sub-hcell--inst">Installation Status</div>' +
+      '<div class="sub-hcell sub-hcell--idate">Install Date</div>' +
+      '<div class="sub-hcell sub-hcell--action" aria-hidden="true"></div>' +
+    '</div>' +
+    '<div class="sub-group">' +
+      '<div class="sub-line">' +
+        '<div class="sub-dcell sub-dcell--sub">' +
+          '<div class="sub-sub-main">' +
+            '<button class="' + actionClass + ' sub-split-action-btn sub-inline-action tooltip tooltip--compact" aria-label="' + actionLabel + '" title="' + actionLabel + '" disabled>' + actionIcon + '<span class="tooltip__popup">' + actionLabel + '</span></button>' +
+            '<div class="sub-sub-content">' +
+              '<span class="sub-name">' + subName + ' <span class="sub-id">(' + subId + ')</span></span>' +
+              '<div class="mt-2" style="font-size:11px;color:#716f6d;"><strong class="lbl">TRF ID:</strong> ' + trfMain + ' &nbsp;|&nbsp; <strong class="lbl">Type:</strong> ' + v.installType + '</div>' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+        '<div class="sub-dcell sub-dcell--cat"><span class="sec">Core - Main</span></div>' +
+        '<div class="sub-dcell sub-dcell--hw"><span class="sec">' + hwMain + '</span></div>' +
+        '<div class="sub-dcell sub-dcell--type">Fulfill</div>' +
+        '<div class="sub-dcell sub-dcell--ship"><span class="badge ' + (v.shipBadge || 'badge--gray') + '">' + (v.shipStatus || 'Pending') + '</span></div>' +
+        '<div class="sub-dcell sub-dcell--delivery">' + v.shipDate + ' (UPS)</div>' +
+        '<div class="sub-dcell sub-dcell--ticket"><span class="ticket-link">' + ticketNum + '</span></div>' +
+        '<div class="sub-dcell sub-dcell--inst"><span class="badge ' + (v.instBadge || 'badge--gray') + '">' + v.instStatus + '</span></div>' +
+        '<div class="sub-dcell sub-dcell--idate sec">' + v.instDate + '</div>' +
+        '<div class="sub-dcell sub-dcell--action"><button class="' + actionClass + ' sub-split-action-btn tooltip tooltip--compact" aria-label="' + actionLabel + '" title="' + actionLabel + '" disabled>' + actionIcon + '<span class="tooltip__popup">' + actionLabel + '</span></button></div>' +
+      '</div>' +
+      '<div class="sub-line">' +
+        '<div class="sub-dcell sub-dcell--sub sub-dcell--sub-empty"></div>' +
+        '<div class="sub-dcell sub-dcell--cat"><span class="sec">Core - Accessory</span></div>' +
+        '<div class="sub-dcell sub-dcell--hw"><span class="sec">' + hwAccessory + '</span></div>' +
+        '<div class="sub-dcell sub-dcell--type">Fulfill</div>' +
+        '<div class="sub-dcell sub-dcell--ship"><span class="badge ' + (v.shipBadge || 'badge--gray') + '">' + (v.shipStatus || 'Pending') + '</span></div>' +
+        '<div class="sub-dcell sub-dcell--delivery">' + v.shipDate + ' (UPS)</div>' +
+        '<div class="sub-dcell sub-dcell--ticket"><span class="ticket-link">' + (parseInt(ticketNum.replace('W000',''), 10) + 1 + '').replace(/^/, 'W000') + '</span></div>' +
+        '<div class="sub-dcell sub-dcell--inst"></div>' +
+        '<div class="sub-dcell sub-dcell--idate"></div>' +
+        '<div class="sub-dcell sub-dcell--action"></div>' +
+      '</div>' +
+    '</div>';
+  }
+
+  function normalizeAddress(addr) {
+    return (addr || '')
+      .toLowerCase()
+      .replace(/\n/g, ' ')
+      .replace(/,\s*usa\b/g, '')
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
+
+  function resolveAddrGroupId(address) {
+    var normalized = normalizeAddress(address);
+    if (!normalized) return 0;
+    if (normalized.indexOf('same as installation address') !== -1) return 0;
+
+    for (var i = 0; i < addrGroupData.length; i++) {
+      var groupAddr = normalizeAddress(addrGroupData[i].address);
+      if (normalized.indexOf(groupAddr) !== -1 || groupAddr.indexOf(normalized) !== -1) {
+        return addrGroupData[i].id;
+      }
+    }
+    return 0;
+  }
+
+  /* ----------------------------------------------------------
+     BUILD VEHICLE BLOCK
+  ---------------------------------------------------------- */
+  function buildVehicleBlock(v, section) {
+    var addrGroupId = typeof v.addrGroup === 'number' ? v.addrGroup : resolveAddrGroupId(v.address);
+    var isScheduled = section === 'scheduled';
+    var actionLabel = isScheduled ? 'Remove from Appointment' : 'Add to Appointment';
+    var actionIcon  = isScheduled ? trashSVG : plusSVG;
+    var actionClass = isScheduled ? 'trash-btn' : 'plus-btn';
+    var showBodyInMeta = v.id === 'sv-0';
+    var vehicleMetaLine = showBodyInMeta
+      ? '<span class="vh-install-type">' + v.installType + '</span> &middot; <strong class="lbl">Body:</strong> ' + v.body
+      : '<span class="vh-install-type">' + v.installType + '</span>';
+
+    var block = document.createElement('div');
+    block.className = 'vehicle-block collapsed';
+    block.setAttribute('data-vehicle-id', v.id);
+    block.setAttribute('data-section', section);
+    block.setAttribute('data-level', String(v.level));
+    block.setAttribute('data-addr-group', String(addrGroupId));
+
+    block.innerHTML =
+      '<div class="vehicle-header-row">' +
+        '<div class="vh-cell vh-cell--edit-action"></div>' +
+        '<div class="vh-cell vh-cell--vehicle">' +
+          '<div class="vh-vehicle-name-row">' +
+            '<img class="vh-vehicle-icon" src="./assets/ds/icons/on-go-car.svg" alt="" width="18" height="18">' +
+            '<span class="vh-vehicle-name">' + v.name + '</span>' +
+          '</div>' +
+          '<div class="vh-vin">VIN: ' + v.vin + ' (c360)</div>' +
+          '<div class="vh-meta">' + vehicleMetaLine + '</div>' +
+        '</div>' +
+        '<div class="vh-cell vh-cell--install-info">' +
+          '<strong class="lbl">Install info</strong>' +
+          '<div class="mt-4"><strong class="lbl">Level:</strong> ' + (v.level || 1) + '</div>' +
+          '<div class="mt-2"><strong class="lbl">Time:</strong> ' + ((v.level === 2 || String(v.level) === '2') ? '3 hr' : '30 min') + '</div>' +
+        '</div>' +
+        '<div class="vh-cell vh-cell--traits"><strong class="lbl">Traits</strong><span class="mt-4">' + v.traits + '</span></div>' +
+        '<div class="vh-cell vh-cell--name">' +
+          '<div><strong class="lbl">Name:</strong> ' + v.fleetName + '</div>' +
+          '<div class="mt-2"><strong class="lbl">License plate:</strong> ' + v.licensePlate + '</div>' +
+          '<div class="note-text mt-2">' + v.note + '</div>' +
+        '</div>' +
+        '<div class="vh-cell vh-cell--hw-status">' +
+          '<strong class="lbl">Hardware Status</strong>' +
+          '<span class="mt-4"><span class="badge ' + v.hwBadge + '">' + v.hwStatus + '</span></span>' +
+          '<div class="priority-text">' + v.priority + '</div>' +
+        '</div>' +
+        '<div class="vh-cell vh-cell--ship-status">' +
+          '<strong class="lbl">Shipping Status</strong>' +
+          '<span class="mt-4"><span class="badge ' + v.shipBadge + '">' + v.shipStatus + '</span></span>' +
+          '<div class="mt-4 sec">' + v.shipDate + '</div>' +
+        '</div>' +
+        '<div class="vh-cell vh-cell--address">' +
+          '<strong class="lbl">Shipping Address</strong>' +
+          '<div class="address-text mt-2">' + String(v.address || '').replace(/\n/g, '<br>') + '</div>' +
+        '</div>' +
+        '<div class="vh-cell vh-cell--inst-status">' +
+          '<strong class="lbl">Installation Status</strong>' +
+          '<span class="mt-4"><span class="badge ' + v.instBadge + '">' + v.instStatus + '</span></span>' +
+          '<div class="mt-4 sec">' + v.instDate + '</div>' +
+        '</div>' +
+        '<div class="vh-cell vh-cell--action">' +
+          '<div class="vh-actions">' +
+            '<button class="' + actionClass + ' split-action-btn tooltip tooltip--compact" aria-label="' + actionLabel + '" title="' + actionLabel + '" disabled>' + actionIcon + '<span class="tooltip__popup">' + actionLabel + '</span></button>' +
+            '<button class="accordion-btn collapsed" aria-label="Toggle vehicle details" aria-expanded="false"><img src="./assets/ds/icons/down-caret.svg" alt="" width="16" height="16" style="display:block;"></button>' +
+          '</div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="subs-section">' + buildSubsHTML(v, section) + '</div>';
+
+    // Direct handlers make the move action reliable across environments.
+    block.querySelector('.split-action-btn')?.addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      if (this.disabled) return;
+      if (this.classList.contains('trash-btn')) moveToAvailable(block);
+      else if (this.classList.contains('plus-btn')) moveToScheduled(block);
+    });
+
+    block.querySelectorAll('.sub-split-action-btn').forEach(function(subBtn) {
+      subBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        if (this.disabled) return;
+        if (this.classList.contains('trash-btn')) moveToAvailable(block);
+        else if (this.classList.contains('plus-btn')) moveToScheduled(block);
+      });
+    });
+
+    block.querySelector('.accordion-btn')?.addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      var collapsed = block.classList.toggle('collapsed');
+      this.classList.toggle('collapsed', collapsed);
+      this.setAttribute('aria-expanded', collapsed ? 'false' : 'true');
+    });
+
+    return block;
+  }
+
+  /* ----------------------------------------------------------
+     BUILD ADDRESS GROUP ELEMENT
+  ---------------------------------------------------------- */
+  function buildAddrGroupEl(g) {
+    var el = document.createElement('div');
+    el.className = 'split-addr-group';
+    el.setAttribute('data-group-id', String(g.id));
+    var contactHtml = g.contact ? ' &nbsp;|&nbsp; <strong>Contact:</strong> ' + g.contact : '';
+    el.innerHTML =
+      '<div class="split-addr-header">' +
+        '<div class="split-addr-header__left">' +
+          '<img src="./assets/ds/icons/location.svg" alt="" width="18" height="18" style="flex-shrink:0;filter:brightness(0);">' +
+          '<div class="split-addr-header__info">' +
+            '<div class="split-addr-header__label">Installation Address</div>' +
+            '<div class="split-addr-header__address">' + g.address + contactHtml + '</div>' +
+          '</div>' +
+        '</div>' +
+        '<div class="split-addr-header__right">' +
+          '<button class="split-addr-toggle" aria-label="Toggle address group" aria-expanded="true">' +
+            '<img src="./assets/ds/icons/down-caret.svg" alt="" width="16" height="16">' +
+          '</button>' +
+        '</div>' +
+      '</div>' +
+      '<div class="split-addr-vehicles"></div>';
+
+    var header = el.querySelector('.split-addr-header');
+    var toggle = el.querySelector('.split-addr-toggle');
+    header.addEventListener('click', function() {
+      var collapsed = el.classList.toggle('collapsed');
+      toggle.setAttribute('aria-expanded', collapsed ? 'false' : 'true');
+    });
+
+    return el;
+  }
+
+  /* ----------------------------------------------------------
+     INIT — POPULATE TABLE
+  ---------------------------------------------------------- */
+  var container    = document.getElementById('split-container');
+  var schedWrapper = document.querySelector('.split-scheduled-wrapper');
+  var availWrapper = document.getElementById('split-available-wrapper');
+  var divider      = document.getElementById('split-divider');
+  var emptySchd    = document.getElementById('empty-scheduled');
+  var emptyAvail   = document.getElementById('empty-available');
+
+  scheduledVehicles.forEach(function(v) {
+    schedWrapper.insertBefore(buildVehicleBlock(v, 'scheduled'), emptySchd);
+  });
+
+  // Build addr group wrappers inside availWrapper, before emptyAvail
+  addrGroupData.forEach(function(g) {
+    availWrapper.insertBefore(buildAddrGroupEl(g), emptyAvail);
+  });
+
+  // Place available vehicles inside their addr groups
+  availableVehicles.forEach(function(v) {
+    var block = buildVehicleBlock(v, 'available');
+    var groupId = block.getAttribute('data-addr-group');
+    var group = container.querySelector('.split-addr-group[data-group-id="' + groupId + '"]');
+    group.querySelector('.split-addr-vehicles').appendChild(block);
+  });
+
+  /* ----------------------------------------------------------
+     EVENT DELEGATION — TABLE CLICKS
+  ---------------------------------------------------------- */
+  container.addEventListener('click', function(e) {
+    var trashBtn  = e.target.closest('.trash-btn');
+    var plusBtn   = e.target.closest('.plus-btn');
+    var accBtn    = e.target.closest('.accordion-btn');
+
+    if (trashBtn && !trashBtn.disabled) {
+      var block = trashBtn.closest('.vehicle-block');
+      if (block) moveToAvailable(block);
+      return;
+    }
+    if (plusBtn && !plusBtn.disabled) {
+      var block = plusBtn.closest('.vehicle-block');
+      if (block) moveToScheduled(block);
+      return;
+    }
+    if (accBtn) {
+      var block = accBtn.closest('.vehicle-block');
+      if (block) {
+        var collapsed = block.classList.toggle('collapsed');
+        accBtn.classList.toggle('collapsed', collapsed);
+        accBtn.setAttribute('aria-expanded', collapsed ? 'false' : 'true');
+      }
+      return;
+    }
+  });
+
+  /* ----------------------------------------------------------
+     MOVE OPERATIONS
+  ---------------------------------------------------------- */
+  function moveToAvailable(block) {
+    var btn = block.querySelector('.split-action-btn');
+    setActionButtonState(btn, false);
+    btn.disabled = !inEditMode;
+    block.setAttribute('data-section', 'available');
+    setVehicleChangeState(block);
+    applyInstallationState(block, false);
+    setSubActionButtonsState(block, false);
+    if (inEditMode) block.setAttribute('draggable', 'true');
+    var groupId = block.getAttribute('data-addr-group');
+    if (groupId == null) {
+      groupId = String(resolveAddrGroupId(block.getAttribute('data-address')));
+      block.setAttribute('data-addr-group', groupId);
+    }
+    var group = container.querySelector('.split-addr-group[data-group-id="' + groupId + '"]') ||
+      container.querySelector('.split-addr-group[data-group-id="0"]');
+    group.querySelector('.split-addr-vehicles').appendChild(block);
+    updateAll();
+  }
+
+  function moveToScheduled(block) {
+    var btn = block.querySelector('.split-action-btn');
+    setActionButtonState(btn, true);
+    btn.disabled = !inEditMode;
+    block.setAttribute('data-section', 'scheduled');
+    setVehicleChangeState(block);
+    applyInstallationState(block, true);
+    setSubActionButtonsState(block, true);
+    if (inEditMode) block.setAttribute('draggable', 'true');
+    schedWrapper.insertBefore(block, emptySchd);
+    updateAll();
+  }
+
+  /* ----------------------------------------------------------
+     METRICS UPDATE
+  ---------------------------------------------------------- */
+  function countScheduled() {
+    return container.querySelectorAll('.vehicle-block[data-section="scheduled"]').length;
+  }
+  function countAvailable() {
+    return container.querySelectorAll('.vehicle-block[data-section="available"]').length;
+  }
+
+  function updateAll() {
+    var sCount = countScheduled();
+    var aCount = countAvailable();
+    var origLevel = getLevel(ORIGINAL_SCHEDULED_COUNT);
+    var newLevel  = getLevel(sCount);
+    var levelChanged = newLevel !== origLevel;
+    var countChanged = sCount !== ORIGINAL_SCHEDULED_COUNT;
+    var delta = sCount - ORIGINAL_SCHEDULED_COUNT;
+
+    // --- Empty states ---
+    emptySchd.style.display = sCount === 0 ? '' : 'none';
+    emptyAvail.style.display = aCount === 0 ? '' : 'none';
+
+    // --- Addr group counts + hide empty groups ---
+    container.querySelectorAll('.split-addr-group').forEach(function(groupEl) {
+      var count = groupEl.querySelectorAll('.vehicle-block[data-section="available"]').length;
+      var countEl = groupEl.querySelector('.split-addr-count');
+      if (countEl) countEl.textContent = '(' + count + ')';
+      groupEl.style.display = count === 0 ? 'none' : '';
+    });
+
+    // --- Count badges ---
+    document.getElementById('scheduled-count-badge').textContent = String(sCount);
+    document.getElementById('available-count-badge').textContent = String(aCount);
+
+    // --- Section label ---
+    var sectionCountLabel = document.getElementById('section-count-label');
+    sectionCountLabel.textContent = sCount + ' vehicle' + (sCount !== 1 ? 's' : '');
+    sectionCountLabel.style.display = inEditMode ? 'none' : '';
+
+    // --- Job header meta ---
+    var metaLevel = document.getElementById('meta-level');
+    var metaCount = document.getElementById('meta-count');
+    var summaryRescheduleNote = document.getElementById('summary-reschedule-note');
+
+    if (inEditMode) {
+      if (levelChanged) {
+        metaLevel.textContent = origLevel + ' → ' + newLevel;
+      } else {
+        metaLevel.textContent = origLevel;
+      }
+      if (countChanged) {
+        var sign = delta > 0 ? '+' : '';
+        metaCount.textContent = ORIGINAL_SCHEDULED_COUNT + ' → ' + sCount + ' (' + sign + delta + ')';
+      } else {
+        metaCount.textContent = ORIGINAL_SCHEDULED_COUNT;
+      }
+    } else {
+      metaLevel.textContent = newLevel;
+      metaCount.textContent = sCount;
+    }
+
+    // --- Edit summary bar ---
+    if (inEditMode) {
+      var currentDurationEl = document.getElementById('summary-current-duration');
+      var currentMetaEl = document.getElementById('summary-current-meta');
+      var afterDurationEl = document.getElementById('summary-after-duration');
+      var afterDurationNoteEl = document.getElementById('summary-after-duration-note');
+      var afterMetaEl = document.getElementById('summary-after-meta');
+
+      var currentMinutes = getAppointmentMinutes(ORIGINAL_SCHEDULED_COUNT);
+      var editedMinutes = getAppointmentMinutes(sCount);
+      var durationChanged = editedMinutes !== currentMinutes;
+      var addedCount = 0;
+      var removedCount = 0;
+
+      container.querySelectorAll('.vehicle-block').forEach(function(block) {
+        var vehicleId = block.getAttribute('data-vehicle-id');
+        var isOriginallyScheduled = !!ORIGINAL_SCHEDULED_IDS[vehicleId];
+        var isNowScheduled = block.getAttribute('data-section') === 'scheduled';
+        if (!isOriginallyScheduled && isNowScheduled) addedCount += 1;
+        if (isOriginallyScheduled && !isNowScheduled) removedCount += 1;
+      });
+
+      currentDurationEl.textContent = formatDuration(currentMinutes);
+      currentMetaEl.textContent = ORIGINAL_SCHEDULED_COUNT + ' vehicles · Level ' + origLevel;
+
+      afterDurationEl.className = 'edit-summary-value';
+      if (durationChanged || countChanged || levelChanged) {
+        if (durationChanged) {
+          afterDurationEl.className += ' val-changed';
+        } else {
+          afterDurationEl.className += (editedMinutes >= currentMinutes) ? ' val-added' : ' val-removed';
+        }
+      }
+      afterDurationEl.textContent = formatDuration(editedMinutes);
+      if (afterDurationNoteEl) afterDurationNoteEl.style.display = durationChanged ? 'inline' : 'none';
+      afterMetaEl.innerHTML =
+        sCount +
+        ' vehicles (<span class="val-added">+' + addedCount + '</span> <span class="val-removed">-' + removedCount + '</span>) · Level ' +
+        newLevel;
+      if (summaryRescheduleNote) summaryRescheduleNote.style.display = (durationChanged || levelChanged) ? '' : 'none';
+    } else {
+      if (summaryRescheduleNote) summaryRescheduleNote.style.display = 'none';
+      var afterDurationNoteElView = document.getElementById('summary-after-duration-note');
+      if (afterDurationNoteElView) afterDurationNoteElView.style.display = 'none';
+    }
+  }
+
+  /* ----------------------------------------------------------
+     EDIT MODE ENTER / EXIT
+  ---------------------------------------------------------- */
+  var btnEdit   = document.getElementById('btn-edit');
+  var btnSave   = document.getElementById('btn-save');
+  var btnCancel = document.getElementById('btn-cancel');
+  var btnJumpAvailable = document.getElementById('btn-jump-available');
+  var wrapper   = document.getElementById('split-table-wrapper');
+  var summaryBar = document.getElementById('edit-summary-bar');
+  var STICKY_TOP_OFFSET = 99;
+
+  btnEdit.addEventListener('click', enterEditMode);
+  btnCancel.addEventListener('click', cancelEditMode);
+  btnSave.addEventListener('click', attemptSave);
+
+  function updateSummaryStickyState() {
+    if (!summaryBar || !inEditMode || !summaryBar.classList.contains('visible')) {
+      if (summaryBar) summaryBar.classList.remove('summary-is-stuck');
+      return;
+    }
+    var barTop = summaryBar.getBoundingClientRect().top;
+    var stuck = barTop <= STICKY_TOP_OFFSET + 1;
+    summaryBar.classList.toggle('summary-is-stuck', stuck);
+  }
+
+  function getScrollTopInset() {
+    var inset = STICKY_TOP_OFFSET + 16;
+    if (summaryBar && summaryBar.classList.contains('visible')) {
+      inset += summaryBar.offsetHeight;
+    }
+    return inset;
+  }
+
+  function updateJumpAvailableVisibility() {
+    if (!btnJumpAvailable) return;
+    btnJumpAvailable.style.display = inEditMode ? '' : 'none';
+    btnJumpAvailable.textContent = 'Add Vehicles';
+    btnJumpAvailable.setAttribute('aria-label', 'Add vehicles');
+  }
+
+  function enterEditMode() {
+    inEditMode = true;
+    wrapper.classList.add('edit-mode-active');
+    container.querySelectorAll('.split-action-btn').forEach(function(b) { b.disabled = false; });
+    container.querySelectorAll('.sub-split-action-btn').forEach(function(b) { b.disabled = false; });
+    refreshVehicleChangeStates();
+    btnEdit.style.display = 'none';
+    btnSave.style.display = '';
+    btnCancel.style.display = '';
+    if (btnJumpAvailable) btnJumpAvailable.style.display = '';
+    summaryBar.classList.add('visible');
+    enableDrag();
+    updateAll();
+    updateSummaryStickyState();
+    updateJumpAvailableVisibility();
+  }
+
+  function cancelEditMode() {
+    // Revert all moved vehicles to original positions
+    var allBlocks = Array.prototype.slice.call(container.querySelectorAll('.vehicle-block'));
+    // Move scheduled back: vehicles originally scheduled (by id)
+    var scheduledIds = scheduledVehicles.map(function(v){ return v.id; });
+
+    allBlocks.forEach(function(block) {
+      var vid = block.getAttribute('data-vehicle-id');
+      var btn = block.querySelector('.split-action-btn');
+      if (scheduledIds.indexOf(vid) !== -1) {
+        setActionButtonState(btn, true);
+        btn.disabled = true;
+        block.setAttribute('data-section', 'scheduled');
+        setVehicleChangeState(block);
+        applyInstallationState(block, true);
+        setSubActionButtonsState(block, true);
+        schedWrapper.insertBefore(block, emptySchd);
+      } else {
+        setActionButtonState(btn, false);
+        btn.disabled = true;
+        block.setAttribute('data-section', 'available');
+        setVehicleChangeState(block);
+        applyInstallationState(block, false);
+        setSubActionButtonsState(block, false);
+        var groupId = block.getAttribute('data-addr-group');
+        var group = container.querySelector('.split-addr-group[data-group-id="' + groupId + '"]');
+        group.querySelector('.split-addr-vehicles').appendChild(block);
+      }
+    });
+
+    exitEditMode();
+  }
+
+  function exitEditMode() {
+    inEditMode = false;
+    wrapper.classList.remove('edit-mode-active');
+    container.querySelectorAll('.split-action-btn').forEach(function(b) { b.disabled = true; });
+    container.querySelectorAll('.sub-split-action-btn').forEach(function(b) { b.disabled = true; });
+    disableDrag();
+    btnEdit.style.display = '';
+    btnSave.style.display = 'none';
+    btnCancel.style.display = 'none';
+    if (btnJumpAvailable) btnJumpAvailable.style.display = 'none';
+    summaryBar.classList.remove('visible');
+    summaryBar.classList.remove('summary-is-stuck');
+    updateAll();
+  }
+
+  btnJumpAvailable?.addEventListener('click', function(e) {
+    e.preventDefault();
+    var target = document.getElementById('split-available-wrapper');
+    if (target) {
+      var top = window.pageYOffset + target.getBoundingClientRect().top - getScrollTopInset();
+      window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
+    }
+  });
+
+  window.addEventListener('scroll', function() {
+    updateSummaryStickyState();
+    updateJumpAvailableVisibility();
+  }, { passive: true });
+  window.addEventListener('resize', function() {
+    updateSummaryStickyState();
+    updateJumpAvailableVisibility();
+  });
+
+  /* ----------------------------------------------------------
+     DRAG & DROP
+  ---------------------------------------------------------- */
+  var draggedBlock = null;
+
+  function enableDrag() {
+    container.querySelectorAll('.vehicle-block').forEach(function(b) {
+      b.setAttribute('draggable', 'true');
+    });
+  }
+
+  function disableDrag() {
+    container.querySelectorAll('.vehicle-block').forEach(function(b) {
+      b.removeAttribute('draggable');
+      b.classList.remove('dragging');
+    });
+    clearDropTargets();
+  }
+
+  function clearDropTargets() {
+    schedWrapper.classList.remove('drop-target');
+    availWrapper.classList.remove('drop-target');
+  }
+
+  // Drag start / end — delegated to container
+  container.addEventListener('dragstart', function(e) {
+    var block = e.target.closest('.vehicle-block');
+    if (!block || !inEditMode) { e.preventDefault(); return; }
+    draggedBlock = block;
+    // Small delay so the ghost image renders before opacity change
+    setTimeout(function() { block.classList.add('dragging'); }, 0);
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/plain', block.getAttribute('data-vehicle-id'));
+  });
+
+  container.addEventListener('dragend', function() {
+    if (draggedBlock) { draggedBlock.classList.remove('dragging'); }
+    draggedBlock = null;
+    clearDropTargets();
+  });
+
+  // Helper: is this a valid cross-section drag?
+  function canDropOn(targetSection) {
+    if (!draggedBlock) return false;
+    var fromSection = draggedBlock.getAttribute('data-section');
+    return fromSection !== targetSection;
+  }
+
+  // — Scheduled wrapper as drop zone —
+  schedWrapper.addEventListener('dragover', function(e) {
+    if (!canDropOn('scheduled')) return;
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    schedWrapper.classList.add('drop-target');
+  });
+  schedWrapper.addEventListener('dragleave', function(e) {
+    if (!schedWrapper.contains(e.relatedTarget)) {
+      schedWrapper.classList.remove('drop-target');
+    }
+  });
+  schedWrapper.addEventListener('drop', function(e) {
+    e.preventDefault();
+    schedWrapper.classList.remove('drop-target');
+    if (draggedBlock && draggedBlock.getAttribute('data-section') === 'available') {
+      moveToScheduled(draggedBlock);
+    }
+  });
+
+  // — Available wrapper as drop zone —
+  availWrapper.addEventListener('dragover', function(e) {
+    if (!canDropOn('available')) return;
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    availWrapper.classList.add('drop-target');
+  });
+  availWrapper.addEventListener('dragleave', function(e) {
+    if (!availWrapper.contains(e.relatedTarget)) {
+      availWrapper.classList.remove('drop-target');
+    }
+  });
+  availWrapper.addEventListener('drop', function(e) {
+    e.preventDefault();
+    availWrapper.classList.remove('drop-target');
+    if (draggedBlock && draggedBlock.getAttribute('data-section') === 'scheduled') {
+      moveToAvailable(draggedBlock);
+    }
+  });
+
+  /* ----------------------------------------------------------
+     SAVE LOGIC
+  ---------------------------------------------------------- */
+  function attemptSave() {
+    var sCount = countScheduled();
+    var origLevel = getLevel(ORIGINAL_SCHEDULED_COUNT);
+    var newLevel  = getLevel(sCount);
+    var currentMinutes = getAppointmentMinutes(ORIGINAL_SCHEDULED_COUNT);
+    var editedMinutes = getAppointmentMinutes(sCount);
+    var timeDelta = editedMinutes - currentMinutes;
+    var changed = (newLevel !== origLevel) || (sCount !== ORIGINAL_SCHEDULED_COUNT);
+
+    if (!changed) {
+      // No impact — apply directly
+      applyChanges(null);
+      return;
+    }
+
+    if (timeDelta > 0) {
+      var endTime = calcNewAppointmentEndTime(editedMinutes);
+      var timeEl = document.getElementById('tc-new-time');
+      var durationEl = document.getElementById('tc-duration');
+      var ackCb = document.getElementById('chk-time-change-ack');
+      var acceptBtn = document.getElementById('btn-tc-accept');
+      if (timeEl) timeEl.textContent = 'Jun 08, 2026 · 1:00 PM – ' + endTime;
+      if (durationEl) durationEl.textContent = formatDuration(editedMinutes) + ' total';
+      if (ackCb) ackCb.checked = false;
+      if (acceptBtn) acceptBtn.disabled = true;
+    }
+
+    // Show confirmation modal
+    openModal('modal-changes');
+  }
+
+  function calcNewAppointmentEndTime(totalMins) {
+    var startMin = 13 * 60; // 1:00 PM
+    var endMin = startMin + totalMins;
+    var endHour = Math.floor(endMin / 60);
+    var endMinute = endMin % 60;
+    var ampm = endHour >= 12 ? 'PM' : 'AM';
+    var displayHour = endHour > 12 ? endHour - 12 : endHour;
+    if (displayHour === 0) displayHour = 12;
+    var minStr = endMinute < 10 ? '0' + endMinute : '' + endMinute;
+    return displayHour + ':' + minStr + ' ' + ampm;
+  }
+
+  function applyChanges(newDate) {
+    exitEditMode();
+    var msg = newDate ? 'Changes saved. Appointment rescheduled to ' + newDate + '.' : 'Changes saved.';
+    showToast(msg);
+  }
+
+  function applyRescheduleSelection(date, time) {
+    var body = document.getElementById('module-date-body');
+    var duration = getAppointmentMinutes(countScheduled());
+
+    APPOINTMENT_INSTALL_DATE = date;
+
+    if (body) {
+      body.innerHTML =
+        '<div><strong>' + date + '</strong></div>' +
+        '<div>' + time + '</div>' +
+        '<div style="color:#716f6d;font-size:12px;">(' + formatDuration(duration) + ')</div>';
+    }
+
+    container.querySelectorAll('.vehicle-block[data-section="scheduled"]').forEach(function(block) {
+      applyInstallationState(block, true);
+    });
+
+    showToast('Installation date updated');
+  }
+
+  /* ----------------------------------------------------------
+     MODAL: APPOINTMENT CHANGES DETECTED
+  ---------------------------------------------------------- */
+  var timeChangeAck = document.getElementById('chk-time-change-ack');
+  var btnTimeChangeAccept = document.getElementById('btn-tc-accept');
+  var btnTimeChangeExplore = document.getElementById('btn-tc-explore');
+
+  timeChangeAck?.addEventListener('change', function() {
+    if (btnTimeChangeAccept) btnTimeChangeAccept.disabled = !this.checked;
+  });
+
+  btnTimeChangeAccept?.addEventListener('click', function() {
+    closeModal('modal-changes');
+    applyChanges(null);
+  });
+
+  btnTimeChangeExplore?.addEventListener('click', function() {
+    closeModal('modal-changes');
+    openDateModal('vehicle');
+  });
+
+  /* ----------------------------------------------------------
+     MODAL: DATE PICKER
+  ---------------------------------------------------------- */
+  var dpYear = 2026, dpMonth = 5;
+  var dpSelectedDay = 8;
+  var dpSelectedTime = '1:00 PM – 2:30 PM';
+  var dpAvailableDays = [8, 9, 11, 14, 15, 17, 18, 20, 22, 23, 24, 25, 28, 29];
+  var vendorExpanded = false;
+  var spinnerSVG = '<svg style="width:16px;height:16px;animation:loader-spin 1s linear infinite;flex-shrink:0;" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="16" cy="16" r="13" stroke="#dddad4" stroke-width="3" stroke-linecap="round"/><path d="M16 3 A13 13 0 0 1 29 16" stroke="#1a1a1a" stroke-width="3" stroke-linecap="round" fill="none"/></svg>';
+
+  function updateDateLabel() {
+    var monthsShort = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    var el = document.getElementById('dp-selected-date-label');
+    if (el) el.textContent = monthsShort[dpMonth] + ' ' + dpSelectedDay + ', ' + dpYear;
+  }
+
+  function renderCalendar() {
+    var grid = document.getElementById('dp-grid');
+    if (!grid) return;
+    var months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+    document.getElementById('dp-month-label').textContent = months[dpMonth] + ' ' + dpYear;
+    updateDateLabel();
+    var days = ['Mo','Tu','We','Th','Fr','Sa','Su'];
+    var html = days.map(function(d) { return '<div class="dp-dow">' + d + '</div>'; }).join('');
+    var rawFirst = new Date(dpYear, dpMonth, 1).getDay();
+    var firstDay = (rawFirst + 6) % 7;
+    var daysInMonth = new Date(dpYear, dpMonth + 1, 0).getDate();
+    for (var i = 0; i < firstDay; i++) { html += '<div class="dp-day dp-empty"></div>'; }
+    for (var d = 1; d <= daysInMonth; d++) {
+      var hasAvail = dpAvailableDays.indexOf(d) !== -1;
+      var classes = 'dp-day';
+      if (dpSelectedDay === d) classes += ' dp-selected';
+      var dotHtml = hasAvail ? '<span class="dp-dot"></span>' : '';
+      html += '<button class="' + classes + '"' + (!hasAvail ? ' disabled' : '') + ' data-day="' + d + '">' + d + dotHtml + '</button>';
+    }
+    grid.innerHTML = html;
+    grid.querySelectorAll('.dp-day:not([disabled]):not(.dp-empty)').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        dpSelectedDay = parseInt(this.getAttribute('data-day'), 10);
+        renderCalendar();
+      });
+    });
+  }
+
+  function openDateModal(context) {
+    dateModalContext = context;
+    vendorExpanded = false;
+    document.getElementById('dp-slots-current-vendor').style.display = '';
+    document.getElementById('dp-slots-all-vendors').style.display = 'none';
+    var expandBtn = document.getElementById('btn-expand-vendor-search');
+    if (expandBtn) {
+      expandBtn.style.display = '';
+      expandBtn.disabled = false;
+      expandBtn.innerHTML = 'Check all vendors';
+    }
+    document.querySelectorAll('#modal-edit-date .time-slot').forEach(function(b) {
+      b.classList.toggle('selected', b.getAttribute('data-time') === dpSelectedTime);
+    });
+    renderCalendar();
+    openModal('modal-edit-date');
+  }
+
+  function openAvailabilityFromReschedule() {
+    var loaderEl = document.getElementById('schedule-loader-overlay');
+    var arc = document.getElementById('schedule-loader-arc');
+    var pctEl = document.getElementById('schedule-loader-pct');
+    var circumference = 326.7;
+    var duration = 3000;
+    var startTime = null;
+
+    if (!loaderEl || !arc || !pctEl) {
+      openDateModal('direct');
+      return;
+    }
+
+    loaderEl.style.display = 'flex';
+    arc.style.strokeDashoffset = circumference;
+    pctEl.textContent = '0%';
+
+    function animateLoader(ts) {
+      if (!startTime) startTime = ts;
+      var elapsed = ts - startTime;
+      var pct = Math.min(Math.round((elapsed / duration) * 100), 100);
+      arc.style.strokeDashoffset = circumference - (circumference * pct / 100);
+      pctEl.textContent = pct + '%';
+      if (elapsed < duration) {
+        requestAnimationFrame(animateLoader);
+      } else {
+        loaderEl.style.display = 'none';
+        openDateModal('direct');
+      }
+    }
+
+    requestAnimationFrame(animateLoader);
+  }
+
+  document.getElementById('dp-prev-btn')?.addEventListener('click', function() {
+    dpMonth--; if (dpMonth < 0) { dpMonth = 11; dpYear--; } renderCalendar();
+  });
+  document.getElementById('dp-next-btn')?.addEventListener('click', function() {
+    dpMonth++; if (dpMonth > 11) { dpMonth = 0; dpYear++; } renderCalendar();
+  });
+
+  document.getElementById('modal-edit-date')?.addEventListener('click', function(e) {
+    var btn = e.target.closest('.time-slot');
+    if (!btn) return;
+    document.querySelectorAll('#modal-edit-date .time-slot').forEach(function(b) { b.classList.remove('selected'); });
+    btn.classList.add('selected');
+    dpSelectedTime = btn.getAttribute('data-time');
+  });
+
+  document.getElementById('btn-expand-vendor-search')?.addEventListener('click', function() {
+    var btn = this;
+    btn.disabled = true;
+    btn.innerHTML = spinnerSVG + ' <span>Loading…</span>';
+    setTimeout(function() {
+      vendorExpanded = true;
+      document.getElementById('dp-slots-current-vendor').style.display = 'none';
+      document.getElementById('dp-slots-all-vendors').style.display = '';
+      btn.style.display = 'none';
+      document.querySelectorAll('#modal-edit-date .time-slot').forEach(function(b) { b.classList.remove('selected'); });
+      dpSelectedTime = null;
+    }, 2000);
+  });
+
+  document.getElementById('btn-confirm-date')?.addEventListener('click', function() {
+    var monthsShort = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    var body = document.getElementById('module-date-body');
+    var selectedDate = monthsShort[dpMonth] + ' ' + dpSelectedDay + ', ' + dpYear;
+    var chosenTime = dpSelectedTime || '1:00 PM – 2:30 PM';
+    var durationText = formatDuration(getAppointmentMinutes(countScheduled()));
+
+    if (body) {
+      body.innerHTML =
+        '<div><strong>' + selectedDate + '</strong></div>' +
+        '<div>' + chosenTime + '</div>' +
+        '<div style="color:#716f6d;font-size:12px;">(' + durationText + ')</div>';
+    }
+
+    APPOINTMENT_INSTALL_DATE = selectedDate;
+    container.querySelectorAll('.vehicle-block[data-section="scheduled"]').forEach(function(block) {
+      applyInstallationState(block, true);
+    });
+
+    closeModal('modal-edit-date');
+
+    if (dateModalContext === 'vehicle') {
+      applyChanges(selectedDate + ', ' + chosenTime);
+    } else {
+      showToast('Installation date updated');
+    }
+
+    dateModalContext = null;
+  });
+
+  document.getElementById('btn-change-date')?.addEventListener('click', function() {
+    openAvailabilityFromReschedule();
+  });
+
+  /* ----------------------------------------------------------
+     MODAL OPEN / CLOSE UTILITIES
+  ---------------------------------------------------------- */
+  function openModal(id) {
+    var el = document.getElementById(id);
+    if (!el) return;
+    el.classList.add('open');
+    document.body.classList.add('modal-open');
+  }
+  function closeModal(id) {
+    var el = document.getElementById(id);
+    if (!el) return;
+    el.classList.remove('open');
+    if (!document.querySelector('.modal-overlay.open')) {
+      document.body.classList.remove('modal-open');
+    }
+  }
+
+  // Close buttons with data-close attribute
+  document.querySelectorAll('[data-close]').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var target = btn.getAttribute('data-close');
+      closeModal(target);
+    });
+  });
+
+  // Click outside to close (but not availability during load)
+  document.querySelectorAll('.modal-overlay').forEach(function(overlay) {
+    overlay.addEventListener('click', function(e) {
+      if (e.target !== overlay) return;
+      closeModal(overlay.id);
+    });
+  });
+
+  // Escape to close
+  document.addEventListener('keydown', function(e) {
+    if (e.key !== 'Escape') return;
+    document.querySelectorAll('.modal-overlay.open').forEach(function(overlay) {
+      closeModal(overlay.id);
+    });
+  });
+
+  /* ----------------------------------------------------------
+     TOAST
+  ---------------------------------------------------------- */
+  function showToast(msg) {
+    var t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('visible');
+    if (toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(function() { t.classList.remove('visible'); }, 3000);
+  }
+
+  /* ----------------------------------------------------------
+     SUMMARY TOGGLE
+  ---------------------------------------------------------- */
+  var summaryToggle  = document.getElementById('summary-toggle');
+  var summaryBody    = document.getElementById('summary-body');
+  var summaryChevron = document.getElementById('summary-chevron');
+
+  function updateSummaryView() {
+    var select = document.getElementById('summary-view-select');
+    var summarySection = document.getElementById('summary-section');
+    var vendorSection = document.getElementById('vendor-info-section');
+    var customerSection = document.getElementById('customer-info-section');
+    var customerOption = document.getElementById('summary-view-customer-option');
+    var vendorBtn = document.getElementById('btn-vendor-add');
+    var summaryTable = summarySection ? summarySection.querySelector('.summary-table') : null;
+    if (!select || !summaryTable || !vendorSection || !customerSection) return;
+
+    if (customerOption && customerOption.style.display === 'none' && select.value === 'customer') {
+      select.value = 'job';
+    }
+
+    var val = select.value;
+    summaryTable.style.display = val === 'job' ? 'table' : 'none';
+    vendorSection.style.display = val === 'vendor' ? 'block' : 'none';
+    customerSection.style.display = val === 'customer' ? 'block' : 'none';
+    if (vendorBtn) vendorBtn.style.display = val === 'vendor' ? '' : 'none';
+  }
+
+  var customerNoShowData = null;
+  var vendorNoShowData = null;
+
+  function updateVendorNoShowSection() {
+    var section = document.getElementById('vendor-noshow-section');
+    var tbody = document.getElementById('vendor-noshow-tbody');
+    if (!section || !tbody) return;
+
+    if (!vendorNoShowData) {
+      section.style.display = 'none';
+      tbody.innerHTML = '';
+      return;
+    }
+
+    section.style.display = '';
+    tbody.innerHTML =
+      '<tr>' +
+        '<td>' + vendorNoShowData.code + '</td>' +
+        '<td>' + vendorNoShowData.service + '</td>' +
+        '<td>' + vendorNoShowData.qty + '</td>' +
+        '<td>' + vendorNoShowData.fee + '</td>' +
+        '<td>' + vendorNoShowData.reason + '</td>' +
+      '</tr>';
+  }
+
+  function updateCustomerSummarySection() {
+    var customerOption = document.getElementById('summary-view-customer-option');
+    var tbody = document.getElementById('customer-summary-tbody');
+    var select = document.getElementById('summary-view-select');
+    if (!customerOption || !tbody || !select) return;
+
+    if (!customerNoShowData) {
+      customerOption.style.display = 'none';
+      tbody.innerHTML = '';
+      if (select.value === 'customer') select.value = 'job';
+      updateSummaryView();
+      return;
+    }
+
+    customerOption.style.display = '';
+    tbody.innerHTML =
+      '<tr>' +
+        '<td>' + customerNoShowData.code + '</td>' +
+        '<td>' + customerNoShowData.service + '</td>' +
+        '<td>' + customerNoShowData.qty + '</td>' +
+        '<td>$' + customerNoShowData.fee.toFixed(2) + '</td>' +
+        '<td>' + customerNoShowData.reason + '</td>' +
+      '</tr>';
+    updateSummaryView();
+  }
+
+  function updateSimulationMode() {
+    var simSelect = document.getElementById('simulations-select');
+    var isPartial = simSelect && simSelect.value === 'partial';
+    document.body.classList.toggle('partial-sim-mode', !!isPartial);
+    if (wrapper) {
+      wrapper.classList.toggle('sim-partial', !!isPartial);
+      wrapper.classList.toggle('sim-standard', !isPartial);
+    }
+    container.querySelectorAll('.subs-section').forEach(function(section) {
+      section.classList.toggle('subs-partial', !!isPartial);
+    });
+    updateAll();
+  }
+
+  var feeState = {
+    mileage: { value: '', createdAt: '' },
+    hotel: { value: '', createdAt: '' },
+    amount: { value: '', createdAt: '' }
+  };
+
+  function getTodayMMDDYYYY() {
+    var d = new Date();
+    var mm = String(d.getMonth() + 1).padStart(2, '0');
+    var dd = String(d.getDate()).padStart(2, '0');
+    var yyyy = d.getFullYear();
+    return mm + '/' + dd + '/' + yyyy;
+  }
+
+  var feeDefs = [
+    { key: 'mileage', inputId: 'fee-distance', label: 'Mileage fee', code: '1300000047' },
+    { key: 'hotel', inputId: 'fee-nights', label: 'Hotel fee', code: '1300000005' },
+    { key: 'amount', inputId: 'fee-amount', label: 'Amount fee', code: '1300000018' }
+  ];
+
+  function hasAnyFeesSaved() {
+    return feeDefs.some(function(def) {
+      return feeState[def.key].value !== '';
+    });
+  }
+
+  function updateVendorFeesButtonLabel(hasFees) {
+    var vendorBtn = document.getElementById('btn-vendor-add');
+    if (!vendorBtn) return;
+    vendorBtn.textContent = hasFees ? 'Edit Fees' : 'Add Fees';
+  }
+
+  function updateFeesModalCopy(hasFees) {
+    var title = document.getElementById('configure-fees-title');
+    var saveBtn = document.getElementById('btn-save-fees');
+    if (title) title.textContent = hasFees ? 'Edit Fees' : 'Add Fees';
+    if (saveBtn) saveBtn.textContent = hasFees ? 'Save Changes' : 'Add Fees';
+  }
+
+  function feesPopulateModal() {
+    feeDefs.forEach(function(def) {
+      var input = document.getElementById(def.inputId);
+      if (input) input.value = feeState[def.key].value;
+    });
+  }
+
+  function feesRebuildTable() {
+    var tbody = document.getElementById('vendor-fees-tbody');
+    var section = document.getElementById('vendor-fees-section');
+    if (!tbody || !section) return;
+
+    tbody.innerHTML = '';
+    var hasRows = false;
+
+    feeDefs.forEach(function(def) {
+      var val = feeState[def.key].value;
+      if (val === '') return;
+      hasRows = true;
+
+      var num = parseFloat(val);
+      var displayVal = def.key === 'amount'
+        ? '$' + num.toFixed(2)
+        : def.key === 'hotel'
+          ? num + (num === 1 ? ' night' : ' nights')
+          : num + ' mi';
+
+      var tr = document.createElement('tr');
+      tr.setAttribute('data-fee-key', def.key);
+      tr.innerHTML =
+        '<td>' + def.label + '<div class="vendor-table-id">' + def.code + '</div></td>' +
+        '<td>' + displayVal + '</td>' +
+        '<td>' + (feeState[def.key].createdAt || '--') + '</td>' +
+        '<td><button class="btn-delete-fee" title="Remove" aria-label="Remove fee">' +
+          '<img src="./assets/ds/icons/trash.svg" width="16" height="16" alt="Remove" style="display:block;">' +
+        '</button></td>';
+
+      tr.querySelector('.btn-delete-fee').addEventListener('click', function() {
+        feeState[def.key].value = '';
+        feesRebuildTable();
+      });
+
+      tbody.appendChild(tr);
+    });
+
+    section.style.display = hasRows ? '' : 'none';
+    updateVendorFeesButtonLabel(hasRows);
+  }
+
+  function openFeesModal() {
+    updateFeesModalCopy(hasAnyFeesSaved());
+    feesPopulateModal();
+    openModal('modal-configure-fees');
+  }
+
+  document.getElementById('summary-view-select')?.addEventListener('change', updateSummaryView);
+  document.getElementById('simulations-select')?.addEventListener('change', updateSimulationMode);
+  document.getElementById('btn-vendor-add')?.addEventListener('click', openFeesModal);
+  document.getElementById('btn-add-fee')?.addEventListener('click', openFeesModal);
+  window.toggleVendorPanel = function() {
+    var panel = document.getElementById('vendor-panel');
+    var checked = document.getElementById('chk-pay-vendor')?.checked;
+    if (panel) panel.style.display = checked ? '' : 'none';
+  };
+
+  window.cancelToggleLate = function() {
+    var isLate = document.getElementById('toggle-late-cancel')?.checked;
+    var section = document.getElementById('late-cancel-section');
+    if (section) section.style.display = isLate ? 'block' : 'none';
+    if (!isLate) {
+      var penChk = document.getElementById('chk-assess-penalty');
+      if (penChk) penChk.checked = false;
+      var penDetails = document.getElementById('penalty-details');
+      if (penDetails) penDetails.style.display = 'none';
+    }
+    window.cancelValidate();
+  };
+
+  window.cancelTogglePenalty = function() {
+    var checked = document.getElementById('chk-assess-penalty')?.checked;
+    var details = document.getElementById('penalty-details');
+    if (details) details.style.display = checked ? 'block' : 'none';
+    if (checked) window.updateFeeTotal();
+    window.cancelValidate();
+  };
+
+  window.cancelToggleBillCustomer = function() {
+    var checked = document.getElementById('chk-bill-customer')?.checked;
+    var wrap = document.getElementById('waive-reason-wrap');
+    if (wrap) wrap.style.display = checked ? 'none' : 'block';
+  };
+
+  window.cancelValidate = function() {
+    var btn = document.getElementById('btn-confirm-cancel');
+    if (!btn) return;
+    var reason = document.getElementById('cancel-reason-select')?.value;
+    if (!reason) { btn.disabled = true; return; }
+
+    var isLate = document.getElementById('toggle-late-cancel')?.checked;
+    var penChecked = document.getElementById('chk-assess-penalty')?.checked;
+    if (isLate && penChecked) {
+      var feeType = document.getElementById('fee-type-select')?.value;
+      if (!feeType) { btn.disabled = true; return; }
+      var billCustomer = document.getElementById('chk-bill-customer')?.checked;
+      if (!billCustomer) {
+        var waive = document.getElementById('waive-reason-select')?.value;
+        if (!waive) { btn.disabled = true; return; }
+      }
+    }
+    btn.disabled = false;
+  };
+
+  window.updateFeeTotal = function() {
+    var feeType = parseInt(document.getElementById('fee-type-select')?.value || '0', 10);
+    if (!feeType) return;
+    var billCustomer = document.getElementById('chk-bill-customer')?.checked;
+    var payVendor = document.getElementById('chk-pay-vendor')?.checked;
+    var vehCount = countScheduled();
+    var total = 0;
+    if (billCustomer) total += feeType * vehCount;
+    if (payVendor) total += feeType * vehCount;
+    var el = document.getElementById('fee-total-display');
+    if (el) el.textContent = '$' + total.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    var lbl = document.getElementById('fee-total-label');
+    if (lbl) lbl.textContent = vehCount + ' qty × $' + feeType.toFixed(2);
+  };
+
+  document.getElementById('btn-cancel-job')?.addEventListener('click', function(e) {
+    e.preventDefault();
+    document.getElementById('cancel-reason-select').value = '';
+    var penChk = document.getElementById('chk-assess-penalty');
+    if (penChk) penChk.checked = false;
+    document.getElementById('penalty-details').style.display = 'none';
+    document.getElementById('fee-type-select').value = '150';
+    document.getElementById('chk-bill-customer').checked = true;
+    document.getElementById('chk-pay-vendor').checked = true;
+    document.getElementById('waive-reason-wrap').style.display = 'none';
+    var countEl = document.getElementById('cancel-veh-count');
+    if (countEl) countEl.textContent = String(countScheduled());
+    window.toggleVendorPanel();
+    window.cancelToggleLate();
+    window.updateFeeTotal();
+    window.cancelValidate();
+    openModal('modal-cancel');
+  });
+
+  document.getElementById('btn-confirm-cancel')?.addEventListener('click', function() {
+    var isLate = document.getElementById('toggle-late-cancel')?.checked;
+    var penChecked = document.getElementById('chk-assess-penalty')?.checked;
+    var billCustomer = document.getElementById('chk-bill-customer')?.checked;
+    var payVendor = document.getElementById('chk-pay-vendor')?.checked;
+    var reasonText = (document.getElementById('cancel-reason-select')?.selectedOptions?.[0]?.textContent || '').trim();
+    var feeType = parseFloat(document.getElementById('fee-type-select')?.value || '0');
+    var affectedQty = countScheduled();
+    var customerFee = feeType || 150;
+
+    var applyCustomerNoShow = isLate && penChecked && billCustomer;
+    var applyVendorNoShow = isLate && penChecked && payVendor;
+
+    if (applyCustomerNoShow) {
+      customerNoShowData = {
+        code: 'ZBTP',
+        service: 'Installation - No Show',
+        qty: affectedQty,
+        fee: customerFee,
+        reason: reasonText || 'No reason provided'
+      };
+    } else {
+      customerNoShowData = null;
+    }
+
+    if (applyVendorNoShow) {
+      vendorNoShowData = {
+        code: 'RTVF',
+        service: 'Installation - No Show',
+        qty: affectedQty,
+        fee: '--',
+        reason: reasonText || 'No reason provided'
+      };
+    } else {
+      vendorNoShowData = null;
+    }
+
+    updateVendorNoShowSection();
+    updateCustomerSummarySection();
+
+    var summarySelect = document.getElementById('summary-view-select');
+    if (summarySelect) {
+      if (applyCustomerNoShow && !applyVendorNoShow) {
+        summarySelect.value = 'customer';
+      } else {
+        summarySelect.value = 'vendor';
+      }
+      updateSummaryView();
+    }
+
+    closeModal('modal-cancel');
+
+    var badge = document.getElementById('job-badge');
+    if (badge) {
+      badge.className = 'badge badge--red';
+      badge.textContent = 'Cancelled';
+    }
+    document.querySelectorAll('.info-mod-btn').forEach(function(b) { b.style.display = 'none'; });
+    var sectionActions = document.getElementById('section-actions');
+    if (sectionActions) sectionActions.style.display = 'none';
+    var cancelBtn = document.getElementById('btn-cancel-job');
+    if (cancelBtn) cancelBtn.style.display = 'none';
+
+    var newStatus = isLate ? 'Nothing Installed' : 'Never Scheduled';
+    var newDate = isLate ? APPOINTMENT_INSTALL_DATE : '—';
+
+    container.querySelectorAll('.vehicle-block').forEach(function(block) {
+      block.setAttribute('data-section', 'available');
+      setVehicleChangeState(block);
+      applyInstallationState(block, false);
+      var vehicleBadge = block.querySelector('.vh-cell--inst-status .badge');
+      var vehicleDate = block.querySelector('.vh-cell--inst-status .sec');
+      var subBadge = block.querySelector('.subs-section .sub-line:first-child .sub-dcell--inst .badge');
+      var subDate = block.querySelector('.subs-section .sub-line:first-child .sub-dcell--idate');
+      if (vehicleBadge) {
+        vehicleBadge.className = 'badge badge--red';
+        vehicleBadge.textContent = newStatus;
+      }
+      if (vehicleDate) vehicleDate.textContent = newDate;
+      if (subBadge) {
+        subBadge.className = 'badge badge--red';
+        subBadge.textContent = newStatus;
+      }
+      if (subDate) subDate.textContent = newDate;
+
+      var groupId = block.getAttribute('data-addr-group');
+      var group = container.querySelector('.split-addr-group[data-group-id="' + groupId + '"]') ||
+        container.querySelector('.split-addr-group[data-group-id="0"]');
+      if (group) group.querySelector('.split-addr-vehicles').appendChild(block);
+    });
+
+    exitEditMode();
+    updateAll();
+    showToast('Appointment cancelled. All downstream systems notified.', 3000);
+  });
+  document.getElementById('btn-save-fees')?.addEventListener('click', function() {
+    feeDefs.forEach(function(def) {
+      var input = document.getElementById(def.inputId);
+      var newValue = input ? input.value.trim() : '';
+      var prevValue = feeState[def.key].value;
+      if (newValue === '') {
+        feeState[def.key].createdAt = '';
+      } else if (prevValue === '' || !feeState[def.key].createdAt) {
+        feeState[def.key].createdAt = getTodayMMDDYYYY();
+      }
+      feeState[def.key].value = newValue;
+    });
+
+    var hasAny = feeDefs.some(function(def) { return feeState[def.key].value !== ''; });
+
+    feesRebuildTable();
+    closeModal('modal-configure-fees');
+    if (hasAny) showToast('Fees saved');
+  });
+
+  if (summaryToggle) {
+    summaryToggle.addEventListener('click', function() {
+      var isHidden = summaryBody.classList.toggle('hidden');
+      summaryChevron.classList.toggle('collapsed', isHidden);
+      summaryToggle.classList.toggle('is-collapsed', isHidden);
+    });
+  }
+  updateSummaryView();
+  updateSimulationMode();
+  feesRebuildTable();
+  updateVendorNoShowSection();
+  updateCustomerSummarySection();
+
+  /* ----------------------------------------------------------
+     INIT
+  ---------------------------------------------------------- */
+  btnSave.style.display = 'none';
+  btnCancel.style.display = 'none';
+  updateAll();
+
+})();
+</script>
+</body>
+</html>
