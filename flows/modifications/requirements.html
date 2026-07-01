@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Requirements — Modifications | Verizon C360</title>
+  <link rel="stylesheet" href="../../assets/ds/design-system.css">
+  <style>
+    body    { background: var(--color-gray-100); }
+    .doc    { max-width: 780px; margin: 0 auto; padding: var(--spacing-600); }
+    .doc h1 { margin: 0 0 var(--spacing-200); }
+    .doc h2 { margin: var(--spacing-600) 0 var(--spacing-300); padding-bottom: var(--spacing-200); border-bottom: 1px solid var(--color-border); }
+    .doc h3 { margin: var(--spacing-400) 0 var(--spacing-200); }
+    .doc p, .doc li { color: var(--color-gray-900); margin: 0 0 var(--spacing-200); }
+    .doc ul  { padding-left: var(--spacing-400); margin: 0 0 var(--spacing-300); }
+    .doc hr  { border: none; border-top: 1px solid var(--color-border); margin: var(--spacing-500) 0; }
+    .doc blockquote { border-left: 3px solid var(--color-brand-red); margin: 0 0 var(--spacing-400); padding: var(--spacing-200) var(--spacing-400); background: var(--color-white); border-radius: 0 var(--radius-200) var(--radius-200) 0; }
+
+    /* Tables — built from VDS tokens only */
+    .doc table   { width: 100%; border-collapse: collapse; margin: 0 0 var(--spacing-400); background: var(--color-white); border-radius: var(--radius-200); overflow: hidden; }
+    .doc thead   { background: var(--color-gray-1100); }
+    .doc thead th { padding: var(--spacing-200) var(--spacing-300); text-align: left; color: var(--color-white); }
+    .doc tbody td { padding: var(--spacing-200) var(--spacing-300); border-bottom: 1px solid var(--color-border); vertical-align: top; }
+    .doc tbody tr:last-child td { border-bottom: none; }
+    .doc tbody tr:hover td { background: var(--color-gray-100); }
+  </style>
+</head>
+<body>
+
+  <!-- Generated notice -->
+  <div style="background:var(--color-brand-stone);border-bottom:1px solid var(--color-border);padding:var(--spacing-200) var(--spacing-600);display:flex;align-items:center;justify-content:space-between;gap:var(--spacing-400);">
+    <p class="text-body-small" style="margin:0;color:var(--color-gray-600);">
+      Generated from <code>requirements.md</code> — do not edit manually.
+    </p>
+    <a href="../../index.html" class="btn btn--ghost btn--small">← Viewer</a>
+  </div>
+
+  <div class="doc">
+
+    <h1 class="text-title-small" style="margin-top:var(--spacing-500);">Modifications — Requirements</h1>
+    <div style="display:flex;align-items:center;gap:var(--spacing-200);margin-bottom:var(--spacing-400);">
+      <span class="badge badge--gray-low">C360</span>
+      <span class="badge badge--blue">Job Detail</span>
+    </div>
+
+    <blockquote>
+      <p class="text-body-medium" style="margin:0;"><strong>Purpose:</strong> Allow a field technician to view and edit job details inline, within a split-panel layout embedded in Salesforce.</p>
+    </blockquote>
+
+    <hr>
+
+    <!-- Context -->
+    <h2 class="text-title-2xsmall">Context</h2>
+    <ul>
+      <li class="text-body-medium"><strong>Tool area:</strong> C360 — Job Detail</li>
+      <li class="text-body-medium"><strong>Target user role:</strong> Field Technician, Dispatcher</li>
+      <li class="text-body-medium"><strong>Entry point:</strong> From the Job List, clicking a job record opens this view.</li>
+    </ul>
+
+    <hr>
+
+    <!-- User Stories -->
+    <h2 class="text-title-2xsmall">User Stories</h2>
+    <table>
+      <thead>
+        <tr>
+          <th class="text-body-small-bold">ID</th>
+          <th class="text-body-small-bold">As a…</th>
+          <th class="text-body-small-bold">I want to…</th>
+          <th class="text-body-small-bold">So that…</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="badge badge--black">US-01</span></td>
+          <td class="text-body-medium">Field Technician</td>
+          <td class="text-body-medium">View job details in a split-panel layout</td>
+          <td class="text-body-medium">I can see all relevant information without leaving Salesforce</td>
+        </tr>
+        <tr>
+          <td><span class="badge badge--black">US-02</span></td>
+          <td class="text-body-medium">Field Technician</td>
+          <td class="text-body-medium">Edit job fields inline on the right panel</td>
+          <td class="text-body-medium">I can update job data without navigating to a separate form</td>
+        </tr>
+        <tr>
+          <td><span class="badge badge--black">US-03</span></td>
+          <td class="text-body-medium">Dispatcher</td>
+          <td class="text-body-medium">See the current state of a job at a glance</td>
+          <td class="text-body-medium">I can triage and prioritize work orders efficiently</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <hr>
+
+    <!-- Acceptance Criteria -->
+    <h2 class="text-title-2xsmall">Acceptance Criteria</h2>
+
+    <h3 class="text-title-2xsmall"><span class="badge badge--black" style="margin-right:8px;">US-01</span>Split-panel layout</h3>
+    <ul>
+      <li class="text-body-medium"><strong>Given</strong> a field technician opens a job record</li>
+      <li class="text-body-medium"><strong>When</strong> the Job Detail view loads</li>
+      <li class="text-body-medium"><strong>Then</strong> a split layout is shown: read-only summary on the left, editable detail on the right</li>
+    </ul>
+
+    <h3 class="text-title-2xsmall"><span class="badge badge--black" style="margin-right:8px;">US-02</span>Inline editing</h3>
+    <ul>
+      <li class="text-body-medium"><strong>Given</strong> the technician is on the edit panel</li>
+      <li class="text-body-medium"><strong>When</strong> they modify a field and submit</li>
+      <li class="text-body-medium"><strong>Then</strong> the field is saved and the left panel updates to reflect the change</li>
+    </ul>
+
+    <h3 class="text-title-2xsmall"><span class="badge badge--black" style="margin-right:8px;">US-03</span>Job state visibility</h3>
+    <ul>
+      <li class="text-body-medium"><strong>Given</strong> any user opens the view</li>
+      <li class="text-body-medium"><strong>When</strong> the page loads</li>
+      <li class="text-body-medium"><strong>Then</strong> the job status, type, and key dates are prominently displayed with appropriate VDS badges</li>
+    </ul>
+
+    <hr>
+
+    <!-- States & Edge Cases -->
+    <h2 class="text-title-2xsmall">States &amp; Edge Cases</h2>
+    <table>
+      <thead>
+        <tr>
+          <th class="text-body-small-bold">State</th>
+          <th class="text-body-small-bold">Trigger</th>
+          <th class="text-body-small-bold">Expected UI behavior</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="badge badge--gray">default</span></td>
+          <td class="text-body-medium">Job record loads successfully</td>
+          <td class="text-body-medium">Split layout shown, all fields populated</td>
+        </tr>
+        <tr>
+          <td><span class="badge badge--blue">loading</span></td>
+          <td class="text-body-medium">Data fetch in progress</td>
+          <td class="text-body-medium">Skeleton or spinner in both panels</td>
+        </tr>
+        <tr>
+          <td><span class="badge badge--red">validation error</span></td>
+          <td class="text-body-medium">User submits invalid field value</td>
+          <td class="text-body-medium">Inline error message below the field, submit blocked</td>
+        </tr>
+        <tr>
+          <td><span class="badge badge--orange">permission denied</span></td>
+          <td class="text-body-medium">User lacks edit rights</td>
+          <td class="text-body-medium">Edit panel fields disabled or hidden</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <hr>
+
+    <!-- Open Questions -->
+    <h2 class="text-title-2xsmall">Open Questions</h2>
+    <ul>
+      <li class="text-body-medium">Which fields are editable inline vs. requiring a full Salesforce record edit?</li>
+      <li class="text-body-medium">What happens when a job is locked (in-progress by another technician)?</li>
+    </ul>
+
+  </div>
+</body>
+</html>

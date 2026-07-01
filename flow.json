@@ -12,8 +12,8 @@
       "status": "draft",
       "updated": "2026-07-01",
       "path": "flows/modifications/index.html",
-      "requirements": "flows/modifications/requirements.md",
-      "changelog": "flows/modifications/CHANGELOG.md",
+      "requirements": "flows/modifications/requirements.html",
+      "changelog": "flows/modifications/CHANGELOG.html",
       "states": ["default", "loading", "validation-error", "permission-denied"]
     }
   ]

@@ -46,6 +46,21 @@ Every flow lives in `/flows/{flow-name}/` and must contain:
    behavior, and its deep link (`?state=x`).
 4. Use `?presenter=true` to hide the toolbar for stakeholder demos and recordings.
 
+## Documentation Rules
+
+Every flow has four doc files: `requirements.md`, `CHANGELOG.md` (source of truth),
+and their HTML twins `requirements.html`, `CHANGELOG.html` (generated views).
+
+1. Whenever a flow's `.md` docs change — including at session wrap-up — regenerate
+   their `.html` twins in the same task so they never drift.
+2. The `.html` views must always include the notice:
+   `"Generated from the .md source — do not edit manually."`
+3. The States & Edge Cases table in `requirements.html` must render each state as a
+   VDS badge (`badge--gray` default · `badge--blue` loading · `badge--red` error/validation
+   · `badge--orange` permission denied · `badge--yellow` in-review/warning).
+4. The dashboard (`index.html`) Requirements and Changelog links point to the `.html`
+   versions, not the `.md` files.
+
 ## Ecosystem Rules
 
 1. Every new flow must be registered in `flow.json` in the same task that creates it.
