@@ -5,6 +5,18 @@
   ],
   "flows": [
     {
+      "id": "modifications",
+      "project": "c360",
+      "name": "Modifications",
+      "description": "Job detail split-panel view — read-only summary left, inline edit right.",
+      "status": "draft",
+      "updated": "2026-07-01",
+      "path": "flows/modifications/index.html",
+      "requirements": "flows/modifications/requirements.md",
+      "changelog": "flows/modifications/CHANGELOG.md",
+      "states": ["default", "loading", "validation-error", "permission-denied"]
+    },
+    {
       "id": "_demo-states",
       "project": "c360",
       "name": "State Switcher Demo",
