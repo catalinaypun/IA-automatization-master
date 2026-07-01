@@ -186,7 +186,7 @@
       var accent  = proj ? proj.accent : 'var(--color-gray-600)';
 
       var card = document.createElement('div');
-      card.style.cssText = 'background:var(--color-white);border-radius:var(--radius-400);border:1px solid var(--color-border);display:flex;flex-direction:column;transition:box-shadow .15s;cursor:pointer;';
+      card.style.cssText = 'background:var(--color-white);border-radius:var(--radius-400);overflow:hidden;border:1px solid var(--color-border);display:flex;flex-direction:column;transition:box-shadow .15s;cursor:pointer;';
       card.addEventListener('mouseenter', function () { card.style.boxShadow = '0 4px 16px rgba(0,0,0,.12)'; });
       card.addEventListener('mouseleave', function () { card.style.boxShadow = 'none'; });
 
@@ -240,7 +240,7 @@
       openBtn.target = '_blank';
       openBtn.rel = 'noopener';
       openBtn.className = 'btn btn--primary btn--medium';
-      openBtn.style.cssText = 'width:100%;text-align:center;';
+      openBtn.style.cssText = 'width:100%;text-align:center;box-sizing:border-box;display:block;';
       openBtn.textContent = 'Open';
       actions.appendChild(openBtn);
 
@@ -253,7 +253,7 @@
         reqLink.target = '_blank';
         reqLink.rel = 'noopener';
         reqLink.className = 'btn btn--secondary btn--small';
-        reqLink.style.cssText = 'flex:1;text-align:center;';
+        reqLink.style.cssText = 'flex:1;text-align:center;box-sizing:border-box;';
         reqLink.textContent = 'Requirements';
         secondary.appendChild(reqLink);
       }
@@ -263,7 +263,7 @@
         logLink.target = '_blank';
         logLink.rel = 'noopener';
         logLink.className = 'btn btn--secondary btn--small';
-        logLink.style.cssText = 'flex:1;text-align:center;';
+        logLink.style.cssText = 'flex:1;text-align:center;box-sizing:border-box;';
         logLink.textContent = 'Changelog';
         secondary.appendChild(logLink);
       }
