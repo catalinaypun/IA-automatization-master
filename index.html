@@ -88,7 +88,7 @@
 
     <!-- Scrollable grid area -->
     <main style="flex:1;overflow-y:auto;padding:24px;">
-      <div id="flow-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:16px;"></div>
+      <div id="flow-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px;"></div>
       <div id="empty-state" style="display:none;text-align:center;padding:80px 0;">
         <p class="text-title-xsmall" style="color:var(--color-gray-400);margin:0 0 8px;">No flows in this project</p>
         <p class="text-body-medium" style="color:var(--color-gray-600);">Add a flow to <code>flow.json</code> with this project id.</p>
@@ -233,16 +233,19 @@
 
       // Action links
       var actions = document.createElement('div');
-      actions.style.cssText = 'display:flex;gap:6px;margin-top:4px;flex-wrap:wrap;';
+      actions.style.cssText = 'display:flex;flex-direction:column;gap:8px;margin-top:4px;';
 
       var openBtn = document.createElement('a');
       openBtn.href = flow.path;
       openBtn.target = '_blank';
       openBtn.rel = 'noopener';
-      openBtn.className = 'btn btn--primary btn--small';
-      openBtn.style.cssText = 'flex:1;text-align:center;';
+      openBtn.className = 'btn btn--primary btn--medium';
+      openBtn.style.cssText = 'width:100%;text-align:center;';
       openBtn.textContent = 'Open';
       actions.appendChild(openBtn);
+
+      var secondary = document.createElement('div');
+      secondary.style.cssText = 'display:flex;gap:8px;';
 
       if (flow.requirements) {
         var reqLink = document.createElement('a');
@@ -250,9 +253,9 @@
         reqLink.target = '_blank';
         reqLink.rel = 'noopener';
         reqLink.className = 'btn btn--secondary btn--small';
-        reqLink.title = 'Requirements';
-        reqLink.textContent = 'Req';
-        actions.appendChild(reqLink);
+        reqLink.style.cssText = 'flex:1;text-align:center;';
+        reqLink.textContent = 'Requirements';
+        secondary.appendChild(reqLink);
       }
       if (flow.changelog) {
         var logLink = document.createElement('a');
@@ -260,11 +263,12 @@
         logLink.target = '_blank';
         logLink.rel = 'noopener';
         logLink.className = 'btn btn--secondary btn--small';
-        logLink.title = 'Changelog';
-        logLink.textContent = 'Log';
-        actions.appendChild(logLink);
+        logLink.style.cssText = 'flex:1;text-align:center;';
+        logLink.textContent = 'Changelog';
+        secondary.appendChild(logLink);
       }
 
+      if (secondary.children.length) actions.appendChild(secondary);
       body.appendChild(actions);
       card.appendChild(body);
       return card;
