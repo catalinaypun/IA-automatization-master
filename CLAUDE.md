@@ -33,6 +33,17 @@ Every flow lives in `/flows/{flow-name}/` and must contain:
 
 (These rules will be expanded in later steps.)
 
+## Changelog Rules
+
+1. Every task that creates or modifies a flow must append an entry to that
+   flow's `/flows/{flow-name}/CHANGELOG.md` before the task is considered done.
+   Use the template at `/docs/templates/changelog-template.md`.
+2. Entries are written for stakeholders, not developers: describe the design
+   change and the reason ("Changed reschedule trigger from button to inline
+   link per stakeholder feedback"), not the code change.
+3. Also make a git commit per task with a conventional commit message:
+   `feat|fix|docs|chore({flow-name}): short description`.
+
 ## Requirements Rules
 
 1. Every time you **CREATE** a flow prototype, you must also generate
