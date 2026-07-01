@@ -39,6 +39,10 @@ Every flow lives in `/flows/{flow-name}/` and must contain:
    `flow.json` must never be out of date with the flows that exist on disk.
 2. When a flow's status changes (draft → in-review → approved), update `flow.json`
    and commit the change.
+3. Every task that updates `flow.json` must also update the embedded manifest block in
+   `index.html` (the `<script type="application/json" id="flow-manifest">` block) so
+   they never drift. The viewer reads from that block — it does not fetch `flow.json`
+   at runtime.
 
 ## Changelog Rules
 
