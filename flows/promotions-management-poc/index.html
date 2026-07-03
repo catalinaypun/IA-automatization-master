@@ -6,12 +6,183 @@
   <title>Pricing Desk | Promotions Management PoC</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200">
   <link rel="stylesheet" href="../../assets/ds/design-system.css">
-  <link rel="stylesheet" href="../../Valu_cal_V5_16_Jun/app/assets/valu-cal.css">
   <style>
-    .sf-header { top: 0 !important; }
-    .sf-menu { top: 50px !important; }
-    .vc-header { top: 87px !important; }
-    .vc-body { padding-top: 159px !important; }
+    body {
+      margin: 0;
+      background: #f8f7f5;
+      font-family: var(--font-family-base, 'VerizonNHGDS', sans-serif);
+    }
+    .sf-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 50px;
+      background: #153c4b;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      z-index: 900;
+    }
+    .sf-mark {
+      background: #0076ce;
+    }
+    .sf-searchbar {
+      width: 220px;
+      height: 24px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.2);
+    }
+    .sf-icons {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+    .sf-icon {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .sf-menu {
+      position: fixed;
+      top: 50px;
+      left: 0;
+      right: 0;
+      height: 37px;
+      background: #fff;
+      border-bottom: 2px solid #0076ce;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 0 24px;
+      z-index: 900;
+    }
+    .sf-menu-pill {
+      height: 20px;
+      border-radius: 10px;
+      background: #dddad4;
+      flex-shrink: 0;
+    }
+    .app-wrap {
+      padding-top: 87px;
+      min-height: 100vh;
+    }
+    .app-card {
+      max-width: 1440px;
+      margin: 0 auto;
+      background: #fff;
+      min-height: calc(100vh - 87px);
+      padding: 0 24px 24px;
+    }
+    .vc-header {
+      height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #e3e0db;
+    }
+    .vc-header-logo,
+    .vc-header-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .vc-menu-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #f0ede8;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .vc-logo-name {
+      font-family: var(--font-family-display, 'VerizonNHGeDS', sans-serif);
+      font-size: 34px;
+      line-height: 1;
+      font-weight: 700;
+      color: #000;
+      letter-spacing: -0.5px;
+    }
+    .vc-logo-name em {
+      color: #e10014;
+      font-style: italic;
+      font-weight: 700;
+    }
+    .vc-nav {
+      flex: 1;
+    }
+    .vc-body {
+      padding-top: 16px;
+    }
+    .promotion-master-detail {
+      display: grid;
+      grid-template-columns: minmax(17rem, 1fr) minmax(0, 2fr);
+      gap: var(--space-6x);
+      margin-top: var(--space-4x);
+    }
+    .promotion-list {
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-200);
+      background: var(--color-surface);
+      padding: var(--space-2x);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2x);
+    }
+    .promotion-list-item {
+      width: 100%;
+      text-align: left;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-200);
+      background: var(--color-surface);
+      padding: var(--space-3x);
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: var(--space-3x);
+      cursor: pointer;
+    }
+    .promotion-list-item.promotion-list-item--active {
+      background: var(--color-surface-alt);
+      border-color: var(--color-brand-highlight);
+    }
+    .promotion-list-item .promo-title {
+      margin: 0;
+      color: var(--color-primary);
+    }
+    .promotion-list-item .promo-subtitle {
+      margin: var(--space-1x) 0 0;
+      color: var(--color-secondary);
+    }
+    .promotion-detail {
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-200);
+      background: var(--color-surface);
+      padding: var(--space-4x);
+    }
+    .promotion-detail-panel {
+      display: none;
+    }
+    .promotion-detail-panel.promotion-detail-panel--active {
+      display: block;
+    }
+    .promotion-detail-heading {
+      margin: 0 0 var(--space-3x);
+    }
+    .promotion-detail table {
+      margin-top: var(--space-4x);
+    }
+    @media (max-width: 960px) {
+      .promotion-master-detail {
+        grid-template-columns: 1fr;
+      }
+    }
     .vc-account-info { cursor: default !important; }
     .vc-account-info:hover { background: transparent !important; box-shadow: none !important; }
     .vc-account-name { font-weight: 700 !important; }
@@ -53,8 +224,8 @@
         </div>
         <div class="vc-nav" aria-hidden="true"></div>
         <div class="vc-header-right">
-          <div class="vc-account-icon" style="width:32px;height:32px;border-radius:50%;background:var(--stone);display:flex;align-items:center;justify-content:center;">
-            <span class="material-symbols-outlined" style="color:var(--black);font-size:16px;line-height:1;">person</span>
+          <div class="vc-account-icon" style="width:32px;height:32px;border-radius:50%;background:#f0ede8;display:flex;align-items:center;justify-content:center;">
+            <span class="material-symbols-outlined" style="color:#1d1c1c;font-size:16px;line-height:1;">person</span>
           </div>
           <div class="vc-account-info">
             <div class="vc-account-name">Alicia</div>
@@ -101,164 +272,467 @@
         </div>
       </div>
 
-      <div class="accordion accordion--desktop" data-hide-on-state="loading,system-error">
-        <div class="accordion__item">
-          <button class="accordion__trigger" type="button" aria-expanded="true" aria-controls="promo-panel-1">
-            <div class="accordion__text-group">
-              <p class="accordion__title">Flex Asset Promo - NEW: $50 BIC 100-199 UNITS</p>
-              <p class="accordion__subtitle">12/01/2023 – 01/01/2023 · 2 bundles</p>
-            </div>
-            <span class="badge badge--green">Active</span>
-            <span class="accordion__icon">
-              <svg width="20" height="20" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 5.5L8 10.5L13 5.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <div class="promotion-master-detail" data-hide-on-state="loading,system-error">
+        <aside class="promotion-list" aria-label="Promotions list">
+          <button class="promotion-list-item promotion-list-item--active" type="button" data-promo-target="promo-1" aria-selected="true">
+            <span>
+              <p class="text-body-small-bold promo-title">Flex Asset Promo - NEW: $50 BIC 100-199 UNITS</p>
+              <p class="text-body-small promo-subtitle">12/01/2023 – 01/01/2023</p>
             </span>
+            <span class="badge badge--green">Active</span>
           </button>
-          <div class="accordion__panel" id="promo-panel-1">
-            <div class="accordion__panel-inner">
+          <button class="promotion-list-item" type="button" data-promo-target="promo-2" aria-selected="false">
+            <span>
+              <p class="text-body-small-bold promo-title">Fleet Starter Promo - Q1 Growth Bundle</p>
+              <p class="text-body-small promo-subtitle">01/05/2024 – 03/31/2024</p>
+            </span>
+            <span class="badge badge--blue">In Review</span>
+          </button>
+          <button class="promotion-list-item" type="button" data-promo-target="promo-3" aria-selected="false">
+            <span>
+              <p class="text-body-small-bold promo-title">Powered Asset Retention Offer</p>
+              <p class="text-body-small promo-subtitle">02/01/2024 – 04/30/2024</p>
+            </span>
+            <span class="badge badge--gray-low">Draft</span>
+          </button>
+        </aside>
 
-              <div class="segmented-control" data-tabs role="tablist" aria-label="Bundles for Flex Asset Promo - NEW: $50 BIC 100-199 UNITS">
-                <button class="segmented-control__option segmented-control__option--active" type="button" role="tab" aria-selected="true" data-tab-target="bundle-1a">VZBUND12234 · FREE 36 MONTHS</button>
-                <button class="segmented-control__option" type="button" role="tab" aria-selected="false" data-tab-target="bundle-1b">VZBUND12234 · FREE 48 MONTHS</button>
-              </div>
+        <div class="promotion-detail">
+          <div class="promotion-detail-panel promotion-detail-panel--active" data-promo-detail="promo-1" style="display:block;">
+            <p class="text-title-2xsmall-bold promotion-detail-heading">Flex Asset Promo - NEW: $50 BIC 100-199 UNITS</p>
+            <div class="segmented-control" data-tabs role="tablist" aria-label="Bundles for Flex Asset Promo - NEW: $50 BIC 100-199 UNITS">
+              <button class="segmented-control__option segmented-control__option--active" type="button" role="tab" aria-selected="true" data-tab-target="bundle-1a">VZBUND12234 · FREE 36 MONTHS</button>
+              <button class="segmented-control__option" type="button" role="tab" aria-selected="false" data-tab-target="bundle-1b">VZBUND12234 · FREE 48 MONTHS</button>
+            </div>
 
-              <div data-tab-panel="bundle-1a">
-                <table>
-                  <thead>
-                    <tr>
-                      <th class="table-header-cell">Terms</th>
-                      <th class="table-header-cell">Free Months</th>
-                      <th class="table-header-cell">Lock Price</th>
-                      <th class="table-header-cell">Discount Type</th>
-                      <th class="table-header-cell">Install</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td class="table-body-cell">36</td>
-                      <td class="table-body-cell">1 - 5</td>
-                      <td class="table-body-cell">Yes</td>
-                      <td class="table-body-cell">Percentage</td>
-                      <td class="table-body-cell">CMI</td>
-                    </tr>
-                  </tbody>
-                </table>
+            <div data-tab-panel="bundle-1a" style="display:block;">
+              <table>
+                <thead>
+                  <tr>
+                    <th class="table-header-cell">Terms</th>
+                    <th class="table-header-cell">Free Months</th>
+                    <th class="table-header-cell">Lock Price</th>
+                    <th class="table-header-cell">Discount Type</th>
+                    <th class="table-header-cell">Install</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="table-body-cell">36</td>
+                    <td class="table-body-cell">1 - 5</td>
+                    <td class="table-body-cell">Yes</td>
+                    <td class="table-body-cell">Percentage</td>
+                    <td class="table-body-cell">CMI</td>
+                  </tr>
+                </tbody>
+              </table>
 
-                <table>
-                  <thead>
-                    <tr>
-                      <th class="table-header-cell">Product</th>
-                      <th class="table-header-cell">Min Quantity</th>
-                      <th class="table-header-cell">Max Quantity</th>
-                      <th class="table-header-cell">Price</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td class="table-body-cell">VTU</td>
-                      <td class="table-body-cell">5</td>
-                      <td class="table-body-cell">9</td>
-                      <td class="table-body-cell">$23.00</td>
-                    </tr>
-                    <tr>
-                      <td class="table-body-cell">VTU</td>
-                      <td class="table-body-cell">10</td>
-                      <td class="table-body-cell">19</td>
-                      <td class="table-body-cell">$23.00</td>
-                    </tr>
-                    <tr>
-                      <td class="table-body-cell">VTU</td>
-                      <td class="table-body-cell">20</td>
-                      <td class="table-body-cell">49</td>
-                      <td class="table-body-cell">$23.00</td>
-                    </tr>
-                    <tr>
-                      <td class="table-body-cell">Powered Asset</td>
-                      <td class="table-body-cell">5</td>
-                      <td class="table-body-cell">9</td>
-                      <td class="table-body-cell">$23.00</td>
-                    </tr>
-                    <tr>
-                      <td class="table-body-cell">Powered Asset</td>
-                      <td class="table-body-cell">10</td>
-                      <td class="table-body-cell">19</td>
-                      <td class="table-body-cell">$23.00</td>
-                    </tr>
-                    <tr>
-                      <td class="table-body-cell">Powered Asset</td>
-                      <td class="table-body-cell">20</td>
-                      <td class="table-body-cell">49</td>
-                      <td class="table-body-cell">$23.00</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
+              <table>
+                <thead>
+                  <tr>
+                    <th class="table-header-cell">Product</th>
+                    <th class="table-header-cell">Min Quantity</th>
+                    <th class="table-header-cell">Max Quantity</th>
+                    <th class="table-header-cell">Price</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="table-body-cell">VTU</td>
+                    <td class="table-body-cell">5</td>
+                    <td class="table-body-cell">9</td>
+                    <td class="table-body-cell">$23.00</td>
+                  </tr>
+                  <tr>
+                    <td class="table-body-cell">VTU</td>
+                    <td class="table-body-cell">10</td>
+                    <td class="table-body-cell">19</td>
+                    <td class="table-body-cell">$23.00</td>
+                  </tr>
+                  <tr>
+                    <td class="table-body-cell">VTU</td>
+                    <td class="table-body-cell">20</td>
+                    <td class="table-body-cell">49</td>
+                    <td class="table-body-cell">$23.00</td>
+                  </tr>
+                  <tr>
+                    <td class="table-body-cell">Powered Asset</td>
+                    <td class="table-body-cell">5</td>
+                    <td class="table-body-cell">9</td>
+                    <td class="table-body-cell">$23.00</td>
+                  </tr>
+                  <tr>
+                    <td class="table-body-cell">Powered Asset</td>
+                    <td class="table-body-cell">10</td>
+                    <td class="table-body-cell">19</td>
+                    <td class="table-body-cell">$23.00</td>
+                  </tr>
+                  <tr>
+                    <td class="table-body-cell">Powered Asset</td>
+                    <td class="table-body-cell">20</td>
+                    <td class="table-body-cell">49</td>
+                    <td class="table-body-cell">$23.00</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
 
-              <div data-tab-panel="bundle-1b" hidden>
-                <table>
-                  <thead>
-                    <tr>
-                      <th class="table-header-cell">Terms</th>
-                      <th class="table-header-cell">Free Months</th>
-                      <th class="table-header-cell">Lock Price</th>
-                      <th class="table-header-cell">Discount Type</th>
-                      <th class="table-header-cell">Install</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td class="table-body-cell">48</td>
-                      <td class="table-body-cell">1 - 5</td>
-                      <td class="table-body-cell">Yes</td>
-                      <td class="table-body-cell">Percentage</td>
-                      <td class="table-body-cell">CMI</td>
-                    </tr>
-                  </tbody>
-                </table>
+            <div data-tab-panel="bundle-1b" style="display:none;">
+              <table>
+                <thead>
+                  <tr>
+                    <th class="table-header-cell">Terms</th>
+                    <th class="table-header-cell">Free Months</th>
+                    <th class="table-header-cell">Lock Price</th>
+                    <th class="table-header-cell">Discount Type</th>
+                    <th class="table-header-cell">Install</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="table-body-cell">48</td>
+                    <td class="table-body-cell">1 - 5</td>
+                    <td class="table-body-cell">Yes</td>
+                    <td class="table-body-cell">Percentage</td>
+                    <td class="table-body-cell">CMI</td>
+                  </tr>
+                </tbody>
+              </table>
 
-                <table>
-                  <thead>
-                    <tr>
-                      <th class="table-header-cell">Product</th>
-                      <th class="table-header-cell">Min Quantity</th>
-                      <th class="table-header-cell">Max Quantity</th>
-                      <th class="table-header-cell">Price</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td class="table-body-cell">NPAT</td>
-                      <td class="table-body-cell">5</td>
-                      <td class="table-body-cell">9</td>
-                      <td class="table-body-cell">$23.00</td>
-                    </tr>
-                    <tr>
-                      <td class="table-body-cell">NPAT</td>
-                      <td class="table-body-cell">10</td>
-                      <td class="table-body-cell">19</td>
-                      <td class="table-body-cell">$23.00</td>
-                    </tr>
-                    <tr>
-                      <td class="table-body-cell">VTU</td>
-                      <td class="table-body-cell">5</td>
-                      <td class="table-body-cell">9</td>
-                      <td class="table-body-cell">$23.00</td>
-                    </tr>
-                    <tr>
-                      <td class="table-body-cell">VTU</td>
-                      <td class="table-body-cell">10</td>
-                      <td class="table-body-cell">19</td>
-                      <td class="table-body-cell">$23.00</td>
-                    </tr>
-                    <tr>
-                      <td class="table-body-cell">VTU</td>
-                      <td class="table-body-cell">20</td>
-                      <td class="table-body-cell">49</td>
-                      <td class="table-body-cell">$23.00</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
+              <table>
+                <thead>
+                  <tr>
+                    <th class="table-header-cell">Product</th>
+                    <th class="table-header-cell">Min Quantity</th>
+                    <th class="table-header-cell">Max Quantity</th>
+                    <th class="table-header-cell">Price</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="table-body-cell">NPAT</td>
+                    <td class="table-body-cell">5</td>
+                    <td class="table-body-cell">9</td>
+                    <td class="table-body-cell">$23.00</td>
+                  </tr>
+                  <tr>
+                    <td class="table-body-cell">NPAT</td>
+                    <td class="table-body-cell">10</td>
+                    <td class="table-body-cell">19</td>
+                    <td class="table-body-cell">$23.00</td>
+                  </tr>
+                  <tr>
+                    <td class="table-body-cell">VTU</td>
+                    <td class="table-body-cell">5</td>
+                    <td class="table-body-cell">9</td>
+                    <td class="table-body-cell">$23.00</td>
+                  </tr>
+                  <tr>
+                    <td class="table-body-cell">VTU</td>
+                    <td class="table-body-cell">10</td>
+                    <td class="table-body-cell">19</td>
+                    <td class="table-body-cell">$23.00</td>
+                  </tr>
+                  <tr>
+                    <td class="table-body-cell">VTU</td>
+                    <td class="table-body-cell">20</td>
+                    <td class="table-body-cell">49</td>
+                    <td class="table-body-cell">$23.00</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
 
+          <div class="promotion-detail-panel" data-promo-detail="promo-2" style="display:none;">
+            <p class="text-title-2xsmall-bold promotion-detail-heading">Fleet Starter Promo - Q1 Growth Bundle</p>
+            <div class="segmented-control" data-tabs role="tablist" aria-label="Bundles for Fleet Starter Promo - Q1 Growth Bundle">
+              <button class="segmented-control__option segmented-control__option--active" type="button" role="tab" aria-selected="true" data-tab-target="bundle-2a">VZBUND42210 · FREE 36 MONTHS</button>
+              <button class="segmented-control__option" type="button" role="tab" aria-selected="false" data-tab-target="bundle-2b">VZBUND42210 · FREE 48 MONTHS</button>
+            </div>
+
+            <div data-tab-panel="bundle-2a" style="display:block;">
+              <table>
+                <thead>
+                  <tr>
+                    <th class="table-header-cell">Terms</th>
+                    <th class="table-header-cell">Free Months</th>
+                    <th class="table-header-cell">Lock Price</th>
+                    <th class="table-header-cell">Discount Type</th>
+                    <th class="table-header-cell">Install</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="table-body-cell">36</td>
+                    <td class="table-body-cell">1 - 5</td>
+                    <td class="table-body-cell">Yes</td>
+                    <td class="table-body-cell">Percentage</td>
+                    <td class="table-body-cell">CMI</td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <table>
+                <thead>
+                  <tr>
+                    <th class="table-header-cell">Product</th>
+                    <th class="table-header-cell">Min Quantity</th>
+                    <th class="table-header-cell">Max Quantity</th>
+                    <th class="table-header-cell">Price</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="table-body-cell">VTU</td>
+                    <td class="table-body-cell">5</td>
+                    <td class="table-body-cell">9</td>
+                    <td class="table-body-cell">$23.00</td>
+                  </tr>
+                  <tr>
+                    <td class="table-body-cell">VTU</td>
+                    <td class="table-body-cell">10</td>
+                    <td class="table-body-cell">19</td>
+                    <td class="table-body-cell">$23.00</td>
+                  </tr>
+                  <tr>
+                    <td class="table-body-cell">VTU</td>
+                    <td class="table-body-cell">20</td>
+                    <td class="table-body-cell">49</td>
+                    <td class="table-body-cell">$23.00</td>
+                  </tr>
+                  <tr>
+                    <td class="table-body-cell">Powered Asset</td>
+                    <td class="table-body-cell">5</td>
+                    <td class="table-body-cell">9</td>
+                    <td class="table-body-cell">$23.00</td>
+                  </tr>
+                  <tr>
+                    <td class="table-body-cell">Powered Asset</td>
+                    <td class="table-body-cell">10</td>
+                    <td class="table-body-cell">19</td>
+                    <td class="table-body-cell">$23.00</td>
+                  </tr>
+                  <tr>
+                    <td class="table-body-cell">Powered Asset</td>
+                    <td class="table-body-cell">20</td>
+                    <td class="table-body-cell">49</td>
+                    <td class="table-body-cell">$23.00</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div data-tab-panel="bundle-2b" style="display:none;">
+              <table>
+                <thead>
+                  <tr>
+                    <th class="table-header-cell">Terms</th>
+                    <th class="table-header-cell">Free Months</th>
+                    <th class="table-header-cell">Lock Price</th>
+                    <th class="table-header-cell">Discount Type</th>
+                    <th class="table-header-cell">Install</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="table-body-cell">48</td>
+                    <td class="table-body-cell">1 - 5</td>
+                    <td class="table-body-cell">Yes</td>
+                    <td class="table-body-cell">Percentage</td>
+                    <td class="table-body-cell">CMI</td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <table>
+                <thead>
+                  <tr>
+                    <th class="table-header-cell">Product</th>
+                    <th class="table-header-cell">Min Quantity</th>
+                    <th class="table-header-cell">Max Quantity</th>
+                    <th class="table-header-cell">Price</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="table-body-cell">NPAT</td>
+                    <td class="table-body-cell">5</td>
+                    <td class="table-body-cell">9</td>
+                    <td class="table-body-cell">$23.00</td>
+                  </tr>
+                  <tr>
+                    <td class="table-body-cell">NPAT</td>
+                    <td class="table-body-cell">10</td>
+                    <td class="table-body-cell">19</td>
+                    <td class="table-body-cell">$23.00</td>
+                  </tr>
+                  <tr>
+                    <td class="table-body-cell">VTU</td>
+                    <td class="table-body-cell">5</td>
+                    <td class="table-body-cell">9</td>
+                    <td class="table-body-cell">$23.00</td>
+                  </tr>
+                  <tr>
+                    <td class="table-body-cell">VTU</td>
+                    <td class="table-body-cell">10</td>
+                    <td class="table-body-cell">19</td>
+                    <td class="table-body-cell">$23.00</td>
+                  </tr>
+                  <tr>
+                    <td class="table-body-cell">VTU</td>
+                    <td class="table-body-cell">20</td>
+                    <td class="table-body-cell">49</td>
+                    <td class="table-body-cell">$23.00</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="promotion-detail-panel" data-promo-detail="promo-3" style="display:none;">
+            <p class="text-title-2xsmall-bold promotion-detail-heading">Powered Asset Retention Offer</p>
+            <div class="segmented-control" data-tabs role="tablist" aria-label="Bundles for Powered Asset Retention Offer">
+              <button class="segmented-control__option segmented-control__option--active" type="button" role="tab" aria-selected="true" data-tab-target="bundle-3a">VZBUND51108 · FREE 36 MONTHS</button>
+              <button class="segmented-control__option" type="button" role="tab" aria-selected="false" data-tab-target="bundle-3b">VZBUND51108 · FREE 48 MONTHS</button>
+            </div>
+
+            <div data-tab-panel="bundle-3a" style="display:block;">
+              <table>
+                <thead>
+                  <tr>
+                    <th class="table-header-cell">Terms</th>
+                    <th class="table-header-cell">Free Months</th>
+                    <th class="table-header-cell">Lock Price</th>
+                    <th class="table-header-cell">Discount Type</th>
+                    <th class="table-header-cell">Install</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="table-body-cell">36</td>
+                    <td class="table-body-cell">1 - 5</td>
+                    <td class="table-body-cell">Yes</td>
+                    <td class="table-body-cell">Percentage</td>
+                    <td class="table-body-cell">CMI</td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <table>
+                <thead>
+                  <tr>
+                    <th class="table-header-cell">Product</th>
+                    <th class="table-header-cell">Min Quantity</th>
+                    <th class="table-header-cell">Max Quantity</th>
+                    <th class="table-header-cell">Price</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="table-body-cell">VTU</td>
+                    <td class="table-body-cell">5</td>
+                    <td class="table-body-cell">9</td>
+                    <td class="table-body-cell">$23.00</td>
+                  </tr>
+                  <tr>
+                    <td class="table-body-cell">VTU</td>
+                    <td class="table-body-cell">10</td>
+                    <td class="table-body-cell">19</td>
+                    <td class="table-body-cell">$23.00</td>
+                  </tr>
+                  <tr>
+                    <td class="table-body-cell">VTU</td>
+                    <td class="table-body-cell">20</td>
+                    <td class="table-body-cell">49</td>
+                    <td class="table-body-cell">$23.00</td>
+                  </tr>
+                  <tr>
+                    <td class="table-body-cell">Powered Asset</td>
+                    <td class="table-body-cell">5</td>
+                    <td class="table-body-cell">9</td>
+                    <td class="table-body-cell">$23.00</td>
+                  </tr>
+                  <tr>
+                    <td class="table-body-cell">Powered Asset</td>
+                    <td class="table-body-cell">10</td>
+                    <td class="table-body-cell">19</td>
+                    <td class="table-body-cell">$23.00</td>
+                  </tr>
+                  <tr>
+                    <td class="table-body-cell">Powered Asset</td>
+                    <td class="table-body-cell">20</td>
+                    <td class="table-body-cell">49</td>
+                    <td class="table-body-cell">$23.00</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div data-tab-panel="bundle-3b" style="display:none;">
+              <table>
+                <thead>
+                  <tr>
+                    <th class="table-header-cell">Terms</th>
+                    <th class="table-header-cell">Free Months</th>
+                    <th class="table-header-cell">Lock Price</th>
+                    <th class="table-header-cell">Discount Type</th>
+                    <th class="table-header-cell">Install</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="table-body-cell">48</td>
+                    <td class="table-body-cell">1 - 5</td>
+                    <td class="table-body-cell">Yes</td>
+                    <td class="table-body-cell">Percentage</td>
+                    <td class="table-body-cell">CMI</td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <table>
+                <thead>
+                  <tr>
+                    <th class="table-header-cell">Product</th>
+                    <th class="table-header-cell">Min Quantity</th>
+                    <th class="table-header-cell">Max Quantity</th>
+                    <th class="table-header-cell">Price</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="table-body-cell">NPAT</td>
+                    <td class="table-body-cell">5</td>
+                    <td class="table-body-cell">9</td>
+                    <td class="table-body-cell">$23.00</td>
+                  </tr>
+                  <tr>
+                    <td class="table-body-cell">NPAT</td>
+                    <td class="table-body-cell">10</td>
+                    <td class="table-body-cell">19</td>
+                    <td class="table-body-cell">$23.00</td>
+                  </tr>
+                  <tr>
+                    <td class="table-body-cell">VTU</td>
+                    <td class="table-body-cell">5</td>
+                    <td class="table-body-cell">9</td>
+                    <td class="table-body-cell">$23.00</td>
+                  </tr>
+                  <tr>
+                    <td class="table-body-cell">VTU</td>
+                    <td class="table-body-cell">10</td>
+                    <td class="table-body-cell">19</td>
+                    <td class="table-body-cell">$23.00</td>
+                  </tr>
+                  <tr>
+                    <td class="table-body-cell">VTU</td>
+                    <td class="table-body-cell">20</td>
+                    <td class="table-body-cell">49</td>
+                    <td class="table-body-cell">$23.00</td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
@@ -291,29 +765,57 @@
   <script src="../../assets/prototype-tools.js"></script>
   <script>
     (function () {
-      document.querySelectorAll('.accordion__trigger').forEach(function (trigger) {
-        trigger.addEventListener('click', function () {
-          var expanded = trigger.getAttribute('aria-expanded') === 'true';
-          trigger.setAttribute('aria-expanded', String(!expanded));
+      var promotionListItems = Array.prototype.slice.call(document.querySelectorAll('[data-promo-target]'));
+      var promotionDetails = Array.prototype.slice.call(document.querySelectorAll('[data-promo-detail]'));
+
+      function setActivePromotion(targetId) {
+        promotionListItems.forEach(function (item) {
+          var isActive = item.dataset.promoTarget === targetId;
+          item.classList.toggle('promotion-list-item--active', isActive);
+          item.setAttribute('aria-selected', String(isActive));
+        });
+
+        promotionDetails.forEach(function (panel) {
+          var isActive = panel.dataset.promoDetail === targetId;
+          panel.classList.toggle('promotion-detail-panel--active', isActive);
+          panel.style.display = isActive ? 'block' : 'none';
+        });
+      }
+
+      promotionListItems.forEach(function (item) {
+        item.addEventListener('click', function () {
+          setActivePromotion(item.dataset.promoTarget);
         });
       });
+
+      if (promotionListItems.length > 0) {
+        setActivePromotion(promotionListItems[0].dataset.promoTarget);
+      }
 
       document.querySelectorAll('.segmented-control[data-tabs]').forEach(function (control) {
         var options = Array.prototype.slice.call(control.querySelectorAll('.segmented-control__option'));
         var panelGroup = control.parentElement;
+
+        function setActiveTab(target) {
+          options.forEach(function (o) {
+            var isActive = o.dataset.tabTarget === target;
+            o.classList.toggle('segmented-control__option--active', isActive);
+            o.setAttribute('aria-selected', String(isActive));
+          });
+          panelGroup.querySelectorAll('[data-tab-panel]').forEach(function (panel) {
+            panel.style.display = panel.dataset.tabPanel === target ? 'block' : 'none';
+          });
+        }
+
         options.forEach(function (option) {
           option.addEventListener('click', function () {
-            var target = option.dataset.tabTarget;
-            options.forEach(function (o) {
-              var isActive = o === option;
-              o.classList.toggle('segmented-control__option--active', isActive);
-              o.setAttribute('aria-selected', String(isActive));
-            });
-            panelGroup.querySelectorAll('[data-tab-panel]').forEach(function (panel) {
-              panel.hidden = panel.dataset.tabPanel !== target;
-            });
+            setActiveTab(option.dataset.tabTarget);
           });
         });
+
+        if (options.length > 0) {
+          setActiveTab(options[0].dataset.tabTarget);
+        }
       });
     }());
   </script>

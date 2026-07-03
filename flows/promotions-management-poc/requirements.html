@@ -34,14 +34,14 @@
       <tr>
         <td><span class="badge badge--black">US-01</span></td>
         <td>Promotion Manager</td>
-        <td>view a promotion list with key fields and status</td>
-        <td>I can quickly understand active offers and their commercial setup</td>
+        <td>view promotions in a compact list and select one at a time</td>
+        <td>I can quickly identify active offers and focus on one promotion detail</td>
       </tr>
       <tr>
         <td><span class="badge badge--black">US-02</span></td>
         <td>Promotion Manager</td>
-        <td>inspect product-level quantity tiers within each promotion</td>
-        <td>I can validate pricing behavior by min/max quantity ranges</td>
+        <td>inspect product-level quantity tiers in a dedicated detail panel</td>
+        <td>I can validate pricing behavior by min/max quantity ranges without losing list context</td>
       </tr>
       <tr>
         <td><span class="badge badge--black">US-03</span></td>
@@ -63,14 +63,14 @@
   <ul>
     <li><strong>Given</strong> I open Pricing Desk from the Promotions menu</li>
     <li><strong>When</strong> the default state loads</li>
-    <li><strong>Then</strong> I see promotions grouped into a collapsible accordion, each item showing the promotion name, date range, bundle count, and status badge, collapsed by default except the first entry</li>
+    <li><strong>Then</strong> I see a two-panel layout where the left panel shows a compact promotions list (name, date range, status badge) and the first promotion is selected by default</li>
   </ul>
 
   <h3>US-02 — Product quantity tier visibility</h3>
   <ul>
-    <li><strong>Given</strong> I expand a promotion in the accordion</li>
+    <li><strong>Given</strong> I select a promotion from the left panel list</li>
     <li><strong>When</strong> the promotion has more than one child bundle (e.g. different term lengths)</li>
-    <li><strong>Then</strong> I can switch between bundles using a segmented control, and each bundle shows its own Terms/Free Months/Lock Price/Discount Type/Install values and a single consolidated product table with min quantity, max quantity, and price per product — never side-by-side duplicate tables per product</li>
+    <li><strong>Then</strong> the right detail panel updates to that promotion, where I can switch bundles using a segmented control and each bundle shows its own Terms/Free Months/Lock Price/Discount Type/Install values and a single consolidated product table with min quantity, max quantity, and price per product</li>
   </ul>
 
   <h3>US-03 — Management entry actions</h3>
@@ -100,22 +100,22 @@
       <tr>
         <td><span class="badge badge--gray">default</span></td>
         <td>Page opens with valid data</td>
-        <td>Promotions accordion is visible, first item expanded; Add Promotion can open the builder view</td>
+        <td>Two-panel promotions layout is visible, first promotion is selected in the left list, and its detail is visible on the right; Add Promotion can open the builder view</td>
       </tr>
       <tr>
         <td><span class="badge badge--blue">loading</span></td>
         <td>Promotion data retrieval in progress</td>
-        <td>Loading indicator is visible; promotions accordion is hidden</td>
+        <td>Loading indicator is visible; two-panel promotions layout is hidden</td>
       </tr>
       <tr>
         <td><span class="badge badge--red">validation-error</span></td>
         <td>User submits incomplete required data</td>
-        <td>Validation message appears while the accordion remains visible</td>
+        <td>Validation message appears while the two-panel promotions layout remains visible</td>
       </tr>
       <tr>
         <td><span class="badge badge--red">system-error</span></td>
         <td>Promotions retrieval fails</td>
-        <td>System error message is shown; promotions accordion is hidden</td>
+        <td>System error message is shown; two-panel promotions layout is hidden</td>
       </tr>
     </tbody>
   </table>
@@ -124,7 +124,7 @@
   <ul>
     <li>Which fields should be editable inline in this screen vs. moved to a create/edit promotion flow?</li>
     <li>In the builder, which fields are mandatory only for auto-approval vs. mandatory for full approval workflows?</li>
-    <li>Should the accordion allow multiple promotions expanded at once (current behavior), or should expanding one auto-collapse the others?</li>
+    <li>Should the promotions list support sorting/grouping options (for example by status or date range) in the left panel?</li>
   </ul>
 </body>
 </html>
