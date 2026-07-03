@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Requirements — Pricing Desk</title>
+  <link rel="stylesheet" href="../../assets/ds/design-system.css">
+</head>
+<body>
+  <p>Generated from the .md source — do not edit manually.</p>
+  <p><a class="btn btn--ghost btn--small" href="../../index.html">Back to Viewer</a></p>
+
+  <h1>Pricing Desk — Requirements</h1>
+  <p><strong>Purpose:</strong> Establish a baseline Promotions experience in Pricing Desk to list active promotions and show product pricing behavior by quantity tiers.</p>
+
+  <h2>Context</h2>
+  <ul>
+    <li><strong>Tool area:</strong> Pricing Manager</li>
+    <li><strong>Target user role:</strong> Promotion Manager</li>
+    <li><strong>Entry point:</strong> From Salesforce, through the Promotions menu.</li>
+  </ul>
+
+  <h2>User Stories</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>As a…</th>
+        <th>I want to…</th>
+        <th>So that…</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="badge badge--black">US-01</span></td>
+        <td>Promotion Manager</td>
+        <td>view a promotion list with key fields and status</td>
+        <td>I can quickly understand active offers and their commercial setup</td>
+      </tr>
+      <tr>
+        <td><span class="badge badge--black">US-02</span></td>
+        <td>Promotion Manager</td>
+        <td>inspect product-level quantity tiers within each promotion</td>
+        <td>I can validate pricing behavior by min/max quantity ranges</td>
+      </tr>
+      <tr>
+        <td><span class="badge badge--black">US-03</span></td>
+        <td>Promotion Manager</td>
+        <td>filter, search, and start adding a new promotion from one place</td>
+        <td>I can manage promotions without leaving the Pricing Desk context</td>
+      </tr>
+      <tr>
+        <td><span class="badge badge--black">US-04</span></td>
+        <td>Promotion Manager</td>
+        <td>open an Add Promotion builder with guided sections</td>
+        <td>I can capture master details and pricing configuration in a structured flow</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>Acceptance Criteria</h2>
+  <h3>US-01 — Promotions summary list</h3>
+  <ul>
+    <li><strong>Given</strong> I open Pricing Desk from the Promotions menu</li>
+    <li><strong>When</strong> the default state loads</li>
+    <li><strong>Then</strong> I see promotions grouped into a collapsible accordion, each item showing the promotion name, date range, bundle count, and status badge, collapsed by default except the first entry</li>
+  </ul>
+
+  <h3>US-02 — Product quantity tier visibility</h3>
+  <ul>
+    <li><strong>Given</strong> I expand a promotion in the accordion</li>
+    <li><strong>When</strong> the promotion has more than one child bundle (e.g. different term lengths)</li>
+    <li><strong>Then</strong> I can switch between bundles using a segmented control, and each bundle shows its own Terms/Free Months/Lock Price/Discount Type/Install values and a single consolidated product table with min quantity, max quantity, and price per product — never side-by-side duplicate tables per product</li>
+  </ul>
+
+  <h3>US-03 — Management entry actions</h3>
+  <ul>
+    <li><strong>Given</strong> I am in the promotions view</li>
+    <li><strong>When</strong> I use the top action area</li>
+    <li><strong>Then</strong> I have controls for filter, search, and add promotion</li>
+  </ul>
+
+  <h3>US-04 — Add Promotion builder baseline</h3>
+  <ul>
+    <li><strong>Given</strong> I click Add Promotion from the summary screen</li>
+    <li><strong>When</strong> the builder opens</li>
+    <li><strong>Then</strong> I see step labels (Master Details, Child Promotions, Tiers &amp; Floor Pricing, Review) and sections for Information, Additional Context &amp; Configuration, MRR &amp; Customer Tenure, and Contract Flexibility &amp; Pricing Options</li>
+  </ul>
+
+  <h2>States &amp; Edge Cases</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>State</th>
+        <th>Trigger</th>
+        <th>Expected UI behavior</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="badge badge--gray">default</span></td>
+        <td>Page opens with valid data</td>
+        <td>Promotions accordion is visible, first item expanded; Add Promotion can open the builder view</td>
+      </tr>
+      <tr>
+        <td><span class="badge badge--blue">loading</span></td>
+        <td>Promotion data retrieval in progress</td>
+        <td>Loading indicator is visible; promotions accordion is hidden</td>
+      </tr>
+      <tr>
+        <td><span class="badge badge--red">validation-error</span></td>
+        <td>User submits incomplete required data</td>
+        <td>Validation message appears while the accordion remains visible</td>
+      </tr>
+      <tr>
+        <td><span class="badge badge--red">system-error</span></td>
+        <td>Promotions retrieval fails</td>
+        <td>System error message is shown; promotions accordion is hidden</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>Open Questions</h2>
+  <ul>
+    <li>Which fields should be editable inline in this screen vs. moved to a create/edit promotion flow?</li>
+    <li>In the builder, which fields are mandatory only for auto-approval vs. mandatory for full approval workflows?</li>
+    <li>Should the accordion allow multiple promotions expanded at once (current behavior), or should expanding one auto-collapse the others?</li>
+  </ul>
+</body>
+</html>
