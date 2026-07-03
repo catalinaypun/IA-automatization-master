@@ -43,14 +43,17 @@
   function applyState(stateId) {
     document.body.dataset.state = stateId;
 
+    // NOTE: uses style.display (not the `hidden` attribute) because several VDS
+    // classes (.loader, .notification, .accordion, …) declare `display` directly,
+    // which overrides the UA `[hidden]{display:none}` rule at equal specificity.
     document.querySelectorAll('[data-show-on-state]').forEach(function (el) {
       var states = el.dataset.showOnState.split(',').map(function (s) { return s.trim(); });
-      el.hidden = !states.includes(stateId);
+      el.style.display = states.includes(stateId) ? '' : 'none';
     });
 
     document.querySelectorAll('[data-hide-on-state]').forEach(function (el) {
       var states = el.dataset.hideOnState.split(',').map(function (s) { return s.trim(); });
-      el.hidden = states.includes(stateId);
+      el.style.display = states.includes(stateId) ? 'none' : '';
     });
 
     // Sync toolbar button active state
