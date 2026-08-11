@@ -6,6 +6,16 @@ Entries are written for stakeholders — describe the design change and the reas
 
 ---
 
+## [2026-08-11] — Rebuilt "Capture customer data" modal as a real 2-step wizard
+
+### Changed
+- Made the product list table in step 1 **read-only** (removed the row "Select" actions) — it now only shows which products this capture applies to, per stakeholder feedback that the row actions were confusing.
+- Added the missing "Next" action to step 1's footer (previously only had "Cancel").
+
+### Added
+- Added the modal's real step 2 ("Select a product and complete vehicle information"): the same product table gains a radio button per row to choose which line to configure next, with the shipping address and contact shown again for confirmation. Sourced from Marcela's Figma (all 6 modal-state variants reviewed for fidelity).
+- Added "Back" navigation from the vehicle-capture screens (Select vehicles / Enter vehicles) to the new product-selection step.
+
 ## [2026-08-11] — Pixel-perfect pass against Marcela's Order Tab Figma
 
 ### Added

@@ -553,7 +553,8 @@
     </div>
 
     <!-- ============================================================
-         MODAL — Step 1: Capture customer data (Existing / New + address)
+         MODAL — Step 1 of 2: Capture customer data (read-only product
+         list + shipping address / installation contact selection)
          Visible for: capture-data, validation-error
     ============================================================ -->
     <div data-show-on-state="capture-data,validation-error" hidden>
@@ -571,14 +572,16 @@
           </header>
           <div class="slds-modal__content slds-p-around_medium">
             <p class="slds-m-bottom_small">You will complete the shipping information for the following products.</p>
+
+            <!-- Read-only: shows which products this capture applies to. No row actions. -->
             <table class="slds-table slds-table_bordered slds-m-bottom_medium">
+              <caption class="slds-text-body_small slds-text-color_weak slds-p-bottom_x-small">2 of 2 item</caption>
               <thead>
                 <tr class="slds-line-height_reset">
                   <th scope="col"><div class="slds-truncate">Existing</div></th>
                   <th scope="col"><div class="slds-truncate">New</div></th>
                   <th scope="col"><div class="slds-truncate">Quantity</div></th>
                   <th scope="col"><div class="slds-truncate">VMI</div></th>
-                  <th scope="col"><div class="slds-truncate">&nbsp;</div></th>
                 </tr>
               </thead>
               <tbody>
@@ -587,18 +590,15 @@
                   <td><div class="slds-truncate">VTU + AI Dash Cam</div></td>
                   <td><div class="slds-truncate">0/3</div></td>
                   <td><input type="checkbox" class="slds-checkbox" disabled></td>
-                  <td><button class="slds-button slds-button_neutral slds-button_small" onclick="ptSetState('enter-vehicles')">Select</button></td>
                 </tr>
                 <tr>
                   <td><div class="slds-truncate slds-text-title_bold">VTU + Driver ID</div></td>
                   <td><div class="slds-truncate">Master Shut off switch (MMID)</div></td>
                   <td><div class="slds-truncate">0/4</div></td>
                   <td><input type="checkbox" class="slds-checkbox" disabled></td>
-                  <td><button class="slds-button slds-button_neutral slds-button_small" onclick="ptSetState('select-vehicles')">Select</button></td>
                 </tr>
               </tbody>
             </table>
-            <p class="slds-text-body_small slds-text-color_weak slds-m-bottom_medium">Pick a row's "Select" action to continue: the AI Dash Cam line is an Expansion (new VIN), the Master Shut off switch line is an Upsell (existing vehicle).</p>
 
             <div class="slds-form-element slds-m-bottom_medium">
               <label class="slds-checkbox">
@@ -620,7 +620,7 @@
               <div class="slds-form-element__control">
                 <div class="slds-select_container">
                   <select class="slds-select" data-show-on-state="capture-data">
-                    <option>89 Morian Boulevard San Francisco</option>
+                    <option>✓ 89 Morian Boulevard San Francisco</option>
                   </select>
                   <select class="slds-select" data-show-on-state="validation-error" hidden>
                     <option>--None--</option>
@@ -654,6 +654,102 @@
           </div>
           <footer class="slds-modal__footer">
             <button class="slds-button slds-button_neutral" onclick="ptSetState('default')">Cancel</button>
+            <button class="slds-button slds-button_brand" onclick="ptSetState('select-product')" title="Validates address and contact, then continues to product selection">Next</button>
+          </footer>
+        </div>
+      </section>
+    </div>
+
+    <!-- ============================================================
+         MODAL — Step 2 of 2: Select a product and complete vehicle info
+         Visible for: select-product
+    ============================================================ -->
+    <div data-show-on-state="select-product" hidden>
+      <div class="slds-backdrop slds-backdrop_open"></div>
+      <section class="slds-modal slds-fade-in-open" role="dialog" aria-modal="true">
+        <div class="slds-modal__container">
+          <header class="slds-modal__header">
+            <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick="ptSetState('default')">
+              <svg class="slds-button__icon slds-button__icon_large" aria-hidden="true">
+                <use xlink:href="../../assets/ds/slds/assets/icons/utility-sprite/svg/symbols.svg#close"></use>
+              </svg>
+              <span class="slds-assistive-text">Close</span>
+            </button>
+            <h2 class="slds-text-heading_medium">Capture customer data</h2>
+          </header>
+          <div class="slds-modal__content slds-p-around_medium">
+            <p class="slds-m-bottom_small">Select a product and complete vehicle information</p>
+
+            <table class="slds-table slds-table_bordered slds-m-bottom_medium">
+              <caption class="slds-text-body_small slds-text-color_weak slds-p-bottom_x-small">2 of 2 item</caption>
+              <thead>
+                <tr class="slds-line-height_reset">
+                  <th scope="col"><div class="slds-truncate">&nbsp;</div></th>
+                  <th scope="col"><div class="slds-truncate">Existing</div></th>
+                  <th scope="col"><div class="slds-truncate">New</div></th>
+                  <th scope="col"><div class="slds-truncate">Quantity</div></th>
+                  <th scope="col"><div class="slds-truncate">VMI</div></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><input type="radio" name="capture-line" class="slds-radio" checked></td>
+                  <td><div class="slds-truncate">&nbsp;</div></td>
+                  <td><div class="slds-truncate">VTU + AI Dash Cam</div></td>
+                  <td><div class="slds-truncate">0/3</div></td>
+                  <td><input type="checkbox" class="slds-checkbox" disabled></td>
+                </tr>
+                <tr>
+                  <td><input type="radio" name="capture-line" class="slds-radio"></td>
+                  <td><div class="slds-truncate slds-text-title_bold">VTU + Driver ID</div></td>
+                  <td><div class="slds-truncate">Master Shut off switch (MMID)</div></td>
+                  <td><div class="slds-truncate">0/4</div></td>
+                  <td><input type="checkbox" class="slds-checkbox" disabled></td>
+                </tr>
+              </tbody>
+            </table>
+            <p class="slds-text-body_small slds-text-color_weak slds-m-bottom_medium">The AI Dash Cam line is an Expansion (requires a new VIN); the Master Shut off switch line is an Upsell (requires selecting an existing vehicle). This demo continues with the selected row — use the state switcher to preview the other path directly.</p>
+
+            <p class="slds-text-title_bold slds-m-bottom_x-small">Shipping Address</p>
+            <div class="slds-form-element slds-m-bottom_x-small">
+              <label class="slds-checkbox">
+                <input type="checkbox" checked>
+                <span class="slds-checkbox_faux"></span>
+                <span class="slds-form-element__label">Use existing address</span>
+              </label>
+            </div>
+            <div class="slds-form-element slds-m-bottom_medium">
+              <div class="slds-form-element__control">
+                <div class="slds-select_container">
+                  <select class="slds-select">
+                    <option>✓ 89 Morian Boulevard San Francisco</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <p class="slds-text-title_bold slds-m-bottom_x-small">Shipping and Installation Contact</p>
+            <div class="slds-form-element slds-m-bottom_x-small">
+              <label class="slds-checkbox">
+                <input type="checkbox" checked>
+                <span class="slds-checkbox_faux"></span>
+                <span class="slds-form-element__label">Use existing contact</span>
+              </label>
+            </div>
+            <div class="slds-form-element">
+              <div class="slds-form-element__control">
+                <div class="slds-select_container">
+                  <select class="slds-select">
+                    <option>Laura Johnson</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+          <footer class="slds-modal__footer">
+            <button class="slds-button slds-button_neutral" onclick="ptSetState('capture-data')">Back</button>
+            <button class="slds-button slds-button_neutral" onclick="ptSetState('default')">Cancel</button>
+            <button class="slds-button slds-button_brand" onclick="ptSetState('enter-vehicles')">Next</button>
           </footer>
         </div>
       </section>
@@ -722,6 +818,7 @@
             <p class="slds-text-body_small slds-text-color_weak slds-m-top_x-small">The upsell experience does not allow capturing a new VIN — only vehicles already in the system can be selected.</p>
           </div>
           <footer class="slds-modal__footer">
+            <button class="slds-button slds-button_neutral" onclick="ptSetState('select-product')">Back</button>
             <button class="slds-button slds-button_neutral" onclick="ptSetState('default')">Cancel</button>
             <button class="slds-button slds-button_brand" onclick="ptSetState('incompatible')" title="Runs the Hardware Specifier compatibility check">Save</button>
           </footer>
@@ -782,6 +879,7 @@
             </button>
           </div>
           <footer class="slds-modal__footer">
+            <button class="slds-button slds-button_neutral" onclick="ptSetState('select-product')">Back</button>
             <button class="slds-button slds-button_neutral" onclick="ptSetState('default')">Cancel</button>
             <button class="slds-button slds-button_brand" onclick="ptSetState('default')">Save</button>
           </footer>
@@ -861,6 +959,7 @@
       { id: 'default', label: 'Default' },
       { id: 'capture-data', label: 'Capture Data' },
       { id: 'validation-error', label: 'Validation Error' },
+      { id: 'select-product', label: 'Select Product (Step 2)' },
       { id: 'select-vehicles', label: 'Select Vehicles (Upsell)' },
       { id: 'enter-vehicles', label: 'Enter Vehicles (Expansion)' },
       { id: 'incompatible', label: 'Incompatible Hardware' },

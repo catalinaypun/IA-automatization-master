@@ -77,8 +77,9 @@
 | State             | Trigger                                                                | Expected UI behavior                                                                                 |
 |--------------------|---------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------|
 | default            | Opportunity record loads, Capture tab selected                           | Opportunity product table with Order Detail Type per line; Vehicles/Asset Trackers/Key Fob IDs at 0     |
-| capture-data       | User clicks "Capture customer details"                                   | Existing/New table per line + valid shipping address and contact already selected                       |
-| validation-error   | Address/contact not yet selected                                         | Red-bordered selects + inline "Please select an address/contact to continue."                            |
+| capture-data       | User clicks "Capture customer details"                                   | Modal step 1 of 2: **read-only** Existing/New/Quantity/VMI table (informational only, no row actions) + shipping address and contact selection, already valid. "Next" continues.                       |
+| validation-error   | Address/contact not yet selected, user clicks "Next"                     | Same step 1, red-bordered selects + inline "Please select an address/contact to continue."                            |
+| select-product     | User clicks "Next" on step 1 with a valid address/contact                | Modal step 2 of 2: same table gains a radio button per row to choose the line to configure; address/contact shown again for confirmation. "Next" continues to vehicle capture. |
 | select-vehicles    | Capturing an Upsell-type line                                            | Checkbox list of existing vehicles only — no new VIN entry allowed                                       |
 | enter-vehicles     | Capturing an Expansion/Initial Sale-type line                            | Editable table to type in new vehicle VIN/YMM/Class                                                      |
 | incompatible       | Hardware Specifier compatibility check fails                             | Current vs. required core shown, plus the replacement/shipping note                                      |
@@ -104,6 +105,18 @@
 6. Edge case: ESN Mismatch between VTU, 1ERP, and Reveal → creates a validation case instead of proceeding automatically.
 
 ---
+
+## Salesforce Feasibility Notes
+
+*(High-level read on what's declarative/standard vs. custom build. To be refined with engineering before dev handoff.)*
+
+- **Capture modal as a whole**: fits the standard **Screen Flow** pattern (Flow Builder, launched from a Quick Action on the Opportunity page), not a custom LWC. Steps map to Flow Screens; "Next"/"Back" are native Flow navigation.
+- **Product-line iteration (the "which line am I capturing" problem)**: rather than a manual "select a product" screen (step 2 as currently prototyped), a Flow **Loop** element over the Opportunity's product lines is the more idiomatic Salesforce pattern — it would show one vehicle-capture screen per line automatically, with a "Product X of Y" progress label, and no manual picking step needed. Worth validating with Catalina/engineering which pattern the real build should follow (see open discussion below).
+- **Read-only product table** (step 1): a Flow Screen "Data Table" component, sourced from a Get Records on Opportunity Product.
+- **Existing/new vehicle selection**: Flow Screens can do both — a Data Table with row selection (existing vehicles) and a set of input fields, potentially repeated via a Loop for multiple new VINs.
+- **Hardware Specifier compatibility check**: requires a **custom Apex action** (invocable method) called from the Flow, since it's an on-demand external/internal API call — not declarative.
+- **Path, Related List Quick Links, Activity sidebar, Global Navigation**: all standard, out-of-the-box Lightning Experience — no custom work, just page/app configuration.
+- **Core replacement / Return Device flow after "incompatible"**: per the Open Questions below, ownership and system-of-record are still unconfirmed — flag as needing an engineering decision before assuming it's buildable as shown.
 
 ## Open Questions
 
