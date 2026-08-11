@@ -11,122 +11,159 @@
   <p><a class="btn btn--ghost btn--small" href="../../index.html">Back to Viewer</a></p>
 
   <h1>Upsells — Requirements</h1>
-  <p><strong>Purpose:</strong> Let a Salesforce user configure and add an upsell product to an existing Order, directly within the Salesforce Lightning Experience UI (not the Verizon-branded embedded tool).</p>
+  <p><strong>Purpose:</strong> Let a Sales/Growth user capture the vehicle and shipping/installation data needed to fulfill an Upsell (or Blended) order directly from the Salesforce Opportunity, distinguishing lines that need a brand-new vehicle (Expansion / Initial Sale) from lines that only add a feature to a vehicle the account already owns (Upsell).</p>
 
   <h2>Context</h2>
   <ul>
-    <li><strong>Tool area:</strong> Salesforce Order record page (Lightning Experience), Sales / Orders app.</li>
-    <li><strong>Target user role:</strong> Sales Rep / Account Manager working an Order.</li>
-    <li><strong>Entry point:</strong> From the Order record page, in the &quot;Configure Upsell&quot; card.</li>
+    <li><strong>Tool area:</strong> Salesforce Opportunity record, "Capture" tab (Lightning Experience). This is the same "Order Tab" capture experience referenced by the business, currently built on the Opportunity rather than the Order object.</li>
+    <li><strong>Target user role:</strong> Sales / Growth Team (initiates the upsell capture); Onboarding Success Specialist (OSS) validates it afterward.</li>
+    <li><strong>Entry point:</strong> "Capture customer details" action on the Opportunity page header, visible once the Opportunity product lines have an Order Detail Type.</li>
     <li><strong>Design system:</strong> This flow is Salesforce-native and uses SLDS (Salesforce Lightning Design System) instead of VDS — see the SLDS exception in <code>CLAUDE.md</code>.</li>
+    <li><strong>Design source:</strong> Structure, copy, and screens are taken directly from Marcela's existing Figma file ("Upsell experience" board, Order Tab file) plus two stakeholder walkthroughs (Leo Gómez, product; Gabriel Barbosa, engineering) and the "Data Capture Business Owner" deck.</li>
+  </ul>
+
+  <h2>Key definitions (confirmed by stakeholders)</h2>
+  <ul>
+    <li><strong>Initial Sale</strong>: first bundle sold to a brand-new account — a full bundle (core + features) on a brand-new vehicle.</li>
+    <li><strong>Expansion</strong>: adding a full bundle (core + features) to a new vehicle on an existing account. Structurally identical to Initial Sale — both require entering a new VIN.</li>
+    <li><strong>Upsell</strong>: adding only feature(s) — no core — to a vehicle that already has a core installed. Requires selecting an existing vehicle; the upsell experience does not allow capturing a new VIN.</li>
+    <li><strong>Blended order</strong>: an order/Opportunity that contains both Upsell lines and Expansion/Initial Sale lines together.</li>
+    <li><strong>Order Detail Type</strong>: a field on the Opportunity Product line (Expansion / Initial Sale / Upsell) that is populated automatically from the Order + CPQ — it is not user-editable in this UI, only displayed.</li>
   </ul>
 
   <h2>User Stories</h2>
   <table>
     <thead>
-      <tr>
-        <th>ID</th>
-        <th>As a…</th>
-        <th>I want to…</th>
-        <th>So that…</th>
-      </tr>
+      <tr><th>ID</th><th>As a…</th><th>I want to…</th><th>So that…</th></tr>
     </thead>
     <tbody>
-      <tr>
-        <td><span class="badge badge--black">US-01</span></td>
-        <td>Sales Rep</td>
-        <td>select an eligible upsell product for an Order and set its quantity and discount</td>
-        <td>I can add the right upsell with the correct pricing to the Order</td>
-      </tr>
-      <tr>
-        <td><span class="badge badge--black">US-02</span></td>
-        <td>Sales Rep</td>
-        <td>see the extended price update as I configure the upsell</td>
-        <td>I know the total cost before adding it to the Order</td>
-      </tr>
-      <tr>
-        <td><span class="badge badge--black">US-03</span></td>
-        <td>Sales Rep</td>
-        <td>see the upsells already added to this Order</td>
-        <td>I don't duplicate an upsell that's already on the Order</td>
-      </tr>
-      <tr>
-        <td><span class="badge badge--black">US-04</span></td>
-        <td>Sales Rep</td>
-        <td>get a clear message when no eligible upsells exist for this Order</td>
-        <td>I understand why I can't add one and can act accordingly</td>
-      </tr>
+      <tr><td><span class="badge badge--black">US-01</span></td><td>Sales/Growth</td><td>see each Opportunity product line's Order Detail Type (Expansion / Initial Sale / Upsell)</td><td>I know which lines need a new vehicle vs. an existing one</td></tr>
+      <tr><td><span class="badge badge--black">US-02</span></td><td>Sales/Growth</td><td>capture one shared shipping address and installation contact for all lines by default</td><td>I don't have to re-enter the same address for every product</td></tr>
+      <tr><td><span class="badge badge--black">US-03</span></td><td>Sales/Growth</td><td>select an existing vehicle for an Upsell line instead of entering a new VIN</td><td>I don't accidentally create a duplicate vehicle record</td></tr>
+      <tr><td><span class="badge badge--black">US-04</span></td><td>Sales/Growth</td><td>enter a new VIN for an Expansion or Initial Sale line</td><td>the new vehicle gets properly registered</td></tr>
+      <tr><td><span class="badge badge--black">US-05</span></td><td>Sales/Growth</td><td>know immediately if the selected vehicle's existing hardware is incompatible with the upsell feature</td><td>I can inform the customer a core replacement is needed before finalizing</td></tr>
+      <tr><td><span class="badge badge--black">US-06</span></td><td>Sales/Growth</td><td>see a clear message when the Capture experience isn't enabled yet for an Opportunity</td><td>I know not to attempt the capture and can follow up later</td></tr>
     </tbody>
   </table>
 
   <h2>Acceptance Criteria</h2>
-  <h3>US-01 — Configure and add an upsell</h3>
+  <h3>US-01 — Order Detail Type visibility</h3>
   <ul>
-    <li><strong>Given</strong> I am on the Order record page with eligible upsell products available</li>
-    <li><strong>When</strong> I select a product, set a quantity greater than 0, and click &quot;Add to Order&quot;</li>
-    <li><strong>Then</strong> the upsell is added to the &quot;Upsells on this Order&quot; list</li>
+    <li><strong>Given</strong> an Opportunity has product lines from a Blended order</li>
+    <li><strong>When</strong> I open the Capture tab</li>
+    <li><strong>Then</strong> the Opportunity product table shows Product, Parent Bundle Name, Quantity, Hardware type, Order Detail Type, and VMI for every line</li>
   </ul>
 
-  <h3>US-02 — Live extended price</h3>
+  <h3>US-02 — Shared shipping/install info</h3>
   <ul>
-    <li><strong>Given</strong> I have selected an upsell product</li>
-    <li><strong>When</strong> I change quantity or discount %</li>
-    <li><strong>Then</strong> the Extended Price field reflects the updated total</li>
+    <li><strong>Given</strong> I click "Capture customer details"</li>
+    <li><strong>When</strong> the "Shipping address and contact are the same for all products" checkbox is checked</li>
+    <li><strong>Then</strong> one address and one contact selection apply to every line in the capture</li>
   </ul>
 
-  <h3>US-03 — Existing upsells visibility</h3>
+  <h3>US-03 — Select existing vehicles for Upsell</h3>
   <ul>
-    <li><strong>Given</strong> the Order already has one or more upsells added</li>
-    <li><strong>When</strong> the Configure Upsell card loads</li>
-    <li><strong>Then</strong> those upsells are listed in the &quot;Upsells on this Order&quot; table with product, quantity, unit price, and extended price</li>
+    <li><strong>Given</strong> I'm capturing a line whose Order Detail Type is Upsell</li>
+    <li><strong>When</strong> I reach the vehicle step</li>
+    <li><strong>Then</strong> I see a checkbox list of vehicles already on the account (Vehicle Name, YMM, VIN, Class, Vehicle ID) and cannot enter a new VIN</li>
   </ul>
 
-  <h3>US-04 — No eligible upsells</h3>
+  <h3>US-04 — Enter new VINs for Expansion/Initial Sale</h3>
   <ul>
-    <li><strong>Given</strong> the account has reached its upsell limit or no eligible products are configured for the Order's Pricebook</li>
-    <li><strong>When</strong> the Configure Upsell card loads</li>
-    <li><strong>Then</strong> an empty-state message explains why no upsells are available, and the product selector/Add action are not shown</li>
+    <li><strong>Given</strong> I'm capturing a line whose Order Detail Type is Expansion or Initial Sale</li>
+    <li><strong>When</strong> I reach the vehicle step</li>
+    <li><strong>Then</strong> I see an editable table to type in the new vehicle's name, YMM, VIN, and class</li>
+  </ul>
+
+  <h3>US-05 — Hardware compatibility result</h3>
+  <ul>
+    <li><strong>Given</strong> I've selected an existing vehicle for an Upsell line</li>
+    <li><strong>When</strong> the Hardware Specifier compatibility check returns incompatible</li>
+    <li><strong>Then</strong> I see the current core, the required core, and a note that replacement hardware will be shipped/installed at no charge to the contract (per KB reference — see Open Questions)</li>
+  </ul>
+
+  <h3>US-06 — Feature not yet available</h3>
+  <ul>
+    <li><strong>Given</strong> the Capture experience is not yet enabled for this Opportunity</li>
+    <li><strong>When</strong> I open the Capture tab</li>
+    <li><strong>Then</strong> I see a warning banner: "The 'Capture customer details' functionality is not yet available." and the action is disabled</li>
   </ul>
 
   <h2>States &amp; Edge Cases</h2>
   <table>
     <thead>
-      <tr>
-        <th>State</th>
-        <th>Trigger</th>
-        <th>Expected UI behavior</th>
-      </tr>
+      <tr><th>State</th><th>Trigger</th><th>Expected UI behavior</th></tr>
     </thead>
     <tbody>
       <tr>
         <td><span class="badge badge--gray">default</span></td>
-        <td>Order loads with eligible upsells available</td>
-        <td>Product selector, quantity/discount inputs, extended price, and Add button are visible; existing upsells (if any) are listed</td>
+        <td>Opportunity record loads, Capture tab selected</td>
+        <td>Opportunity product table with Order Detail Type per line; Vehicles/Asset Trackers/Key Fob IDs at 0</td>
       </tr>
       <tr>
-        <td><span class="badge badge--blue">loading</span></td>
-        <td>Eligible upsell products are being fetched</td>
-        <td>Spinner is shown over the Configure Upsell card body</td>
-      </tr>
-      <tr>
-        <td><span class="badge badge--gray">empty</span></td>
-        <td>No eligible upsells for this Order/account</td>
-        <td>Empty-state illustration and message shown; selector and Add action hidden; related list shows &quot;No upsells added yet.&quot;</td>
+        <td><span class="badge badge--gray">capture-data</span></td>
+        <td>User clicks "Capture customer details"</td>
+        <td>Existing/New table per line + valid shipping address and contact already selected</td>
       </tr>
       <tr>
         <td><span class="badge badge--red">validation-error</span></td>
-        <td>User attempts to add an upsell with quantity = 0</td>
-        <td>Error banner shown at top of card; Quantity field shows inline help text</td>
+        <td>Address/contact not yet selected</td>
+        <td>Red-bordered selects + inline "Please select an address/contact to continue."</td>
+      </tr>
+      <tr>
+        <td><span class="badge badge--gray">select-vehicles</span></td>
+        <td>Capturing an Upsell-type line</td>
+        <td>Checkbox list of existing vehicles only — no new VIN entry allowed</td>
+      </tr>
+      <tr>
+        <td><span class="badge badge--gray">enter-vehicles</span></td>
+        <td>Capturing an Expansion/Initial Sale-type line</td>
+        <td>Editable table to type in new vehicle VIN/YMM/Class</td>
+      </tr>
+      <tr>
+        <td><span class="badge badge--orange">incompatible</span></td>
+        <td>Hardware Specifier compatibility check fails</td>
+        <td>Current vs. required core shown, plus the replacement/shipping note</td>
+      </tr>
+      <tr>
+        <td><span class="badge badge--yellow">empty</span></td>
+        <td>Capture experience not enabled for this Opportunity</td>
+        <td>Warning banner, "Capture customer details" action disabled</td>
       </tr>
     </tbody>
   </table>
 
-  <h2>Open Questions</h2>
+  <h2>Data fields (from source systems — per "Data Capture Business Owner" deck, fields to be finalized)</h2>
   <ul>
-    <li>What is the actual eligibility rule for &quot;upsell limit reached&quot; on an account — is it a fixed count, a dollar cap, or product-specific?</li>
-    <li>Should discount % have a max cap enforced by profile/role (e.g. reps can't exceed 15% without approval)?</li>
-    <li>Does adding an upsell require a page save, or is it committed immediately (matching a Quick Action / LWC pattern)?</li>
-    <li>Should removing an upsell from the related list require a confirmation step?</li>
+    <li><strong>Reveal/Fleetcare:</strong> Universal Account Id, Vehicle Id, Vehicle Tracking Id, VIN, Year/Make/Model, Vehicle Status, Label, Registration Number, Asset Tracker, VTU/Camera/DVR Serial Number, Imei, gsm, boxId/boxname, Hardware status, LastPing.</li>
+    <li><strong>C360:</strong> Account Id, Shipment Status, ESN, Installed, Worticket Id/Status, Install Type/Status/Date, MMID, Tracking ID.</li>
+    <li><strong>1ERP:</strong> BPID, Next Bill Date, Bill Plan Id, Technical Reference Id, Provider Order Number, Contract Account Number, ESN, Camera.</li>
+    <li><strong>Hubble:</strong> Device Serial Number, FirstPing.</li>
+    <li><strong>SFDC:</strong> Account Id, Account Type/Status, Platform, Contract Type.</li>
+  </ul>
+
+  <h2>Backend process this UI triggers (for context — not built in this prototype)</h2>
+  <ul>
+    <li>Fetch VIN/vehicle data (internal → GCP → C360 fallback, up to 24h data latency).</li>
+    <li>Select Parent Line(s) → Choose Upsell Feature (already defined by the Quote, not re-selected here).</li>
+    <li>Call Hardware Specifier (on-demand API, new integration) to check compatibility.</li>
+    <li>If compatible → Amend Contract → Create Quote and Finalize → CSP → Order Tab for the upsell feature.</li>
+    <li>If incompatible → Amend Contract → Core Change decision → Change Parent VTU / Work Tickets → Return Device (C360, existing/BAU — no new UI needed there).</li>
+    <li>Edge case: ESN Mismatch between VTU, 1ERP, and Reveal → creates a validation case instead of proceeding automatically.</li>
+  </ul>
+
+  <h2>Open Questions</h2>
+  <p><em>(Carried over verbatim from stakeholder sessions and the Data Capture Business Owner deck — not resolved yet.)</em></p>
+  <ul>
+    <li>VIN Capture is changing to VIN Selection for Upsell — where and when in the flow should this happen? Does the Quote creation step need to know this already?</li>
+    <li>If the ESN isn't installed yet, the VIN info could exist in SFDC or in C360 depending on where the customer is in their onboarding journey — which source should the UI read from?</li>
+    <li>Software-only upsells should bypass the Capture experience entirely — is that reflected in this flow, or handled upstream?</li>
+    <li>Does C360 need to send feedback back into the SFDC Asset so it has the correct info?</li>
+    <li>Today C360 calls Hardware Specifier with vehicle + subscription info; the new design moves that call to SFDC — but SFDC doesn't currently pass subscription info. Who owns this integration change?</li>
+    <li>Is "identify what needs to be shipped vs. replaced" determined in C360 or in Hardware Specifier?</li>
+    <li>Is the core/hardware replacement (when an upsell requires a swap) billed to the customer, or absorbed by Verizon? Referenced KB text says replacement hardware "is not related with the contract and must be added in Connect 360," but this has not been formally confirmed (Gabriel Barbosa, pending verification).</li>
+    <li>Can an Upsell be started on a vehicle that already has a scheduled install appointment? If so, how does it link to the existing appointment (relates to the Modifications flow)?</li>
+    <li>Additional edge cases still being compiled by engineering (Confluence, not yet shared): upsell for a VTU that will need replacement (proposed checkbox to flag this upfront), no VIN captured, no make/model available.</li>
   </ul>
 </body>
 </html>

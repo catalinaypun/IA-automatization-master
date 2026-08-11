@@ -110,13 +110,13 @@
       "id": "upsells",
       "project": "upsells",
       "name": "Upsells",
-      "description": "Salesforce-native Order record page for configuring and adding an upsell product, built with SLDS.",
+      "description": "Salesforce-native Opportunity Capture tab for an Upsell/Blended order — select existing vehicles for upsell lines, enter new VINs for expansion lines, and surface hardware compatibility results. Built with SLDS.",
       "status": "draft",
       "updated": "2026-08-11",
       "path": "flows/upsells/index.html",
       "requirements": "flows/upsells/requirements.html",
       "changelog": "flows/upsells/CHANGELOG.html",
-      "states": ["default", "loading", "empty", "validation-error"]
+      "states": ["default", "capture-data", "validation-error", "select-vehicles", "enter-vehicles", "incompatible", "empty"]
     }
   ]
 }

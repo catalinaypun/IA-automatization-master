@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Configure Upsell — Order | Salesforce</title>
+  <title>Capture Customer Data — Opportunity | Salesforce</title>
   <link rel="stylesheet" href="../../assets/ds/slds/salesforce-lightning-design-system.min.css">
 </head>
 <body class="slds-scope">
@@ -17,9 +17,7 @@
         <div class="slds-global-header__logo" role="img" aria-label="Salesforce"></div>
       </div>
       <div class="slds-global-header__item slds-grow">
-        <div class="slds-global-navigation-tabset">
-          <span class="slds-text-heading_small slds-text-color_inverse-weak">Sales &nbsp;›&nbsp; Orders</span>
-        </div>
+        <span class="slds-text-heading_small slds-text-color_inverse-weak">Sales &nbsp;›&nbsp; Opportunities</span>
       </div>
       <div class="slds-global-header__item">
         <ul class="slds-global-actions">
@@ -43,53 +41,54 @@
 
   <main class="slds-p-around_medium">
 
-    <p class="text-body-small slds-m-bottom_small">
+    <p class="slds-m-bottom_small">
       <a href="../../index.html" class="slds-text-link">&larr; Back to Prototype Viewer</a>
     </p>
 
-    <!-- Breadcrumb -->
     <nav class="slds-p-bottom_small" aria-label="Breadcrumbs">
       <ol class="slds-breadcrumb slds-list_horizontal slds-wrap">
         <li class="slds-breadcrumb__item"><a href="#">Home</a></li>
-        <li class="slds-breadcrumb__item"><a href="#">Orders</a></li>
-        <li class="slds-breadcrumb__item">Order-00000123</li>
+        <li class="slds-breadcrumb__item"><a href="#">Opportunities</a></li>
+        <li class="slds-breadcrumb__item">Design-May-01-25-Opp</li>
       </ol>
     </nav>
 
     <!-- ============================================================
-         RECORD HEADER
+         RECORD HEADER — Opportunity
     ============================================================ -->
-    <div class="slds-page-header slds-page-header_record-home slds-m-bottom_medium">
+    <div class="slds-page-header slds-page-header_record-home slds-m-bottom_small">
       <div class="slds-page-header__row">
         <div class="slds-page-header__col-title">
           <div class="slds-media">
             <div class="slds-media__figure">
-              <span class="slds-icon_container slds-icon-standard-orders" title="Order">
+              <span class="slds-icon_container slds-icon-standard-opportunity" title="Opportunity">
                 <svg class="slds-icon slds-page-header__icon" aria-hidden="true">
-                  <use xlink:href="../../assets/ds/slds/assets/icons/standard-sprite/svg/symbols.svg#orders"></use>
+                  <use xlink:href="../../assets/ds/slds/assets/icons/standard-sprite/svg/symbols.svg#opportunity"></use>
                 </svg>
               </span>
             </div>
             <div class="slds-media__body">
+              <p class="slds-text-title slds-line-height_reset">Opportunity</p>
               <div class="slds-page-header__name">
                 <div class="slds-page-header__name-title">
                   <h1>
-                    <span class="slds-page-header__title slds-truncate" title="Order-00000123">Order-00000123</span>
+                    <span class="slds-page-header__title slds-truncate" title="Design-May-01-25-Opp">Design-May-01-25-Opp</span>
                   </h1>
                 </div>
               </div>
-              <p class="slds-page-header__name-meta">Order · Acme Field Services</p>
             </div>
           </div>
         </div>
         <div class="slds-page-header__col-actions">
           <div class="slds-page-header__controls">
+            <div class="slds-page-header__control"><button class="slds-button slds-button_neutral">Follow</button></div>
             <div class="slds-page-header__control">
-              <button class="slds-button slds-button_neutral">Cancel</button>
+              <button class="slds-button slds-button_brand" data-hide-on-state="empty">Capture customer details</button>
+              <button class="slds-button slds-button_neutral" disabled data-show-on-state="empty" hidden title="Not yet available">Capture customer details</button>
             </div>
-            <div class="slds-page-header__control">
-              <button class="slds-button slds-button_brand">Save</button>
-            </div>
+            <div class="slds-page-header__control"><button class="slds-button slds-button_neutral">Edit</button></div>
+            <div class="slds-page-header__control"><button class="slds-button slds-button_neutral">Schedule an Appt</button></div>
+            <div class="slds-page-header__control"><button class="slds-button slds-button_neutral">Create Order</button></div>
           </div>
         </div>
       </div>
@@ -97,218 +96,439 @@
         <div class="slds-page-header__col-details">
           <ul class="slds-page-header__detail-row">
             <li class="slds-page-header__detail-block">
-              <p class="slds-text-title slds-truncate" title="Account Name">Account Name</p>
-              <p class="slds-truncate" title="Acme Field Services">Acme Field Services</p>
+              <p class="slds-text-title slds-truncate">Account Name</p>
+              <p class="slds-truncate"><a href="#">Design-May-01-25</a></p>
             </li>
             <li class="slds-page-header__detail-block">
-              <p class="slds-text-title slds-truncate" title="Status">Status</p>
-              <p class="slds-truncate">
-                <span class="slds-badge slds-theme_warning">Draft</span>
-              </p>
+              <p class="slds-text-title slds-truncate">Close Date</p>
+              <p class="slds-truncate">6/1/2025</p>
             </li>
             <li class="slds-page-header__detail-block">
-              <p class="slds-text-title slds-truncate" title="Order Start Date">Order Start Date</p>
-              <p class="slds-truncate" title="08/11/2026">08/11/2026</p>
+              <p class="slds-text-title slds-truncate">Opportunity Owner</p>
+              <p class="slds-truncate">John Smith</p>
             </li>
             <li class="slds-page-header__detail-block">
-              <p class="slds-text-title slds-truncate" title="Grand Total">Grand Total</p>
-              <p class="slds-truncate" title="$4,250.00">$4,250.00</p>
+              <p class="slds-text-title slds-truncate">Contract flexibility</p>
+              <p class="slds-truncate"><input type="checkbox" class="slds-checkbox" disabled></p>
             </li>
           </ul>
         </div>
       </div>
     </div>
 
+    <!-- EMPTY / NOT-AVAILABLE banner -->
+    <div data-show-on-state="empty" hidden
+         class="slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_warning slds-m-bottom_small" role="alert">
+      <span class="slds-assistive-text">Warning</span>
+      <svg class="slds-icon slds-icon_x-small slds-m-right_x-small" aria-hidden="true">
+        <use xlink:href="../../assets/ds/slds/assets/icons/utility-sprite/svg/symbols.svg#warning"></use>
+      </svg>
+      <h2 class="slds-inline">The "Capture customer details" functionality is not yet available.</h2>
+    </div>
+
+    <!-- Tabs -->
+    <div class="slds-tabs_default slds-m-bottom_medium">
+      <ul class="slds-tabs_default__nav" role="tablist">
+        <li class="slds-tabs_default__item" role="presentation"><a class="slds-tabs_default__link" href="#">Details</a></li>
+        <li class="slds-tabs_default__item" role="presentation"><a class="slds-tabs_default__link" href="#">Related</a></li>
+        <li class="slds-tabs_default__item" role="presentation"><a class="slds-tabs_default__link" href="#">CF Opportunity Product Info</a></li>
+        <li class="slds-tabs_default__item" role="presentation"><a class="slds-tabs_default__link" href="#">Gong</a></li>
+        <li class="slds-tabs_default__item slds-is-active" role="presentation"><a class="slds-tabs_default__link" href="#">Capture</a></li>
+      </ul>
+    </div>
+
     <!-- ============================================================
-         BODY — order summary + upsell configurator
+         CAPTURE TAB — Opportunity product
     ============================================================ -->
-    <div class="slds-grid slds-wrap slds-gutters">
-
-      <!-- Order summary -->
-      <div class="slds-col slds-size_1-of-1 slds-large-size_1-of-3">
-        <article class="slds-card">
-          <div class="slds-card__header slds-grid">
-            <header class="slds-media slds-media_center slds-has-flexi-truncate">
-              <div class="slds-media__body">
-                <h2 class="slds-card__header-title">
-                  <span>Order Summary</span>
-                </h2>
-              </div>
-            </header>
+    <article class="slds-card slds-m-bottom_medium">
+      <div class="slds-card__header slds-grid">
+        <header class="slds-media slds-media_center slds-has-flexi-truncate">
+          <div class="slds-media__figure">
+            <span class="slds-icon_container slds-icon-standard-opportunity" title="Opportunity product">
+              <svg class="slds-icon slds-icon_small" aria-hidden="true">
+                <use xlink:href="../../assets/ds/slds/assets/icons/standard-sprite/svg/symbols.svg#opportunity"></use>
+              </svg>
+            </span>
           </div>
-          <div class="slds-card__body slds-card__body_inner">
-            <dl class="slds-list_horizontal slds-wrap">
-              <dt class="slds-item_label slds-text-color_weak slds-truncate slds-size_1-of-2">Contract</dt>
-              <dd class="slds-item_detail slds-truncate slds-size_1-of-2">SC-0098</dd>
-              <dt class="slds-item_label slds-text-color_weak slds-truncate slds-size_1-of-2">Pricebook</dt>
-              <dd class="slds-item_detail slds-truncate slds-size_1-of-2">Field Service — Standard</dd>
-              <dt class="slds-item_label slds-text-color_weak slds-truncate slds-size_1-of-2">Order Products</dt>
-              <dd class="slds-item_detail slds-truncate slds-size_1-of-2">3</dd>
-              <dt class="slds-item_label slds-text-color_weak slds-truncate slds-size_1-of-2">Owner</dt>
-              <dd class="slds-item_detail slds-truncate slds-size_1-of-2">M. Reyes</dd>
-            </dl>
+          <div class="slds-media__body">
+            <h2 class="slds-card__header-title"><span>Opportunity product</span></h2>
+            <p class="slds-text-body_small slds-text-color_weak">5 items · Sorted by product · Updated a few seconds ago</p>
           </div>
-        </article>
+        </header>
+        <div class="slds-no-flex">
+          <button class="slds-button slds-button_neutral">Add products</button>
+          <button class="slds-button slds-button_neutral">Edit products</button>
+        </div>
       </div>
+      <div class="slds-card__body slds-card__body_inner">
+        <table class="slds-table slds-table_bordered slds-table_cell-buffer">
+          <thead>
+            <tr class="slds-line-height_reset">
+              <th scope="col"><div class="slds-truncate">Product</div></th>
+              <th scope="col"><div class="slds-truncate">Parent Bundle Name</div></th>
+              <th scope="col"><div class="slds-truncate">Quantity</div></th>
+              <th scope="col"><div class="slds-truncate">Hardware type</div></th>
+              <th scope="col"><div class="slds-truncate">Order Detail Type</div></th>
+              <th scope="col"><div class="slds-truncate">VMI</div></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><div class="slds-truncate"><a href="#">Vehicle Tracking Subscription</a></div></td>
+              <td><div class="slds-truncate">Bundle Plan | VTU + AI Dash Cam</div></td>
+              <td><div class="slds-truncate">2</div></td>
+              <td><div class="slds-truncate">New</div></td>
+              <td><div class="slds-truncate">Expansion</div></td>
+              <td><input type="checkbox" class="slds-checkbox" checked disabled></td>
+            </tr>
+            <tr>
+              <td><div class="slds-truncate"><a href="#">AI Dash Cam Subscription</a></div></td>
+              <td><div class="slds-truncate">Bundle Plan | VTU + AI Dash Cam</div></td>
+              <td><div class="slds-truncate">2</div></td>
+              <td><div class="slds-truncate">New</div></td>
+              <td><div class="slds-truncate">Expansion</div></td>
+              <td><input type="checkbox" class="slds-checkbox" checked disabled></td>
+            </tr>
+            <tr>
+              <td><div class="slds-truncate"><a href="#">Vehicle Tracking Subscription</a></div></td>
+              <td><div class="slds-truncate">Bundle Plan | VTU + Driver ID</div></td>
+              <td><div class="slds-truncate">2</div></td>
+              <td><div class="slds-truncate">Existing</div></td>
+              <td><div class="slds-truncate">Initial Sale</div></td>
+              <td><input type="checkbox" class="slds-checkbox"></td>
+            </tr>
+            <tr>
+              <td><div class="slds-truncate"><a href="#">Driver ID Subscription</a></div></td>
+              <td><div class="slds-truncate">Bundle Plan | VTU + Driver ID</div></td>
+              <td><div class="slds-truncate">2</div></td>
+              <td><div class="slds-truncate">Existing</div></td>
+              <td><div class="slds-truncate">Initial Sale</div></td>
+              <td><input type="checkbox" class="slds-checkbox"></td>
+            </tr>
+            <tr>
+              <td><div class="slds-truncate"><a href="#">Master Shut off switch (MMID)</a></div></td>
+              <td><div class="slds-truncate">Bundle Plan | VTU + Driver ID</div></td>
+              <td><div class="slds-truncate">2</div></td>
+              <td><div class="slds-truncate">New</div></td>
+              <td><div class="slds-truncate">Upsell</div></td>
+              <td><input type="checkbox" class="slds-checkbox"></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </article>
 
-      <!-- Configure Upsell -->
-      <div class="slds-col slds-size_1-of-1 slds-large-size_2-of-3">
-        <article class="slds-card slds-p-relative">
+    <article class="slds-card slds-m-bottom_x-small">
+      <div class="slds-card__header slds-grid slds-grid_align-spread">
+        <h2 class="slds-card__header-title">Vehicles (0)</h2>
+        <div class="slds-no-flex">
+          <button class="slds-button slds-button_neutral">Edit shipping address</button>
+          <button class="slds-button slds-button_neutral">Edit Installation address</button>
+        </div>
+      </div>
+    </article>
+    <article class="slds-card slds-m-bottom_x-small">
+      <div class="slds-card__header slds-grid slds-grid_align-spread">
+        <h2 class="slds-card__header-title">Asset Trackers (0)</h2>
+        <div class="slds-no-flex">
+          <button class="slds-button slds-button_neutral">Edit shipping address</button>
+          <button class="slds-button slds-button_neutral">Edit Installation address</button>
+        </div>
+      </div>
+    </article>
+    <article class="slds-card slds-m-bottom_medium">
+      <div class="slds-card__header slds-grid slds-grid_align-spread">
+        <h2 class="slds-card__header-title">Key Fob IDs (0)</h2>
+        <div class="slds-no-flex">
+          <button class="slds-button slds-button_neutral">Edit shipping address</button>
+        </div>
+      </div>
+    </article>
 
-          <div class="slds-card__header slds-grid">
-            <header class="slds-media slds-media_center slds-has-flexi-truncate">
-              <div class="slds-media__figure">
-                <span class="slds-icon_container slds-icon-standard-product" title="Upsell">
-                  <svg class="slds-icon slds-icon_small" aria-hidden="true">
-                    <use xlink:href="../../assets/ds/slds/assets/icons/standard-sprite/svg/symbols.svg#product"></use>
-                  </svg>
-                </span>
-              </div>
-              <div class="slds-media__body">
-                <h2 class="slds-card__header-title">
-                  <span>Configure Upsell</span>
-                </h2>
-              </div>
-            </header>
-          </div>
-
-          <!-- LOADING overlay -->
-          <div data-show-on-state="loading" hidden class="slds-spinner_container">
-            <div role="status" class="slds-spinner slds-spinner_medium">
-              <span class="slds-assistive-text">Loading eligible upsells</span>
-              <div class="slds-spinner__dot-a"></div>
-              <div class="slds-spinner__dot-b"></div>
-            </div>
-          </div>
-
-          <div class="slds-card__body slds-card__body_inner">
-
-            <!-- VALIDATION ERROR banner -->
-            <div data-show-on-state="validation-error" hidden
-                 class="slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_error slds-m-bottom_medium" role="alert">
-              <span class="slds-assistive-text">Error</span>
-              <svg class="slds-icon slds-icon_x-small slds-m-right_x-small" aria-hidden="true">
-                <use xlink:href="../../assets/ds/slds/assets/icons/utility-sprite/svg/symbols.svg#error"></use>
+    <!-- ============================================================
+         MODAL — Step 1: Capture customer data (Existing / New + address)
+         Visible for: capture-data, validation-error
+    ============================================================ -->
+    <div data-show-on-state="capture-data,validation-error" hidden>
+      <div class="slds-backdrop slds-backdrop_open"></div>
+      <section class="slds-modal slds-fade-in-open" role="dialog" aria-modal="true">
+        <div class="slds-modal__container">
+          <header class="slds-modal__header">
+            <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close">
+              <svg class="slds-button__icon slds-button__icon_large" aria-hidden="true">
+                <use xlink:href="../../assets/ds/slds/assets/icons/utility-sprite/svg/symbols.svg#close"></use>
               </svg>
-              <h2 class="slds-inline">Enter a quantity greater than 0 to add this upsell to the order.</h2>
-            </div>
-
-            <!-- EMPTY state -->
-            <div data-show-on-state="empty" hidden class="slds-illustration slds-illustration_small slds-p-around_medium slds-text-align_center">
-              <svg class="slds-icon slds-icon_large slds-m-bottom_small slds-icon-text-default" aria-hidden="true">
-                <use xlink:href="../../assets/ds/slds/assets/icons/utility-sprite/svg/symbols.svg#money"></use>
-              </svg>
-              <h3 class="slds-text-heading_medium">No eligible upsells for this order</h3>
-              <p class="slds-text-body_regular slds-text-color_weak">
-                This account has already reached its upsell limit, or no eligible products are configured for this Pricebook.
-              </p>
-            </div>
-
-            <!-- DEFAULT + VALIDATION-ERROR configurator form (also visible on error, hidden on loading/empty) -->
-            <div data-hide-on-state="loading,empty">
-              <div class="slds-form" role="list">
-
-                <div class="slds-form-element slds-m-bottom_small">
-                  <label class="slds-form-element__label" for="upsell-product">Upsell Product</label>
-                  <div class="slds-form-element__control">
-                    <div class="slds-select_container">
-                      <select class="slds-select" id="upsell-product">
-                        <option>Extended Warranty — 24mo</option>
-                        <option>Premium Support Plan</option>
-                        <option>Priority Dispatch Add-on</option>
-                      </select>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="slds-box slds-box_x-small slds-theme_shade slds-m-bottom_small">
-                  <p class="slds-text-title_caps slds-text-color_weak">List Price</p>
-                  <p class="slds-text-heading_small">$199.00 <span class="slds-text-body_small slds-text-color_weak">/ unit</span></p>
-                </div>
-
-                <div class="slds-grid slds-gutters slds-wrap">
-                  <div class="slds-col slds-size_1-of-2">
-                    <div class="slds-form-element slds-m-bottom_small" data-show-on-state="validation-error">
-                    </div>
-                    <div class="slds-form-element slds-m-bottom_small">
-                      <label class="slds-form-element__label" for="upsell-qty">Quantity</label>
-                      <div class="slds-form-element__control">
-                        <input type="number" id="upsell-qty" class="slds-input" value="2" min="0">
-                      </div>
-                      <div class="slds-form-element__help" data-show-on-state="validation-error" hidden>
-                        Quantity must be greater than 0.
-                      </div>
-                    </div>
-                  </div>
-                  <div class="slds-col slds-size_1-of-2">
-                    <div class="slds-form-element slds-m-bottom_small">
-                      <label class="slds-form-element__label" for="upsell-discount">Discount %</label>
-                      <div class="slds-form-element__control">
-                        <input type="number" id="upsell-discount" class="slds-input" value="10" min="0" max="100">
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="slds-form-element slds-m-bottom_medium">
-                  <span class="slds-form-element__label">Extended Price</span>
-                  <div class="slds-form-element__control">
-                    <p class="slds-text-heading_small">$358.20</p>
-                  </div>
-                </div>
-
-                <button class="slds-button slds-button_brand" type="button">
-                  <svg class="slds-button__icon slds-button__icon_left" aria-hidden="true">
-                    <use xlink:href="../../assets/ds/slds/assets/icons/utility-sprite/svg/symbols.svg#add"></use>
-                  </svg>
-                  Add to Order
-                </button>
-
-              </div>
-            </div>
-
-          </div>
-
-          <!-- Related list -->
-          <div class="slds-card__footer">
-            <h3 class="slds-text-heading_small slds-m-bottom_small">Upsells on this Order</h3>
-
-            <table class="slds-table slds-table_bordered slds-table_cell-buffer" data-hide-on-state="empty">
+              <span class="slds-assistive-text">Close</span>
+            </button>
+            <h2 class="slds-text-heading_medium">Capture customer data</h2>
+          </header>
+          <div class="slds-modal__content slds-p-around_medium">
+            <p class="slds-m-bottom_small">You will complete the shipping information for the following products.</p>
+            <table class="slds-table slds-table_bordered slds-m-bottom_medium">
               <thead>
                 <tr class="slds-line-height_reset">
-                  <th scope="col"><div class="slds-truncate" title="Product">Product</div></th>
-                  <th scope="col"><div class="slds-truncate" title="Quantity">Qty</div></th>
-                  <th scope="col"><div class="slds-truncate" title="Unit Price">Unit Price</div></th>
-                  <th scope="col"><div class="slds-truncate" title="Extended Price">Extended Price</div></th>
-                  <th scope="col"><div class="slds-truncate" title="Actions"></div></th>
+                  <th scope="col"><div class="slds-truncate">Existing</div></th>
+                  <th scope="col"><div class="slds-truncate">New</div></th>
+                  <th scope="col"><div class="slds-truncate">Quantity</div></th>
+                  <th scope="col"><div class="slds-truncate">VMI</div></th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
-                  <td><div class="slds-truncate" title="Premium Support Plan">Premium Support Plan</div></td>
-                  <td><div class="slds-truncate">1</div></td>
-                  <td><div class="slds-truncate">$99.00</div></td>
-                  <td><div class="slds-truncate">$99.00</div></td>
-                  <td>
-                    <button class="slds-button slds-button_icon" title="Remove">
-                      <svg class="slds-button__icon" aria-hidden="true">
-                        <use xlink:href="../../assets/ds/slds/assets/icons/utility-sprite/svg/symbols.svg#close"></use>
-                      </svg>
-                      <span class="slds-assistive-text">Remove</span>
-                    </button>
-                  </td>
+                  <td><div class="slds-truncate">&nbsp;</div></td>
+                  <td><div class="slds-truncate">VTU + AI Dash Cam</div></td>
+                  <td><div class="slds-truncate">0/3</div></td>
+                  <td><input type="checkbox" class="slds-checkbox" disabled></td>
+                </tr>
+                <tr>
+                  <td><div class="slds-truncate slds-text-title_bold">VTU + Driver ID</div></td>
+                  <td><div class="slds-truncate">Master Shut off switch (MMID)</div></td>
+                  <td><div class="slds-truncate">0/4</div></td>
+                  <td><input type="checkbox" class="slds-checkbox" disabled></td>
                 </tr>
               </tbody>
             </table>
 
-            <p data-show-on-state="empty" hidden class="slds-text-color_weak slds-p-vertical_small">
-              No upsells added yet.
-            </p>
-          </div>
+            <div class="slds-form-element slds-m-bottom_medium">
+              <label class="slds-checkbox">
+                <input type="checkbox" checked>
+                <span class="slds-checkbox_faux"></span>
+                <span class="slds-form-element__label">Shipping address and contact are the same for all products</span>
+              </label>
+            </div>
 
-        </article>
-      </div>
+            <p class="slds-text-title_bold slds-m-bottom_x-small">Shipping Address</p>
+            <div class="slds-form-element slds-m-bottom_x-small">
+              <label class="slds-checkbox">
+                <input type="checkbox" checked>
+                <span class="slds-checkbox_faux"></span>
+                <span class="slds-form-element__label">Use existing address</span>
+              </label>
+            </div>
+            <div class="slds-form-element slds-m-bottom_medium">
+              <div class="slds-form-element__control">
+                <div class="slds-select_container">
+                  <select class="slds-select" data-show-on-state="capture-data">
+                    <option>89 Morian Boulevard San Francisco</option>
+                  </select>
+                  <select class="slds-select" data-show-on-state="validation-error" hidden>
+                    <option>--None--</option>
+                  </select>
+                </div>
+              </div>
+              <div class="slds-form-element__help" data-show-on-state="validation-error" hidden>Please select an address to continue.</div>
+            </div>
+
+            <p class="slds-text-title_bold slds-m-bottom_x-small">Shipping and Installation Contact</p>
+            <div class="slds-form-element slds-m-bottom_x-small">
+              <label class="slds-checkbox">
+                <input type="checkbox" checked>
+                <span class="slds-checkbox_faux"></span>
+                <span class="slds-form-element__label">Use existing contact</span>
+              </label>
+            </div>
+            <div class="slds-form-element">
+              <div class="slds-form-element__control">
+                <div class="slds-select_container">
+                  <select class="slds-select" data-show-on-state="capture-data">
+                    <option>Laura Johnson</option>
+                  </select>
+                  <select class="slds-select" data-show-on-state="validation-error" hidden>
+                    <option>--None--</option>
+                  </select>
+                </div>
+              </div>
+              <div class="slds-form-element__help" data-show-on-state="validation-error" hidden>Please select a contact to continue.</div>
+            </div>
+          </div>
+          <footer class="slds-modal__footer">
+            <button class="slds-button slds-button_neutral">Cancel</button>
+            <button class="slds-button slds-button_brand">Next</button>
+          </footer>
+        </div>
+      </section>
     </div>
+
+    <!-- ============================================================
+         MODAL — Step 2a: Select vehicles (Upsell line — existing vehicles only)
+    ============================================================ -->
+    <div data-show-on-state="select-vehicles" hidden>
+      <div class="slds-backdrop slds-backdrop_open"></div>
+      <section class="slds-modal slds-fade-in-open" role="dialog" aria-modal="true">
+        <div class="slds-modal__container">
+          <header class="slds-modal__header">
+            <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close">
+              <svg class="slds-button__icon slds-button__icon_large" aria-hidden="true">
+                <use xlink:href="../../assets/ds/slds/assets/icons/utility-sprite/svg/symbols.svg#close"></use>
+              </svg>
+              <span class="slds-assistive-text">Close</span>
+            </button>
+            <h2 class="slds-text-heading_medium">Select vehicles</h2>
+          </header>
+          <div class="slds-modal__content slds-p-around_medium">
+            <p class="slds-m-bottom_small">Select vehicles for the following product and address</p>
+            <p class="slds-m-bottom_x-small"><strong>New:</strong> Master Shut off switch (MMID) &nbsp;|&nbsp; <strong>Existing:</strong> VTU + Driver ID</p>
+            <p class="slds-m-bottom_x-small"><strong>Shipping Address:</strong> 89 Morian Boulevard San Francisco</p>
+            <p class="slds-m-bottom_medium"><strong>Shipping Contact:</strong> Laura Johnson</p>
+            <p class="slds-text-body_small slds-text-color_weak slds-m-bottom_x-small">2 of 5 selected</p>
+            <table class="slds-table slds-table_bordered">
+              <thead>
+                <tr class="slds-line-height_reset">
+                  <th scope="col"><div class="slds-truncate">&nbsp;</div></th>
+                  <th scope="col"><div class="slds-truncate">Vehicle Name</div></th>
+                  <th scope="col"><div class="slds-truncate">YMM</div></th>
+                  <th scope="col"><div class="slds-truncate">VIN</div></th>
+                  <th scope="col"><div class="slds-truncate">Class</div></th>
+                  <th scope="col"><div class="slds-truncate">Vehicle ID</div></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><input type="checkbox" class="slds-checkbox" checked></td>
+                  <td><div class="slds-truncate">Truck pick Up Jose</div></td>
+                  <td><div class="slds-truncate">2023 Fiat Ducato</div></td>
+                  <td><div class="slds-truncate">1GC4YLE73PF251698</div></td>
+                  <td><div class="slds-truncate">Class P</div></td>
+                  <td><div class="slds-truncate"><a href="#">987654</a></div></td>
+                </tr>
+                <tr>
+                  <td><input type="checkbox" class="slds-checkbox"></td>
+                  <td><div class="slds-truncate">Truck pick Up Jose</div></td>
+                  <td><div class="slds-truncate">2023 Fiat Ducato</div></td>
+                  <td><div class="slds-truncate">WFOYXXTTGYPC30425</div></td>
+                  <td><div class="slds-truncate">Class P</div></td>
+                  <td><div class="slds-truncate"><a href="#">987654</a></div></td>
+                </tr>
+                <tr>
+                  <td><input type="checkbox" class="slds-checkbox" checked></td>
+                  <td><div class="slds-truncate">Truck pick Up Jose</div></td>
+                  <td><div class="slds-truncate">2023 Fiat Ducato</div></td>
+                  <td><div class="slds-truncate">1FTBR1C81PKB20422</div></td>
+                  <td><div class="slds-truncate">Class H</div></td>
+                  <td><div class="slds-truncate"><a href="#">987654</a></div></td>
+                </tr>
+              </tbody>
+            </table>
+            <p class="slds-text-body_small slds-text-color_weak slds-m-top_x-small">The upsell experience does not allow capturing a new VIN — only vehicles already in the system can be selected.</p>
+          </div>
+          <footer class="slds-modal__footer">
+            <button class="slds-button slds-button_neutral">Cancel</button>
+            <button class="slds-button slds-button_brand">Save</button>
+          </footer>
+        </div>
+      </section>
+    </div>
+
+    <!-- ============================================================
+         MODAL — Step 2b: Enter vehicles (Expansion / Initial Sale line — new VINs)
+    ============================================================ -->
+    <div data-show-on-state="enter-vehicles" hidden>
+      <div class="slds-backdrop slds-backdrop_open"></div>
+      <section class="slds-modal slds-fade-in-open" role="dialog" aria-modal="true">
+        <div class="slds-modal__container">
+          <header class="slds-modal__header">
+            <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close">
+              <svg class="slds-button__icon slds-button__icon_large" aria-hidden="true">
+                <use xlink:href="../../assets/ds/slds/assets/icons/utility-sprite/svg/symbols.svg#close"></use>
+              </svg>
+              <span class="slds-assistive-text">Close</span>
+            </button>
+            <h2 class="slds-text-heading_medium">Enter vehicles</h2>
+          </header>
+          <div class="slds-modal__content slds-p-around_medium">
+            <p class="slds-m-bottom_small">Enter vehicles for the following product and address</p>
+            <p class="slds-m-bottom_x-small"><strong>New:</strong> VTU + AI Dash Cam &nbsp;|&nbsp; <strong>Existing:</strong> —</p>
+            <p class="slds-m-bottom_x-small"><strong>Shipping Address:</strong> 89 Morian Boulevard San Francisco</p>
+            <p class="slds-m-bottom_medium"><strong>Shipping Contact:</strong> Laura Johnson</p>
+            <table class="slds-table slds-table_bordered">
+              <thead>
+                <tr class="slds-line-height_reset">
+                  <th scope="col"><div class="slds-truncate">Vehicle Name</div></th>
+                  <th scope="col"><div class="slds-truncate">YMM</div></th>
+                  <th scope="col"><div class="slds-truncate">VIN</div></th>
+                  <th scope="col"><div class="slds-truncate">Class</div></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><input type="text" class="slds-input" placeholder="Vehicle name"></td>
+                  <td><input type="text" class="slds-input" placeholder="Year Make Model"></td>
+                  <td><input type="text" class="slds-input" placeholder="VIN"></td>
+                  <td><input type="text" class="slds-input" placeholder="Class"></td>
+                </tr>
+                <tr>
+                  <td><input type="text" class="slds-input" placeholder="Vehicle name"></td>
+                  <td><input type="text" class="slds-input" placeholder="Year Make Model"></td>
+                  <td><input type="text" class="slds-input" placeholder="VIN"></td>
+                  <td><input type="text" class="slds-input" placeholder="Class"></td>
+                </tr>
+              </tbody>
+            </table>
+            <button class="slds-button slds-button_neutral slds-m-top_x-small">
+              <svg class="slds-button__icon slds-button__icon_left" aria-hidden="true">
+                <use xlink:href="../../assets/ds/slds/assets/icons/utility-sprite/svg/symbols.svg#add"></use>
+              </svg>
+              Add row
+            </button>
+          </div>
+          <footer class="slds-modal__footer">
+            <button class="slds-button slds-button_neutral">Cancel</button>
+            <button class="slds-button slds-button_brand">Save</button>
+          </footer>
+        </div>
+      </section>
+    </div>
+
+    <!-- ============================================================
+         MODAL — Hardware compatibility result: incompatible
+    ============================================================ -->
+    <div data-show-on-state="incompatible" hidden>
+      <div class="slds-backdrop slds-backdrop_open"></div>
+      <section class="slds-modal slds-fade-in-open" role="dialog" aria-modal="true">
+        <div class="slds-modal__container">
+          <header class="slds-modal__header">
+            <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close">
+              <svg class="slds-button__icon slds-button__icon_large" aria-hidden="true">
+                <use xlink:href="../../assets/ds/slds/assets/icons/utility-sprite/svg/symbols.svg#close"></use>
+              </svg>
+              <span class="slds-assistive-text">Close</span>
+            </button>
+            <h2 class="slds-text-heading_medium">Hardware Compatibility Check</h2>
+          </header>
+          <div class="slds-modal__content slds-p-around_medium">
+            <div class="slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_error slds-m-bottom_medium" role="alert">
+              <span class="slds-assistive-text">Error</span>
+              <svg class="slds-icon slds-icon_x-small slds-m-right_x-small" aria-hidden="true">
+                <use xlink:href="../../assets/ds/slds/assets/icons/utility-sprite/svg/symbols.svg#error"></use>
+              </svg>
+              <h2 class="slds-inline">This vehicle's current hardware is not compatible with Master Shut off switch (MMID).</h2>
+            </div>
+            <table class="slds-table slds-table_bordered slds-m-bottom_medium">
+              <tbody>
+                <tr>
+                  <td><div class="slds-truncate slds-text-title_bold">Vehicle</div></td>
+                  <td><div class="slds-truncate">Truck pick Up Jose — VIN 1GC4YLE73PF251698</div></td>
+                </tr>
+                <tr>
+                  <td><div class="slds-truncate slds-text-title_bold">Current core</div></td>
+                  <td><div class="slds-truncate">BDD</div></td>
+                </tr>
+                <tr>
+                  <td><div class="slds-truncate slds-text-title_bold">Required core</div></td>
+                  <td><div class="slds-truncate">Circle</div></td>
+                </tr>
+              </tbody>
+            </table>
+            <p class="slds-text-body_small slds-text-color_weak">Shipping replacement is required because the current hardware is incompatible. Replacement hardware will be shipped and installed. This replacement is not related to the contract and must be added in Connect 360.</p>
+          </div>
+          <footer class="slds-modal__footer">
+            <button class="slds-button slds-button_neutral">Cancel</button>
+            <button class="slds-button slds-button_brand">Proceed with Core Replacement</button>
+          </footer>
+        </div>
+      </section>
+    </div>
+
   </main>
 
   <script>
@@ -325,9 +545,12 @@
 
     window.FLOW_STATES = [
       { id: 'default', label: 'Default' },
-      { id: 'loading', label: 'Loading' },
-      { id: 'empty', label: 'Empty' },
-      { id: 'validation-error', label: 'Validation Error' }
+      { id: 'capture-data', label: 'Capture Data' },
+      { id: 'validation-error', label: 'Validation Error' },
+      { id: 'select-vehicles', label: 'Select Vehicles (Upsell)' },
+      { id: 'enter-vehicles', label: 'Enter Vehicles (Expansion)' },
+      { id: 'incompatible', label: 'Incompatible Hardware' },
+      { id: 'empty', label: 'Feature Not Available' }
     ];
   </script>
   <script src="../../assets/prototype-tools.js"></script>
