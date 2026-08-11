@@ -23,7 +23,7 @@
               <svg class="slds-icon slds-icon_x-small slds-input__icon slds-input__icon_left slds-icon-text-default" aria-hidden="true">
                 <use xlink:href="../../assets/ds/slds/assets/icons/utility-sprite/svg/symbols.svg#search"></use>
               </svg>
-              <input type="text" class="slds-input" placeholder="Search..." style="max-width:22rem">
+              <input type="text" class="slds-input" placeholder="Search...">
             </div>
           </div>
         </div>
@@ -84,6 +84,8 @@
 
     <p class="slds-m-bottom_small">
       <a href="../../index.html" class="slds-text-link">&larr; Back to Prototype Viewer</a>
+      &nbsp;|&nbsp;
+      <a href="./components/index.html" class="slds-text-link">View Upsells Components</a>
     </p>
 
     <nav class="slds-p-bottom_small" aria-label="Breadcrumbs">
@@ -577,13 +579,17 @@
 
   <script>
     (function () {
-      var url = new URL(window.location.href);
-      if (url.searchParams.get('presenter') !== 'true') {
-        url.searchParams.set('presenter', 'true');
-        if (!url.searchParams.get('state')) {
-          url.searchParams.set('state', 'default');
+      try {
+        var url = new URL(window.location.href);
+        if (url.searchParams.get('presenter') !== 'true') {
+          url.searchParams.set('presenter', 'true');
+          if (!url.searchParams.get('state')) {
+            url.searchParams.set('state', 'default');
+          }
+          history.replaceState(null, '', url.toString());
         }
-        history.replaceState(null, '', url.toString());
+      } catch (err) {
+        console.warn('presenter bootstrap: could not update URL (page still loads normally):', err);
       }
     }());
 

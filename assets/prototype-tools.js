@@ -34,9 +34,17 @@
   }
 
   function setParam(name, value) {
-    const url = new URL(window.location.href);
-    url.searchParams.set(name, value);
-    history.replaceState(null, '', url.toString());
+    // Wrapped in try/catch: some browsers (notably Chrome) throw a
+    // SecurityError on history.replaceState() for file:// URLs in certain
+    // configurations. If that happens we still want the state change itself
+    // to go through — only the URL/deep-link stays unsynced.
+    try {
+      const url = new URL(window.location.href);
+      url.searchParams.set(name, value);
+      history.replaceState(null, '', url.toString());
+    } catch (err) {
+      console.warn('prototype-tools: could not update URL (state change still applied):', err);
+    }
   }
 
   // ── Show / hide conditional elements ─────────────────────────
@@ -96,8 +104,8 @@
       btn.textContent = s.label;
       btn.dataset.ptStateBtn = s.id;
       btn.addEventListener('click', function () {
-        setParam('state', s.id);
         applyState(s.id);
+        setParam('state', s.id);
       });
       toolbar.appendChild(btn);
     });
@@ -137,8 +145,8 @@
   // Lets in-page elements (buttons, links) drive the same state change
   // as the floating toolbar, e.g. <button onclick="ptSetState('loading')">
   window.ptSetState = function (stateId) {
-    setParam('state', stateId);
     applyState(stateId);
+    setParam('state', stateId);
   };
 
 }());
