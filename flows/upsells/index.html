@@ -16,17 +16,58 @@
       <div class="slds-global-header__item">
         <div class="slds-global-header__logo" role="img" aria-label="Salesforce"></div>
       </div>
-      <div class="slds-global-header__item slds-grow">
-        <span class="slds-text-heading_small slds-text-color_inverse-weak">Sales &nbsp;›&nbsp; Opportunities</span>
+      <div class="slds-global-header__item slds-grow slds-p-horizontal_small">
+        <div class="slds-global-header__search-input">
+          <div class="slds-form-element">
+            <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_left">
+              <svg class="slds-icon slds-icon_x-small slds-input__icon slds-input__icon_left slds-icon-text-default" aria-hidden="true">
+                <use xlink:href="../../assets/ds/slds/assets/icons/utility-sprite/svg/symbols.svg#search"></use>
+              </svg>
+              <input type="text" class="slds-input" placeholder="Search..." style="max-width:22rem">
+            </div>
+          </div>
+        </div>
       </div>
       <div class="slds-global-header__item">
         <ul class="slds-global-actions">
           <li class="slds-global-actions__item">
-            <button class="slds-button slds-button_icon slds-global-actions__search slds-global-actions__icon" title="Search">
-              <svg class="slds-button__icon slds-global-header__icon" aria-hidden="true">
-                <use xlink:href="../../assets/ds/slds/assets/icons/utility-sprite/svg/symbols.svg#search"></use>
+            <button class="slds-button slds-button_icon slds-global-actions__icon" title="Favorites">
+              <svg class="slds-button__icon" aria-hidden="true">
+                <use xlink:href="../../assets/ds/slds/assets/icons/utility-sprite/svg/symbols.svg#favorite"></use>
               </svg>
-              <span class="slds-assistive-text">Search</span>
+              <span class="slds-assistive-text">Favorites</span>
+            </button>
+          </li>
+          <li class="slds-global-actions__item">
+            <button class="slds-button slds-button_icon slds-global-actions__icon" title="Create new">
+              <svg class="slds-button__icon" aria-hidden="true">
+                <use xlink:href="../../assets/ds/slds/assets/icons/utility-sprite/svg/symbols.svg#add"></use>
+              </svg>
+              <span class="slds-assistive-text">Create new</span>
+            </button>
+          </li>
+          <li class="slds-global-actions__item">
+            <button class="slds-button slds-button_icon slds-global-actions__icon" title="Setup">
+              <svg class="slds-button__icon" aria-hidden="true">
+                <use xlink:href="../../assets/ds/slds/assets/icons/utility-sprite/svg/symbols.svg#setup"></use>
+              </svg>
+              <span class="slds-assistive-text">Setup</span>
+            </button>
+          </li>
+          <li class="slds-global-actions__item">
+            <button class="slds-button slds-button_icon slds-global-actions__icon" title="Help">
+              <svg class="slds-button__icon" aria-hidden="true">
+                <use xlink:href="../../assets/ds/slds/assets/icons/utility-sprite/svg/symbols.svg#help"></use>
+              </svg>
+              <span class="slds-assistive-text">Help</span>
+            </button>
+          </li>
+          <li class="slds-global-actions__item">
+            <button class="slds-button slds-button_icon slds-global-actions__icon" title="Notifications">
+              <svg class="slds-button__icon" aria-hidden="true">
+                <use xlink:href="../../assets/ds/slds/assets/icons/utility-sprite/svg/symbols.svg#notification"></use>
+              </svg>
+              <span class="slds-assistive-text">Notifications</span>
             </button>
           </li>
           <li class="slds-global-actions__item">
@@ -83,7 +124,7 @@
           <div class="slds-page-header__controls">
             <div class="slds-page-header__control"><button class="slds-button slds-button_neutral">Follow</button></div>
             <div class="slds-page-header__control">
-              <button class="slds-button slds-button_brand" data-hide-on-state="empty">Capture customer details</button>
+              <button class="slds-button slds-button_brand" data-hide-on-state="empty" onclick="ptSetState('capture-data')">Capture customer details</button>
               <button class="slds-button slds-button_neutral" disabled data-show-on-state="empty" hidden title="Not yet available">Capture customer details</button>
             </div>
             <div class="slds-page-header__control"><button class="slds-button slds-button_neutral">Edit</button></div>
@@ -254,7 +295,7 @@
       <section class="slds-modal slds-fade-in-open" role="dialog" aria-modal="true">
         <div class="slds-modal__container">
           <header class="slds-modal__header">
-            <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close">
+            <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick="ptSetState('default')">
               <svg class="slds-button__icon slds-button__icon_large" aria-hidden="true">
                 <use xlink:href="../../assets/ds/slds/assets/icons/utility-sprite/svg/symbols.svg#close"></use>
               </svg>
@@ -271,6 +312,7 @@
                   <th scope="col"><div class="slds-truncate">New</div></th>
                   <th scope="col"><div class="slds-truncate">Quantity</div></th>
                   <th scope="col"><div class="slds-truncate">VMI</div></th>
+                  <th scope="col"><div class="slds-truncate">&nbsp;</div></th>
                 </tr>
               </thead>
               <tbody>
@@ -279,15 +321,18 @@
                   <td><div class="slds-truncate">VTU + AI Dash Cam</div></td>
                   <td><div class="slds-truncate">0/3</div></td>
                   <td><input type="checkbox" class="slds-checkbox" disabled></td>
+                  <td><button class="slds-button slds-button_neutral slds-button_small" onclick="ptSetState('enter-vehicles')">Select</button></td>
                 </tr>
                 <tr>
                   <td><div class="slds-truncate slds-text-title_bold">VTU + Driver ID</div></td>
                   <td><div class="slds-truncate">Master Shut off switch (MMID)</div></td>
                   <td><div class="slds-truncate">0/4</div></td>
                   <td><input type="checkbox" class="slds-checkbox" disabled></td>
+                  <td><button class="slds-button slds-button_neutral slds-button_small" onclick="ptSetState('select-vehicles')">Select</button></td>
                 </tr>
               </tbody>
             </table>
+            <p class="slds-text-body_small slds-text-color_weak slds-m-bottom_medium">Pick a row's "Select" action to continue: the AI Dash Cam line is an Expansion (new VIN), the Master Shut off switch line is an Upsell (existing vehicle).</p>
 
             <div class="slds-form-element slds-m-bottom_medium">
               <label class="slds-checkbox">
@@ -342,8 +387,7 @@
             </div>
           </div>
           <footer class="slds-modal__footer">
-            <button class="slds-button slds-button_neutral">Cancel</button>
-            <button class="slds-button slds-button_brand">Next</button>
+            <button class="slds-button slds-button_neutral" onclick="ptSetState('default')">Cancel</button>
           </footer>
         </div>
       </section>
@@ -357,7 +401,7 @@
       <section class="slds-modal slds-fade-in-open" role="dialog" aria-modal="true">
         <div class="slds-modal__container">
           <header class="slds-modal__header">
-            <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close">
+            <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick="ptSetState('default')">
               <svg class="slds-button__icon slds-button__icon_large" aria-hidden="true">
                 <use xlink:href="../../assets/ds/slds/assets/icons/utility-sprite/svg/symbols.svg#close"></use>
               </svg>
@@ -412,8 +456,8 @@
             <p class="slds-text-body_small slds-text-color_weak slds-m-top_x-small">The upsell experience does not allow capturing a new VIN — only vehicles already in the system can be selected.</p>
           </div>
           <footer class="slds-modal__footer">
-            <button class="slds-button slds-button_neutral">Cancel</button>
-            <button class="slds-button slds-button_brand">Save</button>
+            <button class="slds-button slds-button_neutral" onclick="ptSetState('default')">Cancel</button>
+            <button class="slds-button slds-button_brand" onclick="ptSetState('incompatible')" title="Runs the Hardware Specifier compatibility check">Save</button>
           </footer>
         </div>
       </section>
@@ -427,7 +471,7 @@
       <section class="slds-modal slds-fade-in-open" role="dialog" aria-modal="true">
         <div class="slds-modal__container">
           <header class="slds-modal__header">
-            <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close">
+            <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick="ptSetState('default')">
               <svg class="slds-button__icon slds-button__icon_large" aria-hidden="true">
                 <use xlink:href="../../assets/ds/slds/assets/icons/utility-sprite/svg/symbols.svg#close"></use>
               </svg>
@@ -472,8 +516,8 @@
             </button>
           </div>
           <footer class="slds-modal__footer">
-            <button class="slds-button slds-button_neutral">Cancel</button>
-            <button class="slds-button slds-button_brand">Save</button>
+            <button class="slds-button slds-button_neutral" onclick="ptSetState('default')">Cancel</button>
+            <button class="slds-button slds-button_brand" onclick="ptSetState('default')">Save</button>
           </footer>
         </div>
       </section>
@@ -487,7 +531,7 @@
       <section class="slds-modal slds-fade-in-open" role="dialog" aria-modal="true">
         <div class="slds-modal__container">
           <header class="slds-modal__header">
-            <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close">
+            <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick="ptSetState('default')">
               <svg class="slds-button__icon slds-button__icon_large" aria-hidden="true">
                 <use xlink:href="../../assets/ds/slds/assets/icons/utility-sprite/svg/symbols.svg#close"></use>
               </svg>
@@ -522,8 +566,8 @@
             <p class="slds-text-body_small slds-text-color_weak">Shipping replacement is required because the current hardware is incompatible. Replacement hardware will be shipped and installed. This replacement is not related to the contract and must be added in Connect 360.</p>
           </div>
           <footer class="slds-modal__footer">
-            <button class="slds-button slds-button_neutral">Cancel</button>
-            <button class="slds-button slds-button_brand">Proceed with Core Replacement</button>
+            <button class="slds-button slds-button_neutral" onclick="ptSetState('default')">Cancel</button>
+            <button class="slds-button slds-button_brand" onclick="ptSetState('default')">Proceed with Core Replacement</button>
           </footer>
         </div>
       </section>

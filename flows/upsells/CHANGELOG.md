@@ -6,6 +6,12 @@ Entries are written for stakeholders — describe the design change and the reas
 
 ---
 
+## [2026-08-11] — Interactivity + pixel-accuracy pass
+
+### Changed
+- Wired every button/link in the flow (Capture customer details, row-level Select actions, modal close/Cancel/Save/Proceed) to actually drive state transitions, so the prototype can be clicked through end-to-end instead of only switching states from the toolbar.
+- Corrected the Global Header to match the real SLDS component (verified against Salesforce's official Figma Lightning Design System library): white background instead of a dark bar, with a proper search input and the standard action icon set (Favorites, Create New, Setup, Help, Notifications, Avatar).
+
 ## [2026-08-11] — Revised to match real Opportunity Capture flow
 
 ### Changed

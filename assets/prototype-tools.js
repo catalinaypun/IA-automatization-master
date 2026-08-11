@@ -133,4 +133,12 @@
     init();
   }
 
+  // ── Public API ───────────────────────────────────────────────
+  // Lets in-page elements (buttons, links) drive the same state change
+  // as the floating toolbar, e.g. <button onclick="ptSetState('loading')">
+  window.ptSetState = function (stateId) {
+    setParam('state', stateId);
+    applyState(stateId);
+  };
+
 }());
