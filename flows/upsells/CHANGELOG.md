@@ -6,6 +6,32 @@ Entries are written for stakeholders — describe the design change and the reas
 
 ---
 
+## [2026-08-11] — Pixel-perfect pass against Marcela's Order Tab Figma
+
+### Added
+- Added the Global Navigation bar (Home / Accounts / Opportunities / Quotes / Orders / Products / Product Rules / Price Rules / Summary Variables / More) below the Global Header, matching the real Salesforce app shell.
+- Added the Opportunity stage Path (Prospecting → Qualification → Developing → Negotiating → Close) with a "Change Closed Status" action.
+- Added the "Related List Quick Links" panel (Quote, Approvals, Commissions, Contact Roles, Contracts, Order Line Items, Gong Conversations, DocuSign Status).
+- Added the right-hand Activity sidebar (Activity / Chatter / Cases / Promo Details tabs) with the "Upcoming & Overdue's" empty-state panel.
+- Added "Export" and "Finalize" actions above the Opportunity product table, and a "View All" action below it.
+- Added the missing "Amount" field to the Opportunity detail row.
+
+### Changed
+- Reorganized the Capture tab into a two-column layout (product/vehicle capture on the left, Activity sidebar on the right) to match the real screen.
+- Reordered the Vehicles/Asset Trackers action buttons to "Edit Installation address" then "Edit shipping address" per the source design.
+
+## [2026-08-11] — Component catalog kickoff (SLDS)
+
+### Added
+- Added a dedicated component catalog page at `flows/upsells/components/index.html` to build the Upsells design system in controlled increments.
+- Implemented and locked the first two baseline components in the agreed sequence: Global Header and Opportunity Record Header.
+- Added a component backlog tracker at `flows/upsells/components.md` to keep implementation order and completion status explicit.
+- Added the next baseline component set to the catalog: Opportunity Product Table, Capture Customer Data Modal (capture-data and validation-error variants), Select Vehicles Modal, and Enter Vehicles Modal.
+- Added the remaining baseline components to complete the agreed sequence: Hardware Incompatible Modal and Feature Not Available Banner.
+
+### Changed
+- Added an in-flow link on the Upsells screen to open the new component catalog directly from the prototype.
+
 ## [2026-08-11] — Interactivity + pixel-accuracy pass
 
 ### Changed

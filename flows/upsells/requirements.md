@@ -11,6 +11,7 @@
 - **Entry point:** "Capture customer details" action on the Opportunity page header, visible once the Opportunity product lines have an Order Detail Type.
 - **Design system:** This flow is Salesforce-native and uses SLDS (Salesforce Lightning Design System) instead of VDS — see the SLDS exception in `CLAUDE.md`.
 - **Design source:** Structure, copy, and screens are taken directly from Marcela's existing Figma file ("Upsell experience" board, Order Tab file) plus two stakeholder walkthroughs (Leo Gómez, product; Gabriel Barbosa, engineering) and the "Data Capture Business Owner" deck.
+- **Page chrome:** The default screen includes the standard Opportunity record chrome for fidelity to the source design — Global Navigation (app tabs), the Opportunity stage Path, the Related List Quick Links panel, and the right-hand Activity sidebar (Activity/Chatter/Cases/Promo Details). These are decorative context, not part of the Capture flow itself, and are not tied to any of the flow's states.
 
 ---
 

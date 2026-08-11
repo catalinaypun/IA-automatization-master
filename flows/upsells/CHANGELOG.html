@@ -13,6 +13,37 @@
   <h1>Changelog — Upsells</h1>
   <p>All notable design changes to this flow are documented here.</p>
 
+  <h2>2026-08-11 — Pixel-perfect pass against Marcela's Order Tab Figma</h2>
+  <h3>Added</h3>
+  <ul>
+    <li>Added the Global Navigation bar (Home / Accounts / Opportunities / Quotes / Orders / Products / Product Rules / Price Rules / Summary Variables / More) below the Global Header, matching the real Salesforce app shell.</li>
+    <li>Added the Opportunity stage Path (Prospecting → Qualification → Developing → Negotiating → Close) with a "Change Closed Status" action.</li>
+    <li>Added the "Related List Quick Links" panel (Quote, Approvals, Commissions, Contact Roles, Contracts, Order Line Items, Gong Conversations, DocuSign Status).</li>
+    <li>Added the right-hand Activity sidebar (Activity / Chatter / Cases / Promo Details tabs) with the "Upcoming &amp; Overdue's" empty-state panel.</li>
+    <li>Added "Export" and "Finalize" actions above the Opportunity product table, and a "View All" action below it.</li>
+    <li>Added the missing "Amount" field to the Opportunity detail row.</li>
+  </ul>
+  <h3>Changed</h3>
+  <ul>
+    <li>Reorganized the Capture tab into a two-column layout (product/vehicle capture on the left, Activity sidebar on the right) to match the real screen.</li>
+    <li>Reordered the Vehicles/Asset Trackers action buttons to "Edit Installation address" then "Edit shipping address" per the source design.</li>
+  </ul>
+
+  <h2>2026-08-11 — Component catalog kickoff (SLDS)</h2>
+  <h3>Added</h3>
+  <ul>
+    <li>Added a dedicated component catalog page at <code>flows/upsells/components/index.html</code> to build the Upsells design system in controlled increments.</li>
+    <li>Implemented and locked the first two baseline components in the agreed sequence: Global Header and Opportunity Record Header.</li>
+    <li>Added a component backlog tracker at <code>flows/upsells/components.md</code> to keep implementation order and completion status explicit.</li>
+    <li>Added the next baseline component set to the catalog: Opportunity Product Table, Capture Customer Data Modal (capture-data and validation-error variants), Select Vehicles Modal, and Enter Vehicles Modal.</li>
+    <li>Added the remaining baseline components to complete the agreed sequence: Hardware Incompatible Modal and Feature Not Available Banner.</li>
+  </ul>
+
+  <h3>Changed</h3>
+  <ul>
+    <li>Added an in-flow link on the Upsells screen to open the new component catalog directly from the prototype.</li>
+  </ul>
+
   <h2>2026-08-11 — Interactivity + pixel-accuracy pass</h2>
   <h3>Changed</h3>
   <ul>

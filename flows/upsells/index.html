@@ -80,6 +80,68 @@
     </header>
   </div>
 
+  <!-- ============================================================
+       GLOBAL NAVIGATION (app-level tab bar)
+  ============================================================ -->
+  <nav class="slds-context-bar" aria-label="Global navigation">
+    <div class="slds-context-bar__primary">
+      <div class="slds-context-bar__item slds-context-bar__app-name">
+        <button class="slds-context-bar__label-action" title="App Launcher">
+          <svg class="slds-icon slds-icon_x-small slds-icon-text-default slds-m-right_x-small" aria-hidden="true">
+            <use xlink:href="../../assets/ds/slds/assets/icons/utility-sprite/svg/symbols.svg#apps"></use>
+          </svg>
+          <span>Sales</span>
+        </button>
+      </div>
+    </div>
+    <div class="slds-context-bar__secondary slds-grow">
+      <ul class="slds-grid" role="menubar">
+        <li class="slds-context-bar__item"><a class="slds-context-bar__label-action" href="#">Home</a></li>
+        <li class="slds-context-bar__item">
+          <a class="slds-context-bar__label-action" href="#">Accounts
+            <svg class="slds-icon slds-icon_xx-small slds-icon-text-default slds-m-left_xx-small" aria-hidden="true"><use xlink:href="../../assets/ds/slds/assets/icons/utility-sprite/svg/symbols.svg#chevrondown"></use></svg>
+          </a>
+        </li>
+        <li class="slds-context-bar__item slds-is-active">
+          <a class="slds-context-bar__label-action slds-text-title_bold" href="#">Opportunities
+            <svg class="slds-icon slds-icon_xx-small slds-icon-text-default slds-m-left_xx-small" aria-hidden="true"><use xlink:href="../../assets/ds/slds/assets/icons/utility-sprite/svg/symbols.svg#chevrondown"></use></svg>
+          </a>
+        </li>
+        <li class="slds-context-bar__item">
+          <a class="slds-context-bar__label-action" href="#">Quotes
+            <svg class="slds-icon slds-icon_xx-small slds-icon-text-default slds-m-left_xx-small" aria-hidden="true"><use xlink:href="../../assets/ds/slds/assets/icons/utility-sprite/svg/symbols.svg#chevrondown"></use></svg>
+          </a>
+        </li>
+        <li class="slds-context-bar__item">
+          <a class="slds-context-bar__label-action" href="#">Orders
+            <svg class="slds-icon slds-icon_xx-small slds-icon-text-default slds-m-left_xx-small" aria-hidden="true"><use xlink:href="../../assets/ds/slds/assets/icons/utility-sprite/svg/symbols.svg#chevrondown"></use></svg>
+          </a>
+        </li>
+        <li class="slds-context-bar__item">
+          <a class="slds-context-bar__label-action" href="#">Products
+            <svg class="slds-icon slds-icon_xx-small slds-icon-text-default slds-m-left_xx-small" aria-hidden="true"><use xlink:href="../../assets/ds/slds/assets/icons/utility-sprite/svg/symbols.svg#chevrondown"></use></svg>
+          </a>
+        </li>
+        <li class="slds-context-bar__item">
+          <a class="slds-context-bar__label-action" href="#">Product Rules
+            <svg class="slds-icon slds-icon_xx-small slds-icon-text-default slds-m-left_xx-small" aria-hidden="true"><use xlink:href="../../assets/ds/slds/assets/icons/utility-sprite/svg/symbols.svg#chevrondown"></use></svg>
+          </a>
+        </li>
+        <li class="slds-context-bar__item">
+          <a class="slds-context-bar__label-action" href="#">Price Rules
+            <svg class="slds-icon slds-icon_xx-small slds-icon-text-default slds-m-left_xx-small" aria-hidden="true"><use xlink:href="../../assets/ds/slds/assets/icons/utility-sprite/svg/symbols.svg#chevrondown"></use></svg>
+          </a>
+        </li>
+        <li class="slds-context-bar__item"><a class="slds-context-bar__label-action" href="#">Summary Variables</a></li>
+        <li class="slds-context-bar__item">
+          <a class="slds-context-bar__label-action" href="#">More
+            <svg class="slds-icon slds-icon_xx-small slds-icon-text-default slds-m-left_xx-small" aria-hidden="true"><use xlink:href="../../assets/ds/slds/assets/icons/utility-sprite/svg/symbols.svg#chevrondown"></use></svg>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
   <main class="slds-p-around_medium">
 
     <p class="slds-m-bottom_small">
@@ -147,14 +209,93 @@
               <p class="slds-truncate">6/1/2025</p>
             </li>
             <li class="slds-page-header__detail-block">
+              <p class="slds-text-title slds-truncate">Amount</p>
+              <p class="slds-truncate">—</p>
+            </li>
+            <li class="slds-page-header__detail-block">
               <p class="slds-text-title slds-truncate">Opportunity Owner</p>
-              <p class="slds-truncate">John Smith</p>
+              <p class="slds-truncate">
+                <span class="slds-icon_container slds-icon-utility-user slds-m-right_xx-small" title="User">
+                  <svg class="slds-icon slds-icon-text-default slds-icon_xx-small" aria-hidden="true">
+                    <use xlink:href="../../assets/ds/slds/assets/icons/utility-sprite/svg/symbols.svg#user"></use>
+                  </svg>
+                </span>
+                John Smith
+              </p>
             </li>
             <li class="slds-page-header__detail-block">
               <p class="slds-text-title slds-truncate">Contract flexibility</p>
               <p class="slds-truncate"><input type="checkbox" class="slds-checkbox" disabled></p>
             </li>
           </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================================
+         PATH — Opportunity stage progress
+    ============================================================ -->
+    <div class="slds-path slds-m-bottom_small">
+      <div class="slds-grid slds-path__track">
+        <div class="slds-grid slds-path__scroller-container">
+          <div class="slds-path__scroller" role="application">
+            <div class="slds-path__scroller_inner">
+              <ul class="slds-path__nav" role="listbox" aria-orientation="horizontal">
+                <li class="slds-path__item slds-is-complete" role="presentation">
+                  <a aria-selected="false" class="slds-path__link" href="#" role="option" tabindex="-1">
+                    <span class="slds-path__stage">
+                      <svg class="slds-icon slds-icon_x-small" aria-hidden="true">
+                        <use xlink:href="../../assets/ds/slds/assets/icons/utility-sprite/svg/symbols.svg#check"></use>
+                      </svg>
+                      <span class="slds-assistive-text">Complete</span>
+                    </span>
+                    <span class="slds-path__title slds-assistive-text">Prospecting</span>
+                  </a>
+                </li>
+                <li class="slds-path__item slds-is-complete" role="presentation">
+                  <a aria-selected="false" class="slds-path__link" href="#" role="option" tabindex="-1">
+                    <span class="slds-path__stage">
+                      <svg class="slds-icon slds-icon_x-small" aria-hidden="true">
+                        <use xlink:href="../../assets/ds/slds/assets/icons/utility-sprite/svg/symbols.svg#check"></use>
+                      </svg>
+                      <span class="slds-assistive-text">Complete</span>
+                    </span>
+                    <span class="slds-path__title slds-assistive-text">Qualification</span>
+                  </a>
+                </li>
+                <li class="slds-path__item slds-is-current slds-is-active" role="presentation">
+                  <a aria-selected="true" class="slds-path__link" href="#" role="option" tabindex="0">
+                    <span class="slds-path__stage">
+                      <svg class="slds-icon slds-icon_x-small" aria-hidden="true">
+                        <use xlink:href="../../assets/ds/slds/assets/icons/utility-sprite/svg/symbols.svg#check"></use>
+                      </svg>
+                      <span class="slds-assistive-text">Current Stage:</span>
+                    </span>
+                    <span class="slds-path__title">Developing</span>
+                  </a>
+                </li>
+                <li class="slds-path__item slds-is-incomplete" role="presentation">
+                  <a aria-selected="false" class="slds-path__link" href="#" role="option" tabindex="-1">
+                    <span class="slds-path__stage">
+                      <span class="slds-assistive-text">Stage:</span>
+                    </span>
+                    <span class="slds-path__title">Negotiating</span>
+                  </a>
+                </li>
+                <li class="slds-path__item slds-is-incomplete" role="presentation">
+                  <a aria-selected="false" class="slds-path__link" href="#" role="option" tabindex="-1">
+                    <span class="slds-path__stage">
+                      <span class="slds-assistive-text">Stage:</span>
+                    </span>
+                    <span class="slds-path__title">Close</span>
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="slds-path__action">
+          <button class="slds-button slds-button_brand">Change Closed Status</button>
         </div>
       </div>
     </div>
@@ -169,124 +310,247 @@
       <h2 class="slds-inline">The "Capture customer details" functionality is not yet available.</h2>
     </div>
 
-    <!-- Tabs -->
-    <div class="slds-tabs_default slds-m-bottom_medium">
-      <ul class="slds-tabs_default__nav" role="tablist">
-        <li class="slds-tabs_default__item" role="presentation"><a class="slds-tabs_default__link" href="#">Details</a></li>
-        <li class="slds-tabs_default__item" role="presentation"><a class="slds-tabs_default__link" href="#">Related</a></li>
-        <li class="slds-tabs_default__item" role="presentation"><a class="slds-tabs_default__link" href="#">CF Opportunity Product Info</a></li>
-        <li class="slds-tabs_default__item" role="presentation"><a class="slds-tabs_default__link" href="#">Gong</a></li>
-        <li class="slds-tabs_default__item slds-is-active" role="presentation"><a class="slds-tabs_default__link" href="#">Capture</a></li>
-      </ul>
-    </div>
-
     <!-- ============================================================
-         CAPTURE TAB — Opportunity product
+         RELATED LIST QUICK LINKS
     ============================================================ -->
-    <article class="slds-card slds-m-bottom_medium">
-      <div class="slds-card__header slds-grid">
-        <header class="slds-media slds-media_center slds-has-flexi-truncate">
-          <div class="slds-media__figure">
-            <span class="slds-icon_container slds-icon-standard-opportunity" title="Opportunity product">
-              <svg class="slds-icon slds-icon_small" aria-hidden="true">
-                <use xlink:href="../../assets/ds/slds/assets/icons/standard-sprite/svg/symbols.svg#opportunity"></use>
-              </svg>
-            </span>
-          </div>
-          <div class="slds-media__body">
-            <h2 class="slds-card__header-title"><span>Opportunity product</span></h2>
-            <p class="slds-text-body_small slds-text-color_weak">5 items · Sorted by product · Updated a few seconds ago</p>
-          </div>
-        </header>
-        <div class="slds-no-flex">
-          <button class="slds-button slds-button_neutral">Add products</button>
-          <button class="slds-button slds-button_neutral">Edit products</button>
-        </div>
+    <article class="slds-card slds-m-bottom_small">
+      <div class="slds-card__header">
+        <h2 class="slds-card__header-title slds-text-title_caps">Related List Quick Links</h2>
       </div>
       <div class="slds-card__body slds-card__body_inner">
-        <table class="slds-table slds-table_bordered slds-table_cell-buffer">
-          <thead>
-            <tr class="slds-line-height_reset">
-              <th scope="col"><div class="slds-truncate">Product</div></th>
-              <th scope="col"><div class="slds-truncate">Parent Bundle Name</div></th>
-              <th scope="col"><div class="slds-truncate">Quantity</div></th>
-              <th scope="col"><div class="slds-truncate">Hardware type</div></th>
-              <th scope="col"><div class="slds-truncate">Order Detail Type</div></th>
-              <th scope="col"><div class="slds-truncate">VMI</div></th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><div class="slds-truncate"><a href="#">Vehicle Tracking Subscription</a></div></td>
-              <td><div class="slds-truncate">Bundle Plan | VTU + AI Dash Cam</div></td>
-              <td><div class="slds-truncate">2</div></td>
-              <td><div class="slds-truncate">New</div></td>
-              <td><div class="slds-truncate">Expansion</div></td>
-              <td><input type="checkbox" class="slds-checkbox" checked disabled></td>
-            </tr>
-            <tr>
-              <td><div class="slds-truncate"><a href="#">AI Dash Cam Subscription</a></div></td>
-              <td><div class="slds-truncate">Bundle Plan | VTU + AI Dash Cam</div></td>
-              <td><div class="slds-truncate">2</div></td>
-              <td><div class="slds-truncate">New</div></td>
-              <td><div class="slds-truncate">Expansion</div></td>
-              <td><input type="checkbox" class="slds-checkbox" checked disabled></td>
-            </tr>
-            <tr>
-              <td><div class="slds-truncate"><a href="#">Vehicle Tracking Subscription</a></div></td>
-              <td><div class="slds-truncate">Bundle Plan | VTU + Driver ID</div></td>
-              <td><div class="slds-truncate">2</div></td>
-              <td><div class="slds-truncate">Existing</div></td>
-              <td><div class="slds-truncate">Initial Sale</div></td>
-              <td><input type="checkbox" class="slds-checkbox"></td>
-            </tr>
-            <tr>
-              <td><div class="slds-truncate"><a href="#">Driver ID Subscription</a></div></td>
-              <td><div class="slds-truncate">Bundle Plan | VTU + Driver ID</div></td>
-              <td><div class="slds-truncate">2</div></td>
-              <td><div class="slds-truncate">Existing</div></td>
-              <td><div class="slds-truncate">Initial Sale</div></td>
-              <td><input type="checkbox" class="slds-checkbox"></td>
-            </tr>
-            <tr>
-              <td><div class="slds-truncate"><a href="#">Master Shut off switch (MMID)</a></div></td>
-              <td><div class="slds-truncate">Bundle Plan | VTU + Driver ID</div></td>
-              <td><div class="slds-truncate">2</div></td>
-              <td><div class="slds-truncate">New</div></td>
-              <td><div class="slds-truncate">Upsell</div></td>
-              <td><input type="checkbox" class="slds-checkbox"></td>
-            </tr>
-          </tbody>
-        </table>
+        <ul class="slds-grid slds-wrap slds-gutters_small">
+          <li class="slds-col slds-size_1-of-4 slds-m-bottom_small">
+            <div class="slds-media slds-media_small slds-m-bottom_x-small">
+              <div class="slds-media__figure">
+                <svg class="slds-icon slds-icon-text-default slds-icon_x-small" aria-hidden="true"><use xlink:href="../../assets/ds/slds/assets/icons/standard-sprite/svg/symbols.svg#quotes"></use></svg>
+              </div>
+              <div class="slds-media__body"><a href="#">Quote (1)</a></div>
+            </div>
+            <div class="slds-media slds-media_small">
+              <div class="slds-media__figure">
+                <svg class="slds-icon slds-icon-text-default slds-icon_x-small" aria-hidden="true"><use xlink:href="../../assets/ds/slds/assets/icons/standard-sprite/svg/symbols.svg#approval"></use></svg>
+              </div>
+              <div class="slds-media__body"><a href="#">Approvals (1)</a></div>
+            </div>
+          </li>
+          <li class="slds-col slds-size_1-of-4 slds-m-bottom_small">
+            <div class="slds-media slds-media_small slds-m-bottom_x-small">
+              <div class="slds-media__figure">
+                <svg class="slds-icon slds-icon-text-default slds-icon_x-small" aria-hidden="true"><use xlink:href="../../assets/ds/slds/assets/icons/custom-sprite/svg/symbols.svg#custom13"></use></svg>
+              </div>
+              <div class="slds-media__body"><a href="#">Commissions (0)</a></div>
+            </div>
+            <div class="slds-media slds-media_small">
+              <div class="slds-media__figure">
+                <svg class="slds-icon slds-icon-text-default slds-icon_x-small" aria-hidden="true"><use xlink:href="../../assets/ds/slds/assets/icons/standard-sprite/svg/symbols.svg#opportunity_contact_role"></use></svg>
+              </div>
+              <div class="slds-media__body"><a href="#">Contact Roles (1)</a></div>
+            </div>
+          </li>
+          <li class="slds-col slds-size_1-of-4 slds-m-bottom_small">
+            <div class="slds-media slds-media_small slds-m-bottom_x-small">
+              <div class="slds-media__figure">
+                <svg class="slds-icon slds-icon-text-default slds-icon_x-small" aria-hidden="true"><use xlink:href="../../assets/ds/slds/assets/icons/standard-sprite/svg/symbols.svg#contract"></use></svg>
+              </div>
+              <div class="slds-media__body"><a href="#">Contracts (2)</a></div>
+            </div>
+            <div class="slds-media slds-media_small">
+              <div class="slds-media__figure">
+                <svg class="slds-icon slds-icon-text-default slds-icon_x-small" aria-hidden="true"><use xlink:href="../../assets/ds/slds/assets/icons/standard-sprite/svg/symbols.svg#custom"></use></svg>
+              </div>
+              <div class="slds-media__body"><a href="#">Order Line Items (2)</a></div>
+            </div>
+          </li>
+          <li class="slds-col slds-size_1-of-4 slds-m-bottom_small">
+            <div class="slds-media slds-media_small slds-m-bottom_x-small">
+              <div class="slds-media__figure">
+                <svg class="slds-icon slds-icon-text-default slds-icon_x-small" aria-hidden="true"><use xlink:href="../../assets/ds/slds/assets/icons/standard-sprite/svg/symbols.svg#messaging_conversation"></use></svg>
+              </div>
+              <div class="slds-media__body"><a href="#">Gong Conversations (0)</a></div>
+            </div>
+            <div class="slds-media slds-media_small">
+              <div class="slds-media__figure">
+                <svg class="slds-icon slds-icon-text-default slds-icon_x-small" aria-hidden="true"><use xlink:href="../../assets/ds/slds/assets/icons/custom-sprite/svg/symbols.svg#custom18"></use></svg>
+              </div>
+              <div class="slds-media__body"><a href="#">DocuSign Status (0)</a></div>
+            </div>
+          </li>
+        </ul>
       </div>
     </article>
 
-    <article class="slds-card slds-m-bottom_x-small">
-      <div class="slds-card__header slds-grid slds-grid_align-spread">
-        <h2 class="slds-card__header-title">Vehicles (0)</h2>
-        <div class="slds-no-flex">
-          <button class="slds-button slds-button_neutral">Edit shipping address</button>
-          <button class="slds-button slds-button_neutral">Edit Installation address</button>
+    <!-- ============================================================
+         TWO-COLUMN LAYOUT: Capture tab (left) / Activity sidebar (right)
+    ============================================================ -->
+    <div class="slds-grid slds-wrap slds-gutters">
+      <div class="slds-col slds-size_1-of-1 slds-large-size_2-of-3">
+
+        <!-- Tabs -->
+        <div class="slds-tabs_default slds-m-bottom_medium">
+          <ul class="slds-tabs_default__nav" role="tablist">
+            <li class="slds-tabs_default__item" role="presentation"><a class="slds-tabs_default__link" href="#">Details</a></li>
+            <li class="slds-tabs_default__item" role="presentation"><a class="slds-tabs_default__link" href="#">Related</a></li>
+            <li class="slds-tabs_default__item" role="presentation"><a class="slds-tabs_default__link" href="#">CF Opportunity Product Info</a></li>
+            <li class="slds-tabs_default__item" role="presentation"><a class="slds-tabs_default__link" href="#">Gong</a></li>
+            <li class="slds-tabs_default__item slds-is-active" role="presentation"><a class="slds-tabs_default__link" href="#">Capture</a></li>
+          </ul>
         </div>
-      </div>
-    </article>
-    <article class="slds-card slds-m-bottom_x-small">
-      <div class="slds-card__header slds-grid slds-grid_align-spread">
-        <h2 class="slds-card__header-title">Asset Trackers (0)</h2>
-        <div class="slds-no-flex">
-          <button class="slds-button slds-button_neutral">Edit shipping address</button>
-          <button class="slds-button slds-button_neutral">Edit Installation address</button>
+
+        <div class="slds-grid slds-grid_align-end slds-m-bottom_small">
+          <button class="slds-button slds-button_neutral">Export</button>
+          <button class="slds-button slds-button_brand">Finalize</button>
         </div>
+
+        <!-- ============================================================
+             CAPTURE TAB — Opportunity product
+        ============================================================ -->
+        <article class="slds-card slds-m-bottom_medium">
+          <div class="slds-card__header slds-grid">
+            <header class="slds-media slds-media_center slds-has-flexi-truncate">
+              <div class="slds-media__figure">
+                <span class="slds-icon_container slds-icon-standard-opportunity" title="Opportunity product">
+                  <svg class="slds-icon slds-icon_small" aria-hidden="true">
+                    <use xlink:href="../../assets/ds/slds/assets/icons/standard-sprite/svg/symbols.svg#opportunity"></use>
+                  </svg>
+                </span>
+              </div>
+              <div class="slds-media__body">
+                <h2 class="slds-card__header-title"><span>Opportunity product</span></h2>
+                <p class="slds-text-body_small slds-text-color_weak">5 items · Sorted by product · Updated a few seconds ago</p>
+              </div>
+            </header>
+            <div class="slds-no-flex">
+              <button class="slds-button slds-button_neutral">Add products</button>
+              <button class="slds-button slds-button_neutral">Edit products</button>
+            </div>
+          </div>
+          <div class="slds-card__body slds-card__body_inner">
+            <table class="slds-table slds-table_bordered slds-table_cell-buffer">
+              <thead>
+                <tr class="slds-line-height_reset">
+                  <th scope="col"><div class="slds-truncate">Product</div></th>
+                  <th scope="col"><div class="slds-truncate">Parent Bundle Name</div></th>
+                  <th scope="col"><div class="slds-truncate">Quantity</div></th>
+                  <th scope="col"><div class="slds-truncate">Hardware type</div></th>
+                  <th scope="col"><div class="slds-truncate">Order Detail Type</div></th>
+                  <th scope="col"><div class="slds-truncate">VMI</div></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><div class="slds-truncate"><a href="#">Vehicle Tracking Subscription</a></div></td>
+                  <td><div class="slds-truncate">Bundle Plan | VTU + AI Dash Cam</div></td>
+                  <td><div class="slds-truncate">2</div></td>
+                  <td><div class="slds-truncate">New</div></td>
+                  <td><div class="slds-truncate">Expansion</div></td>
+                  <td><input type="checkbox" class="slds-checkbox" checked disabled></td>
+                </tr>
+                <tr>
+                  <td><div class="slds-truncate"><a href="#">AI Dash Cam Subscription</a></div></td>
+                  <td><div class="slds-truncate">Bundle Plan | VTU + AI Dash Cam</div></td>
+                  <td><div class="slds-truncate">2</div></td>
+                  <td><div class="slds-truncate">New</div></td>
+                  <td><div class="slds-truncate">Expansion</div></td>
+                  <td><input type="checkbox" class="slds-checkbox" checked disabled></td>
+                </tr>
+                <tr>
+                  <td><div class="slds-truncate"><a href="#">Vehicle Tracking Subscription</a></div></td>
+                  <td><div class="slds-truncate">Bundle Plan | VTU + Driver ID</div></td>
+                  <td><div class="slds-truncate">2</div></td>
+                  <td><div class="slds-truncate">Existing</div></td>
+                  <td><div class="slds-truncate">Initial Sale</div></td>
+                  <td><input type="checkbox" class="slds-checkbox"></td>
+                </tr>
+                <tr>
+                  <td><div class="slds-truncate"><a href="#">Driver ID Subscription</a></div></td>
+                  <td><div class="slds-truncate">Bundle Plan | VTU + Driver ID</div></td>
+                  <td><div class="slds-truncate">2</div></td>
+                  <td><div class="slds-truncate">Existing</div></td>
+                  <td><div class="slds-truncate">Initial Sale</div></td>
+                  <td><input type="checkbox" class="slds-checkbox"></td>
+                </tr>
+                <tr>
+                  <td><div class="slds-truncate"><a href="#">Master Shut off switch (MMID)</a></div></td>
+                  <td><div class="slds-truncate">Bundle Plan | VTU + Driver ID</div></td>
+                  <td><div class="slds-truncate">2</div></td>
+                  <td><div class="slds-truncate">New</div></td>
+                  <td><div class="slds-truncate">Upsell</div></td>
+                  <td><input type="checkbox" class="slds-checkbox"></td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="slds-align_absolute-center slds-p-top_small">
+              <button class="slds-button slds-button_neutral">View All</button>
+            </div>
+          </div>
+        </article>
+
+        <article class="slds-card slds-m-bottom_x-small">
+          <div class="slds-card__header slds-grid slds-grid_align-spread">
+            <h2 class="slds-card__header-title">Vehicles (0)</h2>
+            <div class="slds-no-flex">
+              <button class="slds-button slds-button_neutral">Edit Installation address</button>
+              <button class="slds-button slds-button_neutral">Edit shipping address</button>
+            </div>
+          </div>
+        </article>
+        <article class="slds-card slds-m-bottom_x-small">
+          <div class="slds-card__header slds-grid slds-grid_align-spread">
+            <h2 class="slds-card__header-title">Asset Trackers (0)</h2>
+            <div class="slds-no-flex">
+              <button class="slds-button slds-button_neutral">Edit Installation address</button>
+              <button class="slds-button slds-button_neutral">Edit shipping address</button>
+            </div>
+          </div>
+        </article>
+        <article class="slds-card slds-m-bottom_medium">
+          <div class="slds-card__header slds-grid slds-grid_align-spread">
+            <h2 class="slds-card__header-title">Key Fob IDs (0)</h2>
+            <div class="slds-no-flex">
+              <button class="slds-button slds-button_neutral">Edit shipping address</button>
+            </div>
+          </div>
+        </article>
       </div>
-    </article>
-    <article class="slds-card slds-m-bottom_medium">
-      <div class="slds-card__header slds-grid slds-grid_align-spread">
-        <h2 class="slds-card__header-title">Key Fob IDs (0)</h2>
-        <div class="slds-no-flex">
-          <button class="slds-button slds-button_neutral">Edit shipping address</button>
-        </div>
+
+      <!-- ============================================================
+           RIGHT SIDEBAR — Activity / Chatter / Cases / Promo Details
+      ============================================================ -->
+      <div class="slds-col slds-size_1-of-1 slds-large-size_1-of-3">
+        <article class="slds-card">
+          <div class="slds-tabs_default">
+            <ul class="slds-tabs_default__nav" role="tablist">
+              <li class="slds-tabs_default__item slds-is-active" role="presentation"><a class="slds-tabs_default__link" href="#">Activity</a></li>
+              <li class="slds-tabs_default__item" role="presentation"><a class="slds-tabs_default__link" href="#">Chatter</a></li>
+              <li class="slds-tabs_default__item" role="presentation"><a class="slds-tabs_default__link" href="#">Cases</a></li>
+              <li class="slds-tabs_default__item" role="presentation"><a class="slds-tabs_default__link" href="#">Promo Details</a></li>
+            </ul>
+            <div class="slds-tabs_default__content slds-show">
+              <ul class="slds-accordion">
+                <li class="slds-accordion__list-item">
+                  <section class="slds-accordion__section slds-is-open">
+                    <div class="slds-accordion__summary">
+                      <h3 class="slds-accordion__summary-heading">
+                        <button class="slds-button slds-button_reset slds-accordion__summary-action">
+                          <svg class="slds-accordion__summary-action-icon slds-button__icon slds-button__icon_left" aria-hidden="true">
+                            <use xlink:href="../../assets/ds/slds/assets/icons/utility-sprite/svg/symbols.svg#chevrondown"></use>
+                          </svg>
+                          <span class="slds-truncate">Upcoming &amp; Overdue's</span>
+                        </button>
+                      </h3>
+                    </div>
+                    <div class="slds-accordion__content">
+                      <p class="slds-text-align_center slds-text-color_weak slds-m-bottom_x-small">No Action to show</p>
+                      <p class="slds-text-align_center slds-text-body_small slds-text-color_weak">Get started by sending an email, scheduling a task, and more.</p>
+                    </div>
+                  </section>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </article>
       </div>
-    </article>
+    </div>
 
     <!-- ============================================================
          MODAL — Step 1: Capture customer data (Existing / New + address)
