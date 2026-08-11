@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Requirements — Upsells</title>
+  <link rel="stylesheet" href="../../assets/ds/design-system.css">
+</head>
+<body>
+  <p>Generated from the .md source — do not edit manually.</p>
+  <p><a class="btn btn--ghost btn--small" href="../../index.html">Back to Viewer</a></p>
+
+  <h1>Upsells — Requirements</h1>
+  <p><strong>Purpose:</strong> Let a Salesforce user configure and add an upsell product to an existing Order, directly within the Salesforce Lightning Experience UI (not the Verizon-branded embedded tool).</p>
+
+  <h2>Context</h2>
+  <ul>
+    <li><strong>Tool area:</strong> Salesforce Order record page (Lightning Experience), Sales / Orders app.</li>
+    <li><strong>Target user role:</strong> Sales Rep / Account Manager working an Order.</li>
+    <li><strong>Entry point:</strong> From the Order record page, in the &quot;Configure Upsell&quot; card.</li>
+    <li><strong>Design system:</strong> This flow is Salesforce-native and uses SLDS (Salesforce Lightning Design System) instead of VDS — see the SLDS exception in <code>CLAUDE.md</code>.</li>
+  </ul>
+
+  <h2>User Stories</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>As a…</th>
+        <th>I want to…</th>
+        <th>So that…</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="badge badge--black">US-01</span></td>
+        <td>Sales Rep</td>
+        <td>select an eligible upsell product for an Order and set its quantity and discount</td>
+        <td>I can add the right upsell with the correct pricing to the Order</td>
+      </tr>
+      <tr>
+        <td><span class="badge badge--black">US-02</span></td>
+        <td>Sales Rep</td>
+        <td>see the extended price update as I configure the upsell</td>
+        <td>I know the total cost before adding it to the Order</td>
+      </tr>
+      <tr>
+        <td><span class="badge badge--black">US-03</span></td>
+        <td>Sales Rep</td>
+        <td>see the upsells already added to this Order</td>
+        <td>I don't duplicate an upsell that's already on the Order</td>
+      </tr>
+      <tr>
+        <td><span class="badge badge--black">US-04</span></td>
+        <td>Sales Rep</td>
+        <td>get a clear message when no eligible upsells exist for this Order</td>
+        <td>I understand why I can't add one and can act accordingly</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>Acceptance Criteria</h2>
+  <h3>US-01 — Configure and add an upsell</h3>
+  <ul>
+    <li><strong>Given</strong> I am on the Order record page with eligible upsell products available</li>
+    <li><strong>When</strong> I select a product, set a quantity greater than 0, and click &quot;Add to Order&quot;</li>
+    <li><strong>Then</strong> the upsell is added to the &quot;Upsells on this Order&quot; list</li>
+  </ul>
+
+  <h3>US-02 — Live extended price</h3>
+  <ul>
+    <li><strong>Given</strong> I have selected an upsell product</li>
+    <li><strong>When</strong> I change quantity or discount %</li>
+    <li><strong>Then</strong> the Extended Price field reflects the updated total</li>
+  </ul>
+
+  <h3>US-03 — Existing upsells visibility</h3>
+  <ul>
+    <li><strong>Given</strong> the Order already has one or more upsells added</li>
+    <li><strong>When</strong> the Configure Upsell card loads</li>
+    <li><strong>Then</strong> those upsells are listed in the &quot;Upsells on this Order&quot; table with product, quantity, unit price, and extended price</li>
+  </ul>
+
+  <h3>US-04 — No eligible upsells</h3>
+  <ul>
+    <li><strong>Given</strong> the account has reached its upsell limit or no eligible products are configured for the Order's Pricebook</li>
+    <li><strong>When</strong> the Configure Upsell card loads</li>
+    <li><strong>Then</strong> an empty-state message explains why no upsells are available, and the product selector/Add action are not shown</li>
+  </ul>
+
+  <h2>States &amp; Edge Cases</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>State</th>
+        <th>Trigger</th>
+        <th>Expected UI behavior</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="badge badge--gray">default</span></td>
+        <td>Order loads with eligible upsells available</td>
+        <td>Product selector, quantity/discount inputs, extended price, and Add button are visible; existing upsells (if any) are listed</td>
+      </tr>
+      <tr>
+        <td><span class="badge badge--blue">loading</span></td>
+        <td>Eligible upsell products are being fetched</td>
+        <td>Spinner is shown over the Configure Upsell card body</td>
+      </tr>
+      <tr>
+        <td><span class="badge badge--gray">empty</span></td>
+        <td>No eligible upsells for this Order/account</td>
+        <td>Empty-state illustration and message shown; selector and Add action hidden; related list shows &quot;No upsells added yet.&quot;</td>
+      </tr>
+      <tr>
+        <td><span class="badge badge--red">validation-error</span></td>
+        <td>User attempts to add an upsell with quantity = 0</td>
+        <td>Error banner shown at top of card; Quantity field shows inline help text</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>Open Questions</h2>
+  <ul>
+    <li>What is the actual eligibility rule for &quot;upsell limit reached&quot; on an account — is it a fixed count, a dollar cap, or product-specific?</li>
+    <li>Should discount % have a max cap enforced by profile/role (e.g. reps can't exceed 15% without approval)?</li>
+    <li>Does adding an upsell require a page save, or is it committed immediately (matching a Quick Action / LWC pattern)?</li>
+    <li>Should removing an upsell from the related list require a confirmation step?</li>
+  </ul>
+</body>
+</html>

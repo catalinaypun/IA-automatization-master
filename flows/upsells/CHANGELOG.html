@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Changelog — Upsells</title>
+  <link rel="stylesheet" href="../../assets/ds/design-system.css">
+</head>
+<body>
+  <p>Generated from the .md source — do not edit manually.</p>
+  <p><a class="btn btn--ghost btn--small" href="../../index.html">Back to Viewer</a></p>
+
+  <h1>Changelog — Upsells</h1>
+  <p>All notable design changes to this flow are documented here.</p>
+
+  <h2>2026-08-11</h2>
+  <h3>Added</h3>
+  <ul>
+    <li>Created the initial Upsells flow: a Salesforce Order record page with a &quot;Configure Upsell&quot; card for selecting an upsell product, setting quantity and discount, and adding it to the Order.</li>
+    <li>Added an &quot;Upsells on this Order&quot; related list showing previously added upsells.</li>
+    <li>Added <code>default</code>, <code>loading</code>, <code>empty</code>, and <code>validation-error</code> states, including an empty-state message for when no eligible upsells exist and a validation error for a zero quantity.</li>
+    <li>Built with SLDS (Salesforce Lightning Design System) instead of VDS, since this flow represents native Salesforce UI rather than the Verizon-branded embedded tool.</li>
+  </ul>
+</body>
+</html>

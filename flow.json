@@ -1,7 +1,10 @@
 {
   "projects": [
     { "id": "c360",    "name": "C360",     "accent": "#e10014" },
-    { "id": "valucal", "name": "VaLu Cal", "accent": "#0089ec" }
+    { "id": "valucal", "name": "VaLu Cal", "accent": "#0089ec" },
+    { "id": "pricing-manager", "name": "Pricing Manager", "accent": "#006fc0" },
+    { "id": "reconciliation", "name": "Reconciliation", "accent": "#008331" },
+    { "id": "upsells", "name": "Upsells", "accent": "#032d60" }
   ],
   "flows": [
     {
@@ -15,6 +18,90 @@
       "requirements": "flows/modifications/requirements.html",
       "changelog": "flows/modifications/CHANGELOG.html",
       "states": ["default", "loading", "validation-error", "permission-denied"]
+    },
+    {
+      "id": "promotions-management-poc",
+      "project": "pricing-manager",
+      "name": "Pricing Desk",
+      "description": "AI DLC proof of concept for master and child promotion creation with summary and search.",
+      "status": "draft",
+      "updated": "2026-07-03",
+      "path": "flows/promotions-management-poc/index.html",
+      "requirements": "flows/promotions-management-poc/requirements.html",
+      "changelog": "flows/promotions-management-poc/CHANGELOG.html",
+      "states": ["default", "loading", "validation-error", "system-error"]
+    },
+    {
+      "id": "promotions-management-poc-v2",
+      "project": "pricing-manager",
+      "name": "Pricing Desk V2",
+      "description": "Versioned workspace for major navigation and architecture changes.",
+      "status": "draft",
+      "updated": "2026-07-22",
+      "path": "flows/promotions-management-poc-v2/index.html",
+      "requirements": "flows/promotions-management-poc-v2/requirements.html",
+      "changelog": "flows/promotions-management-poc-v2/CHANGELOG.html",
+      "states": ["default", "loading", "validation-error", "system-error"]
+    },
+    {
+      "id": "valucal-mvp",
+      "project": "valucal",
+      "name": "Valu Cal MVP",
+      "description": "Valu Cal MVP flow integrated in ecosystem structure with local launch screen and docs.",
+      "status": "draft",
+      "updated": "2026-07-10",
+      "path": "flows/valucal-mvp/index.html",
+      "requirements": "flows/valucal-mvp/requirements.html",
+      "changelog": "flows/valucal-mvp/CHANGELOG.html",
+      "states": ["default", "loading", "validation-error"]
+    },
+    {
+      "id": "valucal-growth",
+      "project": "valucal",
+      "name": "Valu Cal Growth",
+      "description": "Valu Cal Growth flow integrated in ecosystem structure with local launch screen and docs.",
+      "status": "draft",
+      "updated": "2026-07-10",
+      "path": "flows/valucal-growth/index.html",
+      "requirements": "flows/valucal-growth/requirements.html",
+      "changelog": "flows/valucal-growth/CHANGELOG.html",
+      "states": ["default", "loading", "validation-error"]
+    },
+    {
+      "id": "valucal-existing-accounts",
+      "project": "valucal",
+      "name": "Valu Cal Existing Accounts",
+      "description": "Valu Cal Existing Accounts flow integrated in ecosystem structure with local launch screen and docs.",
+      "status": "draft",
+      "updated": "2026-07-10",
+      "path": "flows/valucal-existing-accounts/index.html",
+      "requirements": "flows/valucal-existing-accounts/requirements.html",
+      "changelog": "flows/valucal-existing-accounts/CHANGELOG.html",
+      "states": ["default", "loading", "validation-error"]
+    },
+    {
+      "id": "reconciliation",
+      "project": "reconciliation",
+      "name": "Reconciliation",
+      "description": "Initial reconciliation workspace scaffold with baseline states and documentation.",
+      "status": "draft",
+      "updated": "2026-07-21",
+      "path": "flows/reconciliation/index.html",
+      "requirements": "flows/reconciliation/requirements.html",
+      "changelog": "flows/reconciliation/CHANGELOG.html",
+      "states": ["default", "loading", "empty", "validation-error"]
+    },
+    {
+      "id": "upsells",
+      "project": "upsells",
+      "name": "Upsells",
+      "description": "Salesforce-native Order record page for configuring and adding an upsell product, built with SLDS.",
+      "status": "draft",
+      "updated": "2026-08-11",
+      "path": "flows/upsells/index.html",
+      "requirements": "flows/upsells/requirements.html",
+      "changelog": "flows/upsells/CHANGELOG.html",
+      "states": ["default", "loading", "empty", "validation-error"]
     }
   ]
 }

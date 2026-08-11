@@ -5,20 +5,34 @@ This is a prototype ecosystem of vanilla HTML/CSS/JS prototypes for a Verizon Bu
 field-service internal tool (Salesforce-embedded).
 
 ## Stylesheet
-The ONLY stylesheet allowed is the Verizon Design System (VDS). Use the same reference
+The default stylesheet is the Verizon Design System (VDS). Use the same reference
 that `job-detail.html` uses:
 ```html
 <link rel="stylesheet" href="./assets/ds/design-system.css">
 ```
 (Adjust the relative path depth as needed per flow subfolder.)
 
+### SLDS exception (Salesforce-native flows)
+Flows whose `"project"` is `"upsells"` (or any future project explicitly documented
+here as Salesforce-native) are built directly for the Salesforce Lightning Experience
+UI itself rather than the Verizon-branded tool embedded inside it. These flows use the
+vendored Salesforce Lightning Design System (SLDS) instead of VDS:
+```html
+<link rel="stylesheet" href="./assets/ds/slds/salesforce-lightning-design-system.min.css">
+```
+(Adjust the relative path depth as needed per flow subfolder.) All other hard rules
+below (no frameworks, no build tools, no inline styles, no custom CSS, flow structure,
+states rules, documentation rules) still apply — only the stylesheet choice changes.
+Never mix VDS and SLDS classes in the same flow.
+
 ## Hard rules
 - No frameworks, no build tools, no Tailwind, no inline styles, no custom CSS.
-- Every prototype must be vanilla HTML + VDS only.
+- Every prototype must be vanilla HTML + VDS (or SLDS for Salesforce-native flows, see above) only.
 
 ## Golden reference
-`job-detail.html` is the golden reference. Every prototype must match its structure
-and conventions (head setup, asset paths, VDS class usage).
+`job-detail.html` is the golden reference for VDS flows. Every VDS prototype must
+match its structure and conventions (head setup, asset paths, VDS class usage).
+`flows/upsells/index.html` is the golden reference for SLDS flows.
 
 ## Knowledge base
 `/knowledge-base/design-system.md` contains the design system rules and is **required
@@ -66,8 +80,8 @@ and their HTML twins `requirements.html`, `CHANGELOG.html` (generated views).
 1. Every new flow must be registered in `flow.json` in the same task that creates it.
    `flow.json` must never be out of date with the flows that exist on disk.
 2. Every flow entry must include a `"project"` field matching one of the ids in the
-   top-level `"projects"` array (`"c360"` or `"valucal"`). The viewer uses this to
-   filter flows per project in the left sidebar.
+   top-level `"projects"` array (e.g. `"c360"`, `"valucal"`, `"upsells"`). The viewer
+   uses this to filter flows per project in the left sidebar.
 3. When a flow's status changes (draft → in-review → approved), update `flow.json`
    and commit the change.
 4. Every task that updates `flow.json` must also update the embedded manifest block in
@@ -110,8 +124,11 @@ and their HTML twins `requirements.html`, `CHANGELOG.html` (generated views).
    "Open Questions" — never invent requirements.
 
 ## Design System Updates
-`assets/ds/` is a vendored copy of the VDS repo. It is not a git submodule — its files
-are regular tracked files of this repo. To update it:
-1. Replace the files in `assets/ds/` manually with the latest version from the source repo.
+`assets/ds/` is a vendored copy of the VDS repo, and `assets/ds/slds/` is a vendored
+copy of the `@salesforce-ux/design-system` package (SLDS). Neither is a git submodule —
+their files are regular tracked files of this repo. To update either:
+1. Replace the files in `assets/ds/` (or `assets/ds/slds/`) manually with the latest
+   version from the source repo/package.
 2. Commit the change with a changelog-style message describing what changed in the DS,
-   e.g. `chore(ds): update VDS to vX.Y — added foo token, removed bar class`.
+   e.g. `chore(ds): update VDS to vX.Y — added foo token, removed bar class` or
+   `chore(ds): update SLDS to vX.Y — ...`.
