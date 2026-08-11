@@ -51,17 +51,27 @@
   function applyState(stateId) {
     document.body.dataset.state = stateId;
 
-    // NOTE: uses style.display (not the `hidden` attribute) because several VDS
-    // classes (.loader, .notification, .accordion, …) declare `display` directly,
-    // which overrides the UA `[hidden]{display:none}` rule at equal specificity.
+    // Toggle BOTH the `hidden` attribute and inline `style.display`:
+    // - `hidden` alone isn't enough for elements whose class already declares
+    //   `display` in the stylesheet (e.g. .loader, .notification, .accordion),
+    //   since a stylesheet rule can outrank the UA `[hidden]{display:none}` rule.
+    // - `style.display` alone isn't enough for plain elements with no class
+    //   (e.g. a bare wrapper <div hidden>), since clearing the inline style
+    //   just falls back to the `[hidden]` rule, which still applies as long
+    //   as the attribute is present.
+    // Setting both covers every case regardless of which one would "win".
     document.querySelectorAll('[data-show-on-state]').forEach(function (el) {
       var states = el.dataset.showOnState.split(',').map(function (s) { return s.trim(); });
-      el.style.display = states.includes(stateId) ? '' : 'none';
+      var show = states.includes(stateId);
+      el.hidden = !show;
+      el.style.display = show ? '' : 'none';
     });
 
     document.querySelectorAll('[data-hide-on-state]').forEach(function (el) {
       var states = el.dataset.hideOnState.split(',').map(function (s) { return s.trim(); });
-      el.style.display = states.includes(stateId) ? 'none' : '';
+      var hide = states.includes(stateId);
+      el.hidden = hide;
+      el.style.display = hide ? 'none' : '';
     });
 
     // Sync toolbar button active state
