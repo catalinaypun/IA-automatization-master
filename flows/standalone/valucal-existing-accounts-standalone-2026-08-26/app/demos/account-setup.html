@@ -1,0 +1,2889 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Account Setup — Verizon</title>
+  <link rel="stylesheet" href="../../../../assets/ds/design-system.css"/>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"/>
+  <style>
+    @font-face { font-family: 'NHGeDS'; src: url('../../../../assets/ds/fonts/VerizonNHGDS-Light.ttf') format('truetype'); font-weight: 300; }
+    @font-face { font-family: 'NHGeDS'; src: url('../../../../assets/ds/fonts/VerizonNHGeDS-Regular.ttf') format('truetype'); font-weight: 400; }
+    @font-face { font-family: 'NHGeDS'; src: url('../../../../assets/ds/fonts/VerizonNHGeDS-Bold.ttf') format('truetype'); font-weight: 700; }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'NHGeDS', 'Helvetica Neue', Arial, sans-serif;
+      font-size: var(--font-size-body-medium);
+      color: var(--color-black);
+      background: var(--color-gray-100);
+    }
+
+    /* ── SALESFORCE HEADER STACK ───────────────── */
+    .sf-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 50px;
+      background: #153c4b;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      z-index: 900;
+    }
+    .sf-head-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .sf-icon {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-white);
+    }
+    .sf-mark {
+      background: #0076ce;
+      color: var(--color-white);
+      font-weight: 700;
+      font-style: italic;
+      font-size: 12px;
+    }
+    .sf-searchbar {
+      width: 220px;
+      height: 24px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.2);
+    }
+    .sf-simulation-control {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2x);
+      margin-left: var(--space-3x);
+    }
+    .sf-simulation-label {
+      color: rgba(255, 255, 255, 0.9);
+      font-size: 12px;
+      font-weight: 400;
+      white-space: nowrap;
+    }
+    .sf-simulation-control .select {
+      min-width: 150px;
+      max-width: 170px;
+      height: 32px;
+      padding-top: 0;
+      padding-bottom: 0;
+      font-size: 13px;
+      border-radius: var(--radius-100);
+      background: var(--color-white);
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 20 20' fill='none'%3E%3Cpath d='M5 7.5L10 12.5L15 7.5' stroke='black' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      background-size: 18px 18px;
+      color: var(--color-black);
+      border-color: var(--color-black);
+    }
+    .sf-icons {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+    .sf-menu {
+      position: fixed;
+      top: 50px;
+      left: 0;
+      right: 0;
+      height: 37px;
+      background: #fff;
+      border-bottom: 2px solid #0076ce;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 0 24px;
+      z-index: 900;
+    }
+    .sf-menu-pill {
+      height: 20px;
+      border-radius: 10px;
+      background: #dddad4;
+      flex-shrink: 0;
+    }
+    .vc-header {
+      height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 12px;
+      border-bottom: 1px solid #e3e0db;
+      padding: 0 24px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12);
+      position: fixed;
+      top: 87px;
+      left: 0;
+      right: 0;
+      background: #fff;
+      z-index: 800;
+    }
+    .vc-logo-name {
+      font-family: var(--font-family-base, 'VerizonNHGDS', sans-serif);
+      font-size: 29px;
+      line-height: 1;
+      font-weight: 700;
+      color: #000;
+      letter-spacing: -0.5px;
+      text-transform: none;
+    }
+    .vc-title-stack {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: center;
+      gap: 4px;
+      min-width: 0;
+    }
+    .vc-title-stack #navbar-status-badge {
+      align-self: flex-start;
+    }
+    .vc-header-right {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    /* ── LAYOUT ────────────────────────────────── */
+    .app-shell    { display: flex; margin-top: 159px; min-height: calc(100vh - 159px); width: 100%; }
+    .content-area { flex: 1; width: 100%; min-width: 0; display: flex; flex-direction: column; margin-left: 0 !important; }
+    .main-content { padding: 20px; flex: 1; max-width: 1200px; margin: 0 auto; width: 100%; }
+    .page-breadcrumb { margin-bottom: 24px; }
+
+    .account-header-band {
+      width: 100%;
+      margin-left: 0;
+      margin-right: 0;
+      background: transparent;
+      border-bottom: 0;
+      padding: 0 0 var(--space-6x) 0;
+      margin-bottom: var(--space-6x);
+    }
+    .account-header-inner {
+      width: 100%;
+      padding: 0;
+    }
+    .account-header-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-3x);
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+    .account-header-title-row {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 6px;
+      flex-wrap: nowrap;
+      min-width: 0;
+    }
+    .account-header-funnel {
+      display: inline-flex;
+      align-items: center;
+      gap: 0;
+      flex-wrap: nowrap;
+    }
+    .account-header-funnel-control {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 44px;
+      width: 292px;
+      max-width: 100%;
+      border: 1px solid var(--color-black);
+      border-radius: var(--radius-input);
+      padding: 0 12px 0 20px;
+      background: var(--color-white);
+      overflow: visible;
+    }
+    @media (min-width: 768px) {
+      .account-header-funnel {
+        width: calc((100% - 36px) / 4);
+      }
+      .account-header-funnel-control {
+        width: 100%;
+      }
+    }
+    .account-header-funnel-control:focus-within {
+      outline: 2px solid var(--color-black);
+      outline-offset: 2px;
+    }
+    .account-header-funnel-label {
+      display: inline-flex;
+      align-items: center;
+      margin-bottom: 0;
+      font-size: 16px;
+      color: var(--color-black);
+      font-weight: var(--font-weight-bold);
+      white-space: nowrap;
+    }
+    .account-header-funnel .select {
+      flex: 1 1 auto;
+      min-width: 0;
+      width: 100%;
+      min-height: 0;
+      border: 0;
+      border-radius: 0;
+      padding: 0 28px 0 0;
+      background-color: transparent;
+      background-position: right 6px center;
+      box-shadow: none;
+      outline: 0;
+    }
+    .account-header-funnel .select:hover,
+    .account-header-funnel .select:focus-visible {
+      box-shadow: none;
+      outline: 0;
+    }
+    .account-header-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+    }
+    .account-header-inline-meta {
+      margin-top: var(--space-4x);
+      padding-top: var(--space-4x);
+      border-top: 1px solid var(--color-border);
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .account-header-inline-item {
+      display: inline-flex;
+      align-items: baseline;
+      gap: 3px;
+    }
+    .account-header-meta-label {
+      margin-bottom: 0;
+      font-size: 14px;
+      font-weight: var(--font-weight-bold);
+      color: var(--color-primary);
+      text-transform: none;
+      letter-spacing: 0;
+    }
+    .account-header-meta-value {
+      font-size: 14px;
+      font-weight: var(--font-weight-regular);
+      color: var(--color-black);
+      line-height: 1.4;
+    }
+    .account-header-inline-sep {
+      font-size: 14px;
+      color: var(--color-black);
+    }
+    .account-header-inline-meta--top {
+      margin-top: 0;
+      padding-top: 0;
+      border-top: 0;
+    }
+
+    /* ── SECTION TITLE / CONTAINER ─────────────── */
+    .section-title {
+      margin: 0;
+      font-family: var(--font-family-display);
+      font-size: 20px;
+      line-height: 24px;
+      font-weight: var(--font-weight-bold);
+      color: var(--color-black);
+      letter-spacing: var(--letter-spacing-normal);
+    }
+    .section-card {
+      margin-bottom: var(--space-6x, 24px);
+      padding: 0;
+    }
+    .section-card__header {
+      padding: var(--space-4x) var(--space-5x);
+      border-bottom: 1px solid var(--color-border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-3x);
+    }
+    .section-card__body {
+      padding: var(--space-4x) var(--space-5x);
+    }
+    .subsection-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-3x);
+      padding: 12px var(--space-5x, 20px);
+      margin-bottom: 0;
+      background: var(--color-brand-stone);
+      margin-top: 0;
+      margin-left: 0;
+      margin-right: 0;
+    }
+    .subsection-heading.with-divider {
+      border-top: 1px solid var(--color-border);
+      margin-top: 0;
+    }
+    .subsection-title {
+      margin: 0;
+      font-family: var(--font-family-display);
+      font-size: 20px;
+      line-height: 24px;
+      font-weight: var(--font-weight-bold);
+      color: var(--color-black);
+      letter-spacing: var(--letter-spacing-normal);
+    }
+    .required-asterisk {
+      color: var(--color-red-600, #c81e1e);
+      margin-left: 4px;
+    }
+
+    /* ── CARD ──────────────────────────────────── */
+    /* Use VDS .card base and app layout spacing only. */
+    .card {
+      background: var(--color-white);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-200);
+      margin-bottom: var(--space-6x, 24px);
+      overflow: hidden;
+    }
+    .card-header {
+      padding: var(--space-3x) var(--space-5x); border-bottom: 1px solid var(--color-border);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .card-title {
+      font-size: 11px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.1em; color: var(--color-gray-600);
+    }
+
+    .accordion-toggle {
+      width: 100%;
+      background: transparent;
+      border: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-3x);
+      cursor: pointer;
+      padding: var(--space-3x) var(--space-5x);
+      border-bottom: 1px solid var(--color-border);
+      text-align: left;
+    }
+    .accordion-toggle .card-title {
+      margin: 0;
+    }
+    .accordion-meta {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2x);
+      flex-shrink: 0;
+    }
+    .accordion-chevron {
+      font-size: 18px;
+      color: var(--color-gray-600);
+      transition: transform 0.2s ease;
+    }
+    .accordion-card.is-collapsed .accordion-chevron {
+      transform: rotate(-90deg);
+    }
+    .accordion-card.is-collapsed .accordion-toggle {
+      border-bottom: 0;
+    }
+
+    /* ── FIELD ROWS ────────────────────────────── */
+    .field-row {
+      display: flex; align-items: center;
+      padding: 12px var(--space-5x, 20px); border-bottom: 1px solid var(--color-border);
+      column-gap: var(--space-3x);
+      row-gap: 0;
+    }
+    .field-row:last-child { border-bottom: none; }
+    .field-lbl { min-width: 190px; font-size: 13px; color: var(--color-black); font-weight: var(--font-weight-bold); flex-shrink: 0; }
+    .field-val  { flex: 1; font-size: var(--font-size-body-medium); font-weight: var(--font-weight-regular); }
+    .field-actions { margin-left: auto; display: flex; align-items: center; gap: var(--space-2x); }
+    .field-meta-muted {
+      font-size: var(--font-size-body-small);
+      font-weight: var(--font-weight-regular);
+      color: #a6a6a6;
+      line-height: 1.4;
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2x);
+    }
+    .field-meta-muted::after {
+      content: 'arrow_forward';
+      font-family: 'Material Symbols Outlined';
+      font-size: 16px;
+      line-height: 1;
+      visibility: hidden;
+    }
+
+    /* ── INLINE EDIT ───────────────────────────── */
+    .field-edit-wrap { flex: 1; display: flex; flex-direction: column; gap: var(--space-2x); }
+    .edit-actions    { display: flex; gap: var(--space-2x); }
+
+    /* ── PAYMENT OPTIONS (DS card + native radio) ─ */
+    .payment-method-grid {
+      display: flex;
+      gap: var(--space-3x);
+      padding: var(--space-4x) var(--space-5x, 20px) var(--space-5x, 20px);
+      flex-wrap: wrap;
+      margin: 0;
+      border: 0;
+      min-inline-size: 0;
+    }
+    .payment-option {
+      flex: 1 1 260px;
+      cursor: pointer;
+      border: 1px solid var(--color-border) !important;
+      box-shadow: none !important;
+    }
+    .payment-option.card--surface,
+    .payment-option.card--outlined {
+      border: 1px solid var(--color-border) !important;
+      box-shadow: none !important;
+    }
+    .payment-option-head {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2x);
+      margin-bottom: var(--space-2x);
+    }
+    .payment-option > .text-body-small {
+      margin-left: calc(16px + var(--space-2x));
+    }
+    .payment-option input[type="radio"],
+    .gch-option input[type="radio"] {
+      accent-color: var(--color-black);
+      width: 16px;
+      height: 16px;
+      margin: 0;
+      flex-shrink: 0;
+    }
+
+    /* ── APPROVAL NOTIFICATION WRAPPER ─────────── */
+    #direct-approval-row,
+    #terms-approval-row {
+      padding: 0 var(--space-5x, 20px);
+    }
+    .approval-note {
+      margin: 0;
+      width: 100%;
+      box-sizing: border-box;
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr) auto;
+      align-items: start;
+      column-gap: var(--space-3x);
+      row-gap: var(--space-2x);
+      overflow: visible;
+    }
+    .approval-note .notification__body {
+      min-width: 0;
+    }
+    .approval-note .btn {
+      align-self: start;
+      flex-shrink: 0;
+    }
+    .approval-note__meta {
+      font-size: var(--font-size-body-small);
+      color: var(--color-gray-400);
+      margin-top: var(--space-1x);
+    }
+    .approval-note__hint {
+      font-size: 14px;
+      line-height: 20px;
+      color: var(--color-gray-500);
+      margin-top: var(--space-1x);
+    }
+    @media (max-width: 1024px) {
+      .approval-note {
+        grid-template-columns: auto minmax(0, 1fr);
+      }
+      .approval-note .btn {
+        grid-column: 1 / -1;
+        justify-self: start;
+      }
+    }
+
+    /* ── COMPLIANCE / GCH ──────────────────────── */
+    .compliance-row {
+      display: flex; align-items: center;
+      padding: 14px var(--space-5x); border-bottom: 1px solid var(--color-border); gap: var(--space-3x);
+    }
+    .compliance-row:last-child { border-bottom: none; }
+    .compliance-label { font-size: 14px; font-weight: 600; flex: 1; }
+    .compliance-sub   { font-size: 12px; color: var(--color-gray-600); margin-top: 2px; }
+
+    .gch-subview { padding: var(--space-5x); }
+    .gch-back {
+      background: none; border: none; font-family: 'NHGeDS', sans-serif;
+      font-size: 13px; color: var(--color-blue-600); cursor: pointer;
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 0 0 var(--space-4x); font-weight: 700;
+    }
+    .gch-back:hover { text-decoration: underline; }
+    .gch-sub-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--space-2x); }
+    .gch-h1 { font-size: 18px; font-weight: 700; }
+    .gch-warning-row {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 13px; color: var(--color-orange-800); font-weight: 700; margin-bottom: 14px;
+    }
+    .gch-desc { font-size: 13px; color: var(--color-gray-600); margin-bottom: 14px; }
+    .gch-option-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin: 0 0 var(--space-5x);
+      padding: 0;
+      border: 0;
+      min-inline-size: 0;
+    }
+    .gch-option {
+      display: flex; align-items: flex-start; gap: 12px;
+      cursor: pointer;
+    }
+    .gch-option-body { flex: 1; }
+    .gch-option-name { font-weight: 700; font-size: 14px; }
+    .gch-option-meta { font-size: 12px; color: var(--color-gray-600); margin-top: 3px; }
+    .gch-footer { display: flex; justify-content: flex-end; gap: 10px; }
+
+    /* ── ICON CONSISTENCY ─────────────────────── */
+    .material-symbols-outlined {
+      font-size: 18px;
+      line-height: 1;
+      font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 20;
+    }
+    .ui-icon--sm { font-size: 16px; }
+    .ui-icon--md { font-size: 18px; }
+
+    /* ── TOAST (DS notification) ───────────────── */
+    #toast-container {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 9999;
+      width: min(420px, calc(100vw - 32px));
+    }
+
+    /* ── UTILS ─────────────────────────────────── */
+    .hidden  { display: none !important; }
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+    .divider { border: none; border-top: 1px solid var(--color-border); margin: 0; }
+    .terms-helper {
+      font-size: 12px; color: var(--color-gray-600);
+      line-height: 20px;
+      display: block;
+      margin: 0;
+      padding: 12px 20px 20px;
+      border-top: 1px solid var(--color-border);
+    }
+    .payment-terms-heading { display: none !important; }
+    .approval-note__status {
+      font-size: var(--font-size-body-large);
+      font-weight: var(--font-weight-bold);
+      line-height: var(--line-height-body-large);
+      color: inherit;
+    }
+    .approval-note__status--requested {
+      color: var(--color-blue-1000);
+    }
+    .approval-note__status--approved {
+      color: var(--color-green-1000);
+    }
+
+    /* ── VDS input/select full-width in field rows ─ */
+    .field-edit-wrap .input,
+    .field-edit-wrap .select { width: 100%; }
+
+    /* ── VDS btn size override for inline edit rows ─ */
+    .edit-actions .btn { min-height: 32px; padding: 0 16px; font-size: 12px; }
+
+     /* ── HEADER CARDS EXCEPTION ──────────────────────
+       Kept custom wrapper because current inline edit UX (view/edit swap with
+       field-level controls) does not map cleanly to VDS tile components without
+       introducing structural/JS churn. Styles remain token-aligned to VDS.
+     */
+    .hdr-card {
+      background: var(--color-white);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-200);
+      padding: 16px 18px;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: center;
+      column-gap: var(--space-3x);
+      row-gap: var(--space-2x);
+    }
+    .hdr-card-label {
+      font-size: 16px; font-weight: 700;
+      text-transform: none; letter-spacing: 0;
+      color: var(--color-black);
+      margin: 0;
+      line-height: 1.25;
+      grid-column: 1;
+      grid-row: 1;
+    }
+    .hdr-card-value { font-size: 13px; font-weight: 400; color: var(--color-black); line-height: 1.4; margin: 0; }
+    .hdr-card-sub   { font-size: 12px; color: var(--color-gray-600); margin: 2px 0 0; }
+    .hdr-card-view {
+      display: contents;
+    }
+    .hdr-card-view > :first-child {
+      grid-column: 1 / -1;
+      grid-row: 2;
+      min-width: 0;
+      align-self: start;
+    }
+    .hdr-card-edit-btn {
+      position: static;
+      grid-column: 2;
+      grid-row: 1;
+      justify-self: end;
+      align-self: center;
+    }
+
+    /* ── SHIPPING ADDRESS MODAL FORM ───────────── */
+    .shipping-address-form {
+      display: grid;
+      gap: var(--space-4x);
+    }
+    .shipping-address-form .label {
+      display: block;
+      margin-bottom: var(--space-2x);
+    }
+    .shipping-address-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-4x);
+    }
+    .shipping-address-grid .shipping-field-full {
+      grid-column: 1 / -1;
+    }
+    .shipping-label-optional {
+      color: var(--color-gray-600);
+      font-weight: var(--font-weight-regular);
+      margin-left: var(--space-1x);
+    }
+    .modal-inline-action {
+      display: flex;
+      justify-content: flex-start;
+    }
+    .modal-actions {
+      display: flex;
+      gap: var(--space-3x);
+      width: 100%;
+    }
+    .modal-actions .btn {
+      flex: 1 1 0;
+    }
+    .account-doc-upload {
+      border-style: dashed;
+      border-color: var(--color-gray-400);
+      background: var(--color-gray-100);
+      display: grid;
+      gap: var(--space-2x);
+      justify-items: center;
+      text-align: center;
+      padding: var(--space-4x);
+      cursor: pointer;
+      box-shadow: none !important;
+    }
+    .account-doc-upload.is-dragover {
+      border-color: var(--color-blue-600);
+      background: var(--color-white);
+    }
+    .account-doc-upload-title {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2x);
+      font-size: var(--font-size-body-medium);
+      font-weight: var(--font-weight-bold);
+      color: var(--color-black);
+    }
+    .account-doc-upload-status {
+      font-size: var(--font-size-body-small);
+      color: var(--color-gray-600);
+    }
+    .account-doc-upload-error {
+      color: var(--color-error);
+      font-size: var(--font-size-body-small);
+    }
+    .modal-loader-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-4x);
+      min-height: 180px;
+    }
+    .modal-inline-end-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: var(--space-3x);
+      width: 100%;
+    }
+    .modal-inline-end-actions .btn {
+      flex: 0 0 220px;
+      width: 220px;
+      max-width: 220px;
+    }
+    @media (max-width: 767px) {
+      .vc-header {
+        height: auto;
+        min-height: 72px;
+        padding: 10px 16px;
+        flex-wrap: wrap;
+        row-gap: 8px;
+      }
+      .vc-title-stack {
+        flex: 1 1 auto;
+      }
+      .vc-header-right {
+        margin-left: auto;
+      }
+      .account-header-band {
+        width: auto;
+        margin-left: 0;
+        margin-right: 0;
+      }
+      .main-content {
+        padding: var(--space-5x);
+      }
+      .account-header-inner {
+        padding: 0 var(--space-4x);
+      }
+      .account-header-top {
+        width: 100%;
+      }
+      .account-header-funnel {
+        flex-wrap: nowrap;
+      }
+      .account-header-funnel-control {
+        width: 292px;
+        max-width: 100%;
+      }
+      .account-header-funnel .select {
+        width: auto;
+        min-width: 0;
+      }
+      .account-header-grid {
+        grid-template-columns: 1fr;
+      }
+      .field-row {
+        flex-direction: column;
+        align-items: flex-start;
+        row-gap: var(--space-2x);
+      }
+      .field-lbl {
+        min-width: 0;
+      }
+      .field-actions {
+        margin-left: 0;
+        width: 100%;
+        justify-content: flex-end;
+      }
+      .field-actions .field-meta-muted {
+        text-align: right;
+      }
+      .shipping-address-grid {
+        grid-template-columns: 1fr;
+      }
+      .modal-inline-end-actions {
+        flex-direction: column;
+      }
+      .modal-inline-end-actions .btn {
+        flex: 1 1 auto;
+        width: 100%;
+        max-width: none;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<header class="sf-header">
+  <div class="sf-head-left">
+    <div class="sf-icon sf-mark">SF</div>
+    <div class="sf-searchbar"></div>
+    <div class="sf-simulation-control">
+      <label class="sf-simulation-label" for="simulation-select">Simulation</label>
+      <select class="select" id="simulation-select" onchange="setSimulationMode(this.value)">
+        <option value="new">New account</option>
+        <option value="existing">Existing account</option>
+      </select>
+    </div>
+  </div>
+  <div class="sf-icons">
+    <div class="sf-icon"><span class="material-symbols-outlined ui-icon--md" aria-hidden="true">notifications</span></div>
+    <div class="sf-icon"><span class="material-symbols-outlined ui-icon--md" aria-hidden="true">search</span></div>
+    <div class="sf-icon"><span class="material-symbols-outlined ui-icon--md" aria-hidden="true">apps</span></div>
+  </div>
+</header>
+
+<nav class="sf-menu" aria-label="Salesforce module menu">
+  <div style="width:21px;height:21px;background:rgba(0,0,0,0.15);border-radius:3px;flex-shrink:0;"></div>
+  <div class="sf-menu-pill" style="width:122px;"></div>
+  <div class="sf-menu-pill" style="width:122px;"></div>
+  <div class="sf-menu-pill" style="width:122px;"></div>
+  <div class="sf-menu-pill" style="width:122px;"></div>
+  <div class="sf-menu-pill" style="width:122px;"></div>
+</nav>
+
+<div class="vc-header">
+  <div class="vc-title-stack">
+    <div class="vc-logo-name">Account Setup</div>
+    <span id="navbar-status-badge" class="badge badge--yellow">2 items pending</span>
+  </div>
+  <div class="vc-header-right">
+    <button class="btn btn--secondary btn--medium" type="button">Cancel</button>
+    <button class="btn btn--primary btn--medium" onclick="saveAll()">Save</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     APP SHELL
+════════════════════════════════════════════════════════════════ -->
+<div class="app-shell">
+
+  <!-- CONTENT AREA -->
+  <div class="content-area" style="margin-left:0;">
+
+
+    <!-- ════ SECTIONS ════ -->
+    <div class="main-content">
+
+      <nav class="page-breadcrumb" aria-label="Breadcrumb">
+        <ol class="breadcrumb-nav">
+          <li class="breadcrumb-nav__item">
+            <a class="breadcrumb-nav__link" href="../../index.html?presenter=true&state=default">Valu Cal</a>
+          </li>
+          <li class="breadcrumb-nav__item" aria-hidden="true"><span class="breadcrumb-nav__sep">&gt;</span></li>
+          <li class="breadcrumb-nav__item breadcrumb-nav__item--current" aria-current="page">Account Setup</li>
+        </ol>
+      </nav>
+
+      <!-- ── ACCOUNT INFO ──────────────────────── -->
+      <div id="section-account-info">
+        <div class="account-header-band">
+          <div class="account-header-inner">
+            <div class="account-header-top">
+              <div class="account-header-title-row">
+                <div class="section-title" style="margin-bottom:0;">Account info</div>
+                <div class="account-header-inline-meta account-header-inline-meta--top" aria-label="Account metadata">
+                  <div class="account-header-inline-item">
+                    <span class="account-header-meta-label">Segment:</span>
+                    <span class="account-header-meta-value">Mid Market</span>
+                  </div>
+                  <span class="account-header-inline-sep" aria-hidden="true">|</span>
+                  <div class="account-header-inline-item">
+                    <span class="account-header-meta-label">Industry:</span>
+                    <span class="account-header-meta-value">Transportation &amp; Logistics</span>
+                  </div>
+                  <span class="account-header-inline-sep" aria-hidden="true">|</span>
+                  <div class="account-header-inline-item">
+                    <span class="account-header-meta-label">Primary region:</span>
+                    <span class="account-header-meta-value">Southeast</span>
+                  </div>
+                </div>
+              </div>
+              <div class="account-header-funnel">
+                <div class="account-header-funnel-control">
+                  <label class="label text-body-small account-header-funnel-label" for="hdr-input-funnelStatus">Funnel status:</label>
+                  <select class="select" id="hdr-input-funnelStatus" onchange="saveFunnelStatus(this.value)">
+                    <option value="possible">Possible</option>
+                    <option value="confident">Confident</option>
+                    <option value="committed">Committed</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <!-- ACCOUNT HEADER CARDS -->
+            <div class="account-header-grid">
+
+              <!-- Account Name (editable) -->
+              <div class="hdr-card">
+                <div class="hdr-card-label">Account name</div>
+                <div id="hdr-accountName-view" class="hdr-card-view">
+                  <div id="hdr-accountName" class="hdr-card-value">Apex Construction LLC</div>
+                  <button class="btn btn--secondary btn--small hdr-card-edit-btn" onclick="openCardEdit('accountName')">Edit</button>
+                </div>
+              </div>
+
+              <!-- Billing Address (editable) -->
+              <div class="hdr-card">
+                <div class="hdr-card-label">Billing address</div>
+                <div id="hdr-billingAddress-view" class="hdr-card-view">
+                  <div id="hdr-billingAddress" class="hdr-card-value">123 Industrial Pkwy, Sacramento, CA 95814</div>
+                  <button class="btn btn--secondary btn--small hdr-card-edit-btn" onclick="openCardEdit('billingAddress')">Edit</button>
+                </div>
+                <div id="hdr-billingAddress-edit" style="display:none; margin-top:8px;">
+                  <input id="hdr-input-billingAddress" class="input" type="text" value="123 Industrial Pkwy, Sacramento, CA 95814" style="margin-bottom:8px;"/>
+                  <div style="display:flex; gap:6px;">
+                    <button class="btn btn--primary btn--medium" onclick="saveCardEdit('billingAddress')">Save</button>
+                    <button class="btn btn--secondary btn--medium" onclick="cancelCardEdit('billingAddress')">Cancel</button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Shipping Address (editable) -->
+              <div class="hdr-card">
+                <div class="hdr-card-label">Shipping address</div>
+                <div id="hdr-shippingAddress-view" class="hdr-card-view">
+                  <div id="hdr-shippingAddress" class="hdr-card-value">120 Logistics Way, Sacramento, CA 95814</div>
+                  <button class="btn btn--secondary btn--small hdr-card-edit-btn" onclick="openCardEdit('shippingAddress')">Edit</button>
+                </div>
+                <div id="hdr-shippingAddress-edit" style="display:none; margin-top:8px;">
+                  <input id="hdr-input-shippingAddress" class="input" type="text" value="120 Logistics Way, Sacramento, CA 95814" style="margin-bottom:8px;"/>
+                  <div style="display:flex; gap:6px;">
+                    <button class="btn btn--primary btn--medium" onclick="saveCardEdit('shippingAddress')">Save</button>
+                    <button class="btn btn--secondary btn--medium" onclick="cancelCardEdit('shippingAddress')">Cancel</button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Contact (editable) -->
+              <div class="hdr-card">
+                <div class="hdr-card-label">Contact</div>
+                <div id="hdr-contact-view" class="hdr-card-view">
+                  <div>
+                    <div id="hdr-contactName" class="hdr-card-value">Laura Mendez</div>
+                    <div id="hdr-contactInfo" class="hdr-card-sub">Fleet Operations Manager · +1 (813) 555-0186</div>
+                  </div>
+                  <button class="btn btn--secondary btn--small hdr-card-edit-btn" onclick="openCardEdit('contact')">Edit</button>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+
+        <div class="card section-card">
+          <div class="subsection-heading">
+            <h3 class="subsection-title">General</h3>
+            <span class="badge badge--yellow" id="acc-badge-general">2 items pending</span>
+          </div>
+          <div class="field-row">
+            <div class="field-lbl">Lead source</div>
+            <div class="field-val">Inbound Web Form</div>
+            <div class="field-actions"><span class="field-meta-muted">Read only</span></div>
+          </div>
+          <div class="field-row" id="row-platform">
+            <div class="field-lbl">Platform</div>
+            <div class="field-val" id="val-platform">Reveal Pro</div>
+            <div class="field-actions">
+              <button class="btn btn--ghost btn--small" onclick="startEdit('platform')">Edit <span class="material-symbols-outlined ui-icon--sm" aria-hidden="true">arrow_forward</span></button>
+            </div>
+          </div>
+          <div class="field-row hidden" id="edit-platform">
+            <div class="field-lbl">Platform</div>
+            <div class="field-edit-wrap">
+              <select class="select" id="input-platform">
+                <option value="reveal-pro">Reveal Pro</option>
+                <option value="reveal">Reveal</option>
+                <option value="reveal-starter">Reveal Starter</option>
+              </select>
+              <div class="edit-actions">
+                <button class="btn btn--primary btn--medium" onclick="saveEdit('platform')">Save</button>
+                <button class="btn btn--secondary btn--medium" onclick="cancelEdit('platform')">Cancel</button>
+              </div>
+            </div>
+          </div>
+          <div class="field-row" id="row-contractType">
+            <div class="field-lbl">Contract type</div>
+            <div class="field-val" id="val-contractType">Flex</div>
+            <div class="field-actions" id="actions-contractType">
+              <button class="btn btn--ghost btn--small" onclick="startEdit('contractType')">Edit <span class="material-symbols-outlined ui-icon--sm" aria-hidden="true">arrow_forward</span></button>
+            </div>
+          </div>
+          <div class="field-row hidden" id="edit-contractType">
+            <div class="field-lbl">Contract type</div>
+            <div class="field-edit-wrap">
+              <select class="select" id="input-contractType">
+                <option value="flex">Flex</option>
+                <option value="fixed">Fixed</option>
+              </select>
+              <div class="edit-actions">
+                <button class="btn btn--primary btn--medium" onclick="saveEdit('contractType')">Save</button>
+                <button class="btn btn--secondary btn--medium" onclick="cancelEdit('contractType')">Cancel</button>
+              </div>
+            </div>
+          </div>
+          <div class="field-row">
+            <div class="field-lbl">Total fleet</div>
+            <div class="field-val" id="val-totalFleet">120 vehicles</div>
+            <div class="field-actions" id="actions-totalFleet">
+              <button class="btn btn--ghost btn--small" onclick="confirmField('totalFleet')">Confirm <span class="material-symbols-outlined ui-icon--sm" aria-hidden="true">arrow_forward</span></button>
+            </div>
+          </div>
+          <div class="field-row">
+            <div class="field-lbl">Total assets</div>
+            <div class="field-val" id="val-totalAssets">64 assets</div>
+            <div class="field-actions" id="actions-totalAssets">
+              <button class="btn btn--ghost btn--small" onclick="confirmField('totalAssets')">Confirm <span class="material-symbols-outlined ui-icon--sm" aria-hidden="true">arrow_forward</span></button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card section-card">
+          <div class="subsection-heading">
+            <h3 class="subsection-title">Finance</h3>
+            <span class="badge badge--green" id="acc-badge-finance">Ready</span>
+          </div>
+          <div class="field-row" id="row-currency">
+            <div class="field-lbl">Currency</div>
+            <div class="field-val" id="val-currency">USD</div>
+            <div class="field-actions" id="actions-currency">
+              <button class="btn btn--ghost btn--small" onclick="startEdit('currency')">Edit <span class="material-symbols-outlined ui-icon--sm" aria-hidden="true">arrow_forward</span></button>
+            </div>
+          </div>
+          <div class="field-row hidden" id="edit-currency">
+            <div class="field-lbl">Currency</div>
+            <div class="field-edit-wrap">
+              <select class="select" id="input-currency">
+                <option value="usd">USD</option>
+                <option value="cad">CAD</option>
+              </select>
+              <div class="edit-actions">
+                <button class="btn btn--primary btn--medium" onclick="saveEdit('currency')">Save</button>
+                <button class="btn btn--secondary btn--medium" onclick="cancelEdit('currency')">Cancel</button>
+              </div>
+            </div>
+          </div>
+          <div class="field-row">
+            <div class="field-lbl">Pricebook</div>
+            <div class="field-val" id="val-pricebook">FM Reveal Mid Market US Dollar</div>
+            <div class="field-actions"><span class="field-meta-muted">Read only</span></div>
+          </div>
+        </div>
+
+        <div class="card section-card">
+          <div class="subsection-heading">
+            <h3 class="subsection-title">Payment Method</h3>
+            <span class="badge badge--yellow" id="acc-badge-payment">Pending</span>
+          </div>
+          <fieldset class="payment-method-grid" role="radiogroup" aria-labelledby="payment-method-options-label">
+            <legend class="sr-only" id="payment-method-options-label">Choose payment method</legend>
+            <label class="card card--surface payment-option" id="rc-autopay">
+              <div class="payment-option-head">
+                <input type="radio" id="dot-autopay" name="payment-method" checked aria-label="Autopay" onchange="selectPaymentMethod('autopay')"/>
+                <span class="text-body-medium-bold">Autopay</span>
+              </div>
+              <div class="text-body-small">Payment is automatically charged to the account's card on file. No additional approval required.</div>
+            </label>
+            <label class="card card--outlined payment-option" id="rc-direct">
+              <div class="payment-option-head">
+                <input type="radio" id="dot-direct" name="payment-method" aria-label="Direct bill" onchange="selectPaymentMethod('direct-bill')"/>
+                <span class="text-body-medium-bold">Direct bill</span>
+              </div>
+              <div class="text-body-small">Invoice sent directly to the customer. Approval may be required.</div>
+            </label>
+          </fieldset>
+          <div id="direct-approval-row" class="hidden">
+            <div class="notification notification--warning approval-note">
+              <span class="notification__icon" aria-hidden="true"><img src="../../../../assets/ds/icons/warning.svg" alt="" aria-hidden="true" width="20" height="20"></span>
+              <div class="notification__body">
+                <div id="direct-approval-chip" class="notification__title approval-note__status">Director approval required</div>
+                <div class="approval-note__hint" id="direct-approval-hint">Net 60 and Net 90 require Director approval.</div>
+                <div class="approval-note__meta text-body-small hidden" id="direct-approval-ts"></div>
+              </div>
+              <button class="btn btn--secondary btn--medium" id="direct-approval-btn" onclick="requestDirectApproval()" style="white-space:nowrap;">Request approval →</button>
+            </div>
+          </div>
+          <div id="finance-payment-terms">
+            <div class="field-row" id="row-paymentTerms">
+              <div class="field-lbl">Payment terms</div>
+              <div class="field-val" id="val-paymentTerms">Net 30</div>
+              <div class="field-actions" id="actions-paymentTerms">
+                <button class="btn btn--ghost btn--small" id="terms-edit-btn" onclick="startEdit('paymentTerms')">Edit <span class="material-symbols-outlined ui-icon--sm" aria-hidden="true">arrow_forward</span></button>
+              </div>
+            </div>
+            <div class="field-row hidden" id="edit-paymentTerms">
+              <div class="field-lbl">Payment terms</div>
+              <div class="field-edit-wrap">
+                <select class="select" id="input-paymentTerms" onchange="onTermsChange()">
+                  <option value="net-30">Net 30</option>
+                  <option value="net-60">Net 60</option>
+                  <option value="net-90">Net 90</option>
+                </select>
+                <div class="edit-actions">
+                  <button class="btn btn--primary btn--medium" onclick="saveEdit('paymentTerms')">Save</button>
+                  <button class="btn btn--secondary btn--medium" onclick="cancelEdit('paymentTerms')">Cancel</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card section-card">
+          <div class="subsection-heading">
+            <h3 class="subsection-title">Owner</h3>
+            <span class="badge badge--yellow" id="acc-badge-owner">1 item pending</span>
+          </div>
+          <div class="field-row">
+            <div class="field-lbl">Owner</div>
+            <div class="field-val">J. Martinez</div>
+            <div class="field-actions"><span class="field-meta-muted">From CRM</span></div>
+          </div>
+          <div class="field-row">
+            <div class="field-lbl">Sales team</div>
+            <div class="field-val">Mid Market — Southeast</div>
+            <div class="field-actions"><span class="field-meta-muted">From CRM</span></div>
+          </div>
+          <div class="field-row" id="row-costCenter">
+            <div class="field-lbl">Cost center</div>
+            <div class="field-val" id="val-costCenter"><span style="color:var(--color-gray-400);">Not set</span></div>
+            <div class="field-actions">
+              <button class="btn btn--ghost btn--small" onclick="startEdit('costCenter')">Edit <span class="material-symbols-outlined ui-icon--sm" aria-hidden="true">arrow_forward</span></button>
+            </div>
+          </div>
+          <div class="field-row hidden" id="edit-costCenter">
+            <div class="field-lbl">Cost center</div>
+            <div class="field-edit-wrap">
+              <input class="input" id="input-costCenter" type="text" placeholder="e.g. CC-4821"/>
+              <div class="edit-actions">
+                <button class="btn btn--primary btn--medium" onclick="saveEdit('costCenter')">Save</button>
+                <button class="btn btn--secondary btn--medium" onclick="cancelEdit('costCenter')">Cancel</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card section-card">
+          <div class="subsection-heading">
+            <h3 class="subsection-title">Seasonal Billing</h3>
+            <span class="badge badge--yellow" id="acc-badge-seasonal">1 item pending</span>
+          </div>
+          <div class="field-row" id="row-seasonalBilling">
+            <div class="field-lbl">Configuration<span class="required-asterisk" aria-hidden="true">*</span></div>
+            <div class="field-val" id="val-seasonalBilling"><span style="color:var(--color-gray-400);">Not configured</span></div>
+            <div class="field-actions">
+              <button class="btn btn--ghost btn--small" onclick="startEdit('seasonalBilling')">Configure <span class="material-symbols-outlined ui-icon--sm" aria-hidden="true">arrow_forward</span></button>
+            </div>
+          </div>
+          <div class="field-row hidden" id="edit-seasonalBilling">
+            <div class="field-lbl">Configuration<span class="required-asterisk" aria-hidden="true">*</span></div>
+            <div class="field-edit-wrap">
+              <select class="select" id="input-seasonalBilling">
+                <option value="">Select option…</option>
+                <option value="standard">Standard (no seasonal adjustment)</option>
+                <option value="seasonal-pause">Seasonal pause (vehicles paused off-season)</option>
+                <option value="seasonal-reduce">Seasonal reduction (reduced fleet off-season)</option>
+              </select>
+              <div class="edit-actions">
+                <button class="btn btn--primary btn--medium" onclick="saveEdit('seasonalBilling')">Save</button>
+                <button class="btn btn--secondary btn--medium" onclick="cancelEdit('seasonalBilling')">Cancel</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── FLEET & ASSETS ─────────────────────── -->
+      <div id="section-fleet" class="hidden">
+        <div class="card section-card">
+          <div class="section-card__header">
+            <h2 class="section-title">Fleet &amp; assets</h2>
+          </div>
+          <div class="section-card__body placeholder-empty">
+            <span class="material-symbols-outlined ph-icon">local_shipping</span>
+            <div class="ph-title">Fleet &amp; assets</div>
+            <div class="ph-sub">This section is coming soon.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── OWNER ─────────────────────────────── -->
+      <div id="section-account-owner" class="hidden">
+        <div class="card section-card">
+          <div class="section-card__header">
+            <h2 class="section-title">Owner</h2>
+          </div>
+          <div class="section-card__body placeholder-empty">
+            <span class="material-symbols-outlined ph-icon">manage_accounts</span>
+            <div class="ph-title">Owner</div>
+            <div class="ph-sub">Ownership and cost allocation fields are managed in Account info.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── COMPLIANCE ─────────────────────────── -->
+      <div id="section-compliance" class="hidden">
+        <div class="card section-card">
+          <div class="section-card__header">
+            <h2 class="section-title">Compliance</h2>
+          </div>
+        </div>
+
+        <!-- GCH Normal view -->
+        <div class="card accordion-card" id="gch-card" data-accordion="gch">
+          <button class="accordion-toggle" type="button" onclick="toggleAccordion('gch')" aria-expanded="true" aria-controls="accordion-content-gch" id="accordion-toggle-gch">
+            <span class="card-title">GCH — Customer Hierarchy</span>
+            <span class="accordion-meta">
+              <span class="badge badge--yellow" id="acc-badge-gch">Pending</span>
+              <span class="material-symbols-outlined accordion-chevron" aria-hidden="true">expand_more</span>
+            </span>
+          </button>
+          <div id="accordion-content-gch">
+
+          <!-- GCH Status row -->
+          <div id="gch-status-section">
+            <div class="compliance-row">
+              <div>
+                <div class="compliance-label">GCH check (Customer Hierarchy)</div>
+                <div class="compliance-sub" id="gch-sub-text">No GCH check found on this account</div>
+              </div>
+              <span id="gch-status-chip" class="badge badge--yellow">Pending</span>
+              <button class="btn btn--secondary btn--medium" id="gch-action-btn" onclick="openGchSubview()" style="white-space:nowrap;" aria-controls="gch-subview" aria-expanded="false">Select or request →</button>
+            </div>
+          </div>
+
+          <!-- GCH Sub-view (inline) -->
+          <div id="gch-subview" class="hidden gch-subview">
+            <button class="gch-back" onclick="closeGchSubview()">
+              <span class="material-symbols-outlined ui-icon--sm" aria-hidden="true">arrow_back</span>
+              Back to Compliance
+            </button>
+            <div class="gch-sub-header">
+              <div class="gch-h1">Customer Hierarchy (GCH)</div>
+              <button class="btn btn--secondary btn--medium" onclick="gchRequestNew()">Request New</button>
+            </div>
+            <div class="gch-warning-row">
+              <span class="material-symbols-outlined ui-icon--md" aria-hidden="true">warning</span>
+              Low confidence (2 matches)
+            </div>
+            <div class="gch-desc">2 GCH matches were found. Select the correct company:</div>
+            <fieldset class="gch-option-list" role="radiogroup" aria-labelledby="gch-options-label">
+              <legend class="sr-only" id="gch-options-label">Select the correct GCH company</legend>
+              <label class="gch-option card card--outlined" id="gch-opt-1">
+                <input type="radio" id="gch-dot-1" name="gch-option" aria-label="Apex Construction LLC" onchange="selectGchOption(1)"/>
+                <div class="gch-option-body">
+                  <div class="gch-option-name text-body-medium-bold">Apex Construction LLC</div>
+                  <div class="gch-option-meta text-body-small">Sacramento, CA 95814 · CLE ID: 10073841</div>
+                </div>
+              </label>
+              <label class="gch-option card card--outlined" id="gch-opt-2">
+                <input type="radio" id="gch-dot-2" name="gch-option" aria-label="ACME Logistics LLC" onchange="selectGchOption(2)"/>
+                <div class="gch-option-body">
+                  <div class="gch-option-name text-body-medium-bold">ACME Logistics LLC</div>
+                  <div class="gch-option-meta text-body-small">Orlando, FL 32801 · CLE ID: 10499316</div>
+                </div>
+              </label>
+            </fieldset>
+            <div class="gch-footer">
+              <button class="btn btn--secondary btn--medium" onclick="closeGchSubview()">Cancel</button>
+              <button class="btn btn--primary btn--medium" id="gch-confirm-btn" onclick="confirmGchSelection()" disabled style="opacity:0.4;cursor:not-allowed;">Confirm selection</button>
+            </div>
+          </div>
+          </div>
+        </div>
+
+        <!-- ECS -->
+        <div class="card accordion-card" id="accordion-ecs-card" data-accordion="ecs">
+          <button class="accordion-toggle" type="button" onclick="toggleAccordion('ecs')" aria-expanded="true" aria-controls="accordion-content-ecs" id="accordion-toggle-ecs">
+            <span class="card-title">ECS Compliance</span>
+            <span class="accordion-meta">
+              <span class="badge badge--yellow" id="acc-badge-ecs">Pending</span>
+              <span class="material-symbols-outlined accordion-chevron" aria-hidden="true">expand_more</span>
+            </span>
+          </button>
+          <div id="accordion-content-ecs">
+          <div class="compliance-row">
+            <div>
+              <div class="compliance-label">ECS Compliance</div>
+              <div class="compliance-sub">Compliance review in progress</div>
+            </div>
+            <span class="badge badge--yellow">Pending</span>
+          </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /main-content -->
+  </div><!-- /content-area -->
+</div><!-- /app-shell -->
+
+  <!-- ACCOUNT NAME MODAL -->
+  <div
+    class="modal-overlay"
+    id="account-name-modal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="account-name-modal-title"
+    onclick="if (event.target === this) closeAccountNameModal()"
+  >
+    <div class="modal">
+      <button class="modal__close" aria-label="Close" onclick="closeAccountNameModal()">
+        <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M15 5L5 15M5 5L15 15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </button>
+
+      <div class="modal__content">
+        <h2 class="modal__title" id="account-name-modal-title">Account name</h2>
+
+        <div class="shipping-address-form">
+          <div class="shipping-address-grid">
+            <div class="shipping-field-full">
+              <label class="label text-body-small" for="account-name-input">Account name</label>
+              <input class="input" id="account-name-input" type="text" value="" oninput="setAddressModalButtonState('accountName')">
+            </div>
+            <div class="shipping-field-full">
+              <label class="label text-body-small" for="account-doc-input">Documents (PDF)</label>
+              <div class="card card--outlined account-doc-upload" id="account-doc-dropzone" onclick="triggerAccountDocUpload()" ondragover="onAccountDocDragOver(event)" ondragleave="onAccountDocDragLeave(event)" ondrop="onAccountDocDrop(event)">
+                <div class="account-doc-upload-title">
+                  <span class="material-symbols-outlined ui-icon--md" aria-hidden="true">upload_file</span>
+                  <span>Upload document</span>
+                </div>
+                <div class="account-doc-upload-status">Drag and drop a PDF file here, or click to browse.</div>
+                <button class="btn btn--secondary btn--small" type="button" onclick="event.stopPropagation(); triggerAccountDocUpload()">Upload PDF</button>
+                <div class="account-doc-upload-status hidden" id="account-doc-file-name"></div>
+                <div class="account-doc-upload-error hidden" id="account-doc-file-error"></div>
+              </div>
+              <input id="account-doc-input" type="file" accept="application/pdf,.pdf" class="hidden" onchange="onAccountDocumentSelected(event)">
+            </div>
+          </div>
+
+          <div class="modal-actions">
+            <button class="btn btn--secondary btn--large" onclick="closeAccountNameModal()">Cancel</button>
+            <button id="account-name-save-btn" class="btn btn--primary btn--large" onclick="saveAccountNameFromModal()" disabled>Save account name</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ACCOUNT NAME UPDATE LOADER -->
+  <div class="modal-overlay" id="account-name-loading-modal" role="dialog" aria-modal="true" aria-labelledby="account-name-loading-title">
+    <div class="modal">
+      <div class="modal__content modal-loader-wrap">
+        <h2 class="modal__title" id="account-name-loading-title">Updating account</h2>
+        <div class="loader loader--large" aria-hidden="true">
+          <svg class="loader__spinner" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle class="loader__track" cx="32" cy="32" r="28" stroke-width="4" stroke-linecap="round"/>
+            <path class="loader__arc" d="M32 4 A28 28 0 0 1 60 32" stroke-width="4" stroke-linecap="round" fill="none"/>
+          </svg>
+        </div>
+        <p class="modal__body">Uploading documents and validating impacted opportunities...</p>
+      </div>
+    </div>
+  </div>
+
+<!-- SHIPPING ADDRESS MODAL -->
+<div
+  class="modal-overlay"
+  id="shipping-address-modal"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="shipping-address-modal-title"
+  onclick="if (event.target === this) closeShippingAddressModal()"
+>
+  <div class="modal">
+    <button class="modal__close" aria-label="Close" onclick="closeShippingAddressModal()">
+      <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M15 5L5 15M5 5L15 15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+    </button>
+
+    <div class="modal__content">
+      <h2 class="modal__title" id="shipping-address-modal-title">Shipping address</h2>
+
+      <div class="shipping-address-form">
+        <div class="shipping-address-grid">
+          <div class="shipping-field-full">
+            <label class="label text-body-small" for="ship-address1">Address 1</label>
+            <input class="input" id="ship-address1" type="text" value="" oninput="setAddressModalButtonState('shipping')">
+          </div>
+
+          <div class="shipping-field-full">
+            <label class="label text-body-small" for="ship-address2">Address 2 <span class="shipping-label-optional">Optional</span></label>
+            <input class="input" id="ship-address2" type="text" value="" oninput="setAddressModalButtonState('shipping')">
+          </div>
+
+          <div>
+            <label class="label text-body-small" for="ship-city">City</label>
+            <input class="input" id="ship-city" type="text" value="" oninput="setAddressModalButtonState('shipping')">
+          </div>
+
+          <div>
+            <label class="label text-body-small" for="ship-country">Country</label>
+            <select class="select" id="ship-country" onchange="setAddressModalButtonState('shipping')">
+              <option value="">Select</option>
+              <option value="US">United States</option>
+              <option value="CA">Canada</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="label text-body-small" for="ship-state">State</label>
+            <select class="select" id="ship-state" onchange="setAddressModalButtonState('shipping')">
+              <option value="">Select</option>
+              <option value="CA">California</option>
+              <option value="FL">Florida</option>
+              <option value="TX">Texas</option>
+              <option value="NY">New York</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="label text-body-small" for="ship-zip">Zip/Postal Code</label>
+            <input class="input" id="ship-zip" type="text" value="" oninput="setAddressModalButtonState('shipping')">
+          </div>
+        </div>
+
+        <div class="modal-inline-action">
+          <button id="ship-validate-btn" class="btn btn--primary btn--small" onclick="validateShippingAddress()" disabled>Validate address</button>
+        </div>
+
+        <div class="modal-actions">
+          <button class="btn btn--secondary btn--large" onclick="closeShippingAddressModal()">Cancel</button>
+          <button id="ship-save-btn" class="btn btn--primary btn--large" onclick="saveShippingAddressFromModal()" disabled>Save</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- BILLING ADDRESS MODAL -->
+<div
+  class="modal-overlay"
+  id="billing-address-modal"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="billing-address-modal-title"
+  onclick="if (event.target === this) closeBillingAddressModal()"
+>
+  <div class="modal">
+    <button class="modal__close" aria-label="Close" onclick="closeBillingAddressModal()">
+      <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M15 5L5 15M5 5L15 15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+    </button>
+
+    <div class="modal__content">
+      <h2 class="modal__title" id="billing-address-modal-title">Billing address</h2>
+
+      <div class="shipping-address-form">
+        <div class="shipping-address-grid">
+          <div>
+            <label class="label text-body-small" for="bill-street">Billing Street</label>
+            <input class="input" id="bill-street" type="text" value="" oninput="setAddressModalButtonState('billing')">
+          </div>
+
+          <div>
+            <label class="label text-body-small" for="bill-country">Billing Country</label>
+            <select class="select" id="bill-country" onchange="setAddressModalButtonState('billing')">
+              <option value="">Select</option>
+              <option value="US">USA</option>
+              <option value="CA">Canada</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="label text-body-small" for="bill-city">Billing City</label>
+            <input class="input" id="bill-city" type="text" value="" oninput="setAddressModalButtonState('billing')">
+          </div>
+
+          <div>
+            <label class="label text-body-small" for="bill-state">Billing State</label>
+            <select class="select" id="bill-state" onchange="setAddressModalButtonState('billing')">
+              <option value="">Select</option>
+              <option value="CA">CA</option>
+              <option value="FL">FL</option>
+              <option value="TX">TX</option>
+              <option value="NY">NY</option>
+            </select>
+          </div>
+
+          <div class="shipping-field-full">
+            <label class="label text-body-small" for="bill-postal">Billing Postal Code</label>
+            <input class="input" id="bill-postal" type="text" value="" oninput="setAddressModalButtonState('billing')">
+          </div>
+        </div>
+
+        <div class="modal-inline-action">
+          <button id="bill-validate-btn" class="btn btn--primary btn--small" onclick="validateBillingAddress()" disabled>Validate address</button>
+        </div>
+
+        <div class="modal-actions">
+          <button class="btn btn--secondary btn--large" onclick="closeBillingAddressModal()">Cancel</button>
+          <button id="bill-save-btn" class="btn btn--primary btn--large" onclick="saveBillingAddressFromModal()" disabled>Save</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CONTACT MODAL -->
+<div
+  class="modal-overlay"
+  id="contact-modal"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="contact-modal-title"
+  onclick="if (event.target === this) closeContactModal()"
+>
+  <div class="modal">
+    <button class="modal__close" aria-label="Close" onclick="closeContactModal()">
+      <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M15 5L5 15M5 5L15 15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+    </button>
+
+    <div class="modal__content">
+      <h2 class="modal__title" id="contact-modal-title">Contact</h2>
+
+      <div class="shipping-address-form">
+        <div class="shipping-address-grid">
+          <div class="shipping-field-full">
+            <label class="label text-body-small" for="contact-name">Name</label>
+            <input class="input" id="contact-name" type="text" value="" oninput="setAddressModalButtonState('contact')">
+          </div>
+
+          <div>
+            <label class="label text-body-small" for="contact-role">Role</label>
+            <input class="input" id="contact-role" type="text" value="" oninput="setAddressModalButtonState('contact')">
+          </div>
+
+          <div>
+            <label class="label text-body-small" for="contact-phone">Phone</label>
+            <input class="input" id="contact-phone" type="text" value="" oninput="setAddressModalButtonState('contact')">
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button class="btn btn--secondary btn--large" onclick="closeContactModal()">Cancel</button>
+          <button id="contact-save-btn" class="btn btn--primary btn--large" onclick="saveContactFromModal()" disabled>Save contact</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST CONTAINER -->
+<div id="toast-container"></div>
+
+<script>
+/* ════════════════════════════════════════════════
+   STATE
+════════════════════════════════════════════════ */
+const state = {
+  simulationMode: 'existing',
+  segment: 'Mid Market',
+  monthlyRevenue: 850,
+  addressValidation: {
+    shipping: false,
+    billing: false,
+  },
+
+  accountInfo: {
+    accountName:       'Apex Construction LLC',
+    billingAddress:    '123 Industrial Pkwy, Sacramento, CA 95814',
+    shippingAddress:   '120 Logistics Way, Sacramento, CA 95814',
+    contractType:      'flex',
+    funnelStatus:      'possible',
+    platform:          'reveal-pro',
+    currency:          'usd',
+    costCenter:        '',
+    lossReason:        '',
+    proposalExpiry:    '',
+    seasonalBilling:   '',
+    contactName:       'Laura Mendez',
+    contactRole:       'Fleet Operations Manager',
+    contactPhone:      '+1 (813) 555-0186',
+    contactInfo:       'Fleet Operations Manager · +1 (813) 555-0186',
+    totalFleet:        false,   // confirmed?
+    totalAssets:       false,
+  },
+
+  billing: {
+    paymentMethod:       'autopay',   // 'autopay' | 'direct-bill'
+    directApproval:      'none',      // 'none' | 'required' | 'requested' | 'approved'
+    paymentTerms:        'net-30',    // 'net-30' | 'net-60' | 'net-90'
+    termsApproval:       'none',      // 'none' | 'required' | 'requested'
+  },
+
+  compliance: {
+    gch: 'pending',   // 'pending' | 'confirmed' | 'review-requested'
+    ecs: 'pending',
+  },
+
+  gchSelectedOption: null,  // 1 | 2 | null
+  accountNamePendingUpdate: null,
+  accountNameDocument: null,
+  accountNameDocumentName: '',
+};
+
+// Derived: which segment gets which pricebook
+const pricebookMap = {
+  'SMB':          'FM Reveal SMB US Dollar',
+  'GSA':          'GSA Schedule Pricebook',
+  'Sourcewell':   'Sourcewell Cooperative Pricebook',
+  'NASPO':        'NASPO ValuePoint Pricebook',
+  'Mid Market':   'FM Reveal Mid Market US Dollar',
+  'Enterprise':   'FM Reveal Enterprise US Dollar',
+};
+
+// Contract type defaults & editability by segment
+const contractTypeRules = {
+  'SMB':        { default: 'flex',  editable: true  },
+  'Seasonal':   { default: 'fixed', editable: false },
+  'Mid Market': { default: 'flex',  editable: true  },
+  'Enterprise': { default: 'fixed', editable: true  },
+};
+
+const simulationProfiles = {
+  new: {
+    accountName: 'Apex Construction LLC',
+    billingAddress: '123 Industrial Pkwy, Sacramento, CA 95814',
+    shippingAddress: '120 Logistics Way, Sacramento, CA 95814',
+    contactName: 'Laura Mendez',
+    contactRole: 'Fleet Operations Manager',
+    contactPhone: '+1 (813) 555-0186',
+  },
+  existing: {
+    accountName: 'Apex Construction LLC (Existing)',
+    billingAddress: '889 Harbor Blvd, Tampa, FL 33602',
+    shippingAddress: '889 Harbor Blvd, Tampa, FL 33602',
+    contactName: 'Daniel Ortiz',
+    contactRole: 'Senior Account Admin',
+    contactPhone: '+1 (786) 555-0143',
+  },
+};
+
+// Currency editability
+const currencyEditable = (seg) => seg !== 'SMB';
+
+function applySimulationPreset(mode, options = {}) {
+  const profile = simulationProfiles[mode] || simulationProfiles.new;
+  state.simulationMode = mode;
+
+  state.accountInfo.accountName = profile.accountName;
+  state.accountInfo.billingAddress = profile.billingAddress;
+  state.accountInfo.shippingAddress = profile.shippingAddress;
+  state.accountInfo.contactName = profile.contactName;
+  state.accountInfo.contactRole = profile.contactRole;
+  state.accountInfo.contactPhone = profile.contactPhone;
+  state.accountInfo.contactInfo = composeContactInfo(profile.contactRole, profile.contactPhone);
+
+  if (mode === 'existing') {
+    state.accountInfo.totalFleet = true;
+    state.accountInfo.totalAssets = true;
+    state.accountInfo.costCenter = 'CC-4821';
+    state.accountInfo.lossReason = 'competitor';
+    state.accountInfo.seasonalBilling = 'standard';
+  } else {
+    state.accountInfo.totalFleet = false;
+    state.accountInfo.totalAssets = false;
+    state.accountInfo.costCenter = '';
+    state.accountInfo.lossReason = '';
+    state.accountInfo.seasonalBilling = '';
+  }
+
+  const setText = function(id, value) {
+    const el = document.getElementById(id);
+    if (el) el.textContent = value;
+  };
+
+  setText('hdr-accountName', state.accountInfo.accountName);
+  setText('hdr-billingAddress', state.accountInfo.billingAddress);
+  setText('hdr-shippingAddress', state.accountInfo.shippingAddress);
+  setText('hdr-contactName', state.accountInfo.contactName);
+  setText('hdr-contactInfo', state.accountInfo.contactInfo);
+  setText('val-costCenter', state.accountInfo.costCenter || 'Not set');
+  setText('val-seasonalBilling', state.accountInfo.seasonalBilling ? displayValues.seasonalBilling(state.accountInfo.seasonalBilling) : 'Not configured');
+
+  renderAccountModeDependentUI();
+
+  const accountNameInput = document.getElementById('account-name-input');
+  if (accountNameInput) accountNameInput.value = state.accountInfo.accountName;
+
+  const simulationSelect = document.getElementById('simulation-select');
+  if (simulationSelect) simulationSelect.value = mode;
+
+  updateProgress();
+
+  if (options.notify !== false) {
+    const label = mode === 'existing' ? 'Existing account' : 'New account';
+    showToast('Simulation active: ' + label + '.');
+  }
+}
+
+function renderAccountModeDependentUI() {
+  const totalFleetActions = document.getElementById('actions-totalFleet');
+  const totalAssetsActions = document.getElementById('actions-totalAssets');
+  const costCenterValue = document.getElementById('val-costCenter');
+  const seasonalBillingValue = document.getElementById('val-seasonalBilling');
+  const costCenterInput = document.getElementById('input-costCenter');
+  const seasonalBillingInput = document.getElementById('input-seasonalBilling');
+
+  if (totalFleetActions) {
+    totalFleetActions.innerHTML = state.accountInfo.totalFleet
+      ? '<span class="field-meta-muted">Confirmed</span>'
+      : '<button class="btn btn--ghost btn--small" onclick="confirmField(\'totalFleet\')">Confirm <span class="material-symbols-outlined ui-icon--sm" aria-hidden="true">arrow_forward</span></button>';
+  }
+  if (totalAssetsActions) {
+    totalAssetsActions.innerHTML = state.accountInfo.totalAssets
+      ? '<span class="field-meta-muted">Confirmed</span>'
+      : '<button class="btn btn--ghost btn--small" onclick="confirmField(\'totalAssets\')">Confirm <span class="material-symbols-outlined ui-icon--sm" aria-hidden="true">arrow_forward</span></button>';
+  }
+
+  if (costCenterValue) {
+    costCenterValue.innerHTML = state.accountInfo.costCenter
+      ? displayValues.costCenter(state.accountInfo.costCenter)
+      : '<span style="color:var(--color-gray-400);">Not set</span>';
+  }
+  if (seasonalBillingValue) {
+    seasonalBillingValue.innerHTML = state.accountInfo.seasonalBilling
+      ? displayValues.seasonalBilling(state.accountInfo.seasonalBilling)
+      : '<span style="color:var(--color-gray-400);">Not configured</span>';
+  }
+
+  if (costCenterInput) costCenterInput.value = state.accountInfo.costCenter || '';
+  if (seasonalBillingInput) seasonalBillingInput.value = state.accountInfo.seasonalBilling || '';
+}
+
+function setSimulationMode(mode) {
+  applySimulationPreset(mode, { notify: true });
+}
+
+/* ════════════════════════════════════════════════
+   NAVIGATION
+════════════════════════════════════════════════ */
+const SECTIONS = ['account-info','fleet','account-owner'];
+
+const accordionState = {
+  gch: true,
+  ecs: true,
+};
+
+function applyAccordionState(id) {
+  const expanded = !!accordionState[id];
+  const card = document.getElementById('accordion-' + id + '-card');
+  const content = document.getElementById('accordion-content-' + id);
+  const toggle = document.getElementById('accordion-toggle-' + id);
+  if (!card || !content || !toggle) return;
+  content.classList.toggle('hidden', !expanded);
+  card.classList.toggle('is-collapsed', !expanded);
+  toggle.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+}
+
+function toggleAccordion(id) {
+  accordionState[id] = !accordionState[id];
+  applyAccordionState(id);
+}
+
+function initAccordions() {
+  Object.keys(accordionState).forEach(applyAccordionState);
+}
+
+function navigate(id) {
+  SECTIONS.forEach(s => {
+    document.getElementById('section-' + s).classList.toggle('hidden', s !== id);
+    document.getElementById('nav-' + s)?.classList.toggle('active', s !== id
+      ? false
+      : true);
+  });
+  // Update active nav
+  document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+  document.getElementById('nav-' + id)?.classList.add('active');
+
+}
+
+/* ════════════════════════════════════════════════
+   PROGRESS
+════════════════════════════════════════════════ */
+function calcProgress() {
+  const ai = state.accountInfo;
+  const bl = state.billing;
+  const co = state.compliance;
+  const termsRequired = bl.paymentMethod === 'direct-bill' && bl.termsApproval === 'required';
+
+  // Blocking fields (Required = Yes, not yet complete)
+  const blocking = [];
+  if (bl.directApproval === 'required')        blocking.push('Direct bill approval');
+  if (termsRequired)                           blocking.push('Payment terms approval');
+  if (!ai.totalFleet)                          blocking.push('Total fleet confirmation');
+  if (!ai.totalAssets)                         blocking.push('Total assets confirmation');
+  if (!ai.costCenter)                          blocking.push('Cost center');
+  if (!ai.lossReason)                          blocking.push('Loss reason');
+  if (!ai.seasonalBilling)                     blocking.push('Seasonal billing configuration');
+
+  // Count done out of all required fields (15 total required)
+  const requiredFields = [
+    !!ai.billingAddress,
+    !!ai.funnelStatus,
+    !!ai.totalFleet,
+    !!ai.totalAssets,
+    !!ai.platform,
+    !!ai.costCenter,
+    !!ai.lossReason,
+    !!ai.seasonalBilling,
+    !!ai.contactName,
+    !!ai.contactRole,
+    !!ai.contactPhone,
+    bl.directApproval !== 'required',
+    !termsRequired,
+  ];
+  const done  = requiredFields.filter(Boolean).length;
+  const total = requiredFields.length;
+  const pct   = Math.round((done / total) * 100);
+
+  return { blocking, done, total, pct };
+}
+
+function updateProgress() {
+  const { blocking, done, total, pct } = calcProgress();
+  const allClear = blocking.length === 0;
+  const color = allClear ? '#16A34A' : '#F59E0B';
+  const labelText = allClear ? 'Ready to contract' : `${blocking.length} item${blocking.length > 1 ? 's' : ''} require attention`;
+  const labelColor = allClear ? 'var(--chip-green-text)' : 'var(--chip-amber-text)';
+
+  ['ctx','ov'].forEach(prefix => {
+    const lbl   = document.getElementById(prefix + '-progress-label');
+    const count = document.getElementById(prefix + '-progress-count');
+    const fill  = document.getElementById(prefix + '-progress-fill');
+    if (lbl)   { lbl.textContent = labelText; lbl.style.color = labelColor; }
+    if (count) count.textContent = `${done} of ${total} configured`;
+    if (fill)  { fill.style.width = pct + '%'; fill.style.background = color; }
+  });
+
+  // Navbar badge
+  const nb = document.getElementById('navbar-status-badge');
+  if (allClear) {
+    nb.textContent = 'Ready to contract';
+    nb.className = 'badge badge--green';
+  } else {
+    nb.textContent = `${blocking.length} item${blocking.length > 1 ? 's' : ''} pending`;
+    nb.className = 'badge badge--yellow';
+  }
+
+  // Sidebar badges
+  const gchPending = state.compliance.gch === 'pending';
+  const compBadge  = document.getElementById('nav-badge-compliance');
+  if (compBadge) {
+    compBadge.textContent = gchPending ? '1' : '';
+    compBadge.classList.toggle('hidden', !gchPending);
+  }
+
+  const billingPending = state.billing.directApproval === 'required' || (state.billing.paymentMethod === 'direct-bill' && state.billing.termsApproval === 'required');
+  const billBadge = document.getElementById('nav-badge-billing');
+  if (billBadge) {
+    billBadge.classList.toggle('hidden', !billingPending);
+  }
+
+  const ownerPending = !state.accountInfo.costCenter;
+  const ownerBadge = document.getElementById('nav-badge-account-owner');
+  if (ownerBadge) {
+    ownerBadge.classList.toggle('hidden', !ownerPending);
+  }
+
+  // Ready banner
+  document.getElementById('ready-banner')?.classList.toggle('hidden', !allClear);
+
+  // Accordion summary badges (always visible, even when collapsed)
+  const generalPending = (state.accountInfo.totalFleet ? 0 : 1) + (state.accountInfo.totalAssets ? 0 : 1);
+  const setBadge = function (id, variant, text) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.className = 'badge badge--' + variant;
+    el.textContent = text;
+  };
+
+  setBadge('acc-badge-general', generalPending > 0 ? 'yellow' : 'green', generalPending > 0 ? (generalPending + ' item' + (generalPending > 1 ? 's' : '') + ' pending') : 'Ready');
+  setBadge('acc-badge-finance', 'green', 'Ready');
+  setBadge('acc-badge-payment', billingPending ? 'yellow' : 'green', billingPending ? (((state.billing.directApproval === 'required') + ((state.billing.paymentMethod === 'direct-bill' && state.billing.termsApproval === 'required') ? 1 : 0)) + ' item' + ((((state.billing.directApproval === 'required') + ((state.billing.paymentMethod === 'direct-bill' && state.billing.termsApproval === 'required') ? 1 : 0)) > 1) ? 's' : '') + ' pending') : 'Ready');
+  setBadge('acc-badge-owner', ownerPending ? 'yellow' : 'green', ownerPending ? '1 item pending' : 'Ready');
+  setBadge('acc-badge-seasonal', state.accountInfo.seasonalBilling ? 'green' : 'yellow', state.accountInfo.seasonalBilling ? 'Ready' : '1 item pending');
+  setBadge('acc-badge-gch', state.compliance.gch === 'confirmed' ? 'green' : (state.compliance.gch === 'review-requested' ? 'blue' : 'yellow'), state.compliance.gch === 'confirmed' ? 'Confirmed' : (state.compliance.gch === 'review-requested' ? 'Review requested' : 'Pending'));
+  setBadge('acc-badge-ecs', 'yellow', 'Pending');
+}
+
+/* ════════════════════════════════════════════════
+   OVERVIEW RENDER
+════════════════════════════════════════════════ */
+const overviewSections = [
+  {
+    id: 'account-info', icon: 'business', name: 'Account info',
+    getStatus() {
+      return { label: 'Ready', variant: 'green', desc: 'Account name, address, contract type, platform and funnel status configured.' };
+    }
+  },
+  {
+    id: 'billing', icon: 'payments', name: 'Billing',
+    getStatus() {
+      const pr = state.billing.directApproval === 'required';
+      const tr = state.billing.paymentMethod === 'direct-bill' && state.billing.termsApproval === 'required';
+      if (pr || tr) {
+        const cnt = (pr ? 1 : 0) + (tr ? 1 : 0);
+        return { label: `${cnt} item${cnt>1?'s':''} pending`, variant: 'amber', desc: 'Approval required for selected payment options.' };
+      }
+      return {
+        label: 'Ready',
+        variant: 'green',
+        desc: `Payment method: ${state.billing.paymentMethod === 'autopay' ? 'Autopay' : 'Direct bill'}. Terms: ${state.billing.paymentMethod === 'direct-bill' ? termsLabel(state.billing.paymentTerms) : 'N/A'}.`
+      };
+    }
+  },
+  {
+    id: 'fleet', icon: 'local_shipping', name: 'Fleet & assets',
+    getStatus() { return { label: 'Not started', variant: 'gray', desc: 'Fleet and asset data not yet configured.' }; }
+  },
+  {
+    id: 'account-owner', icon: 'manage_accounts', name: 'Owner',
+    getStatus() {
+      if (!state.accountInfo.costCenter) return { label: '1 item pending', variant: 'amber', desc: 'Cost center is required.' };
+      return { label: 'Ready', variant: 'green', desc: `Cost center: ${state.accountInfo.costCenter}. Owner: J. Martinez.` };
+    }
+  },
+  {
+    id: 'compliance', icon: 'verified_user', name: 'Compliance',
+    getStatus() {
+      if (state.compliance.gch === 'pending') return { label: '1 item pending', variant: 'amber', desc: 'GCH check is pending. ECS compliance under review.' };
+      if (state.compliance.gch === 'review-requested') return { label: '1 item pending', variant: 'blue', desc: 'GCH review requested. ECS compliance under review.' };
+      return { label: 'Ready', variant: 'green', desc: 'GCH confirmed. ECS compliance under review.' };
+    }
+  },
+];
+
+function renderOverview() {
+  updateProgress();
+  const grid = document.getElementById('overview-grid');
+  grid.innerHTML = overviewSections.map(s => {
+    const st = s.getStatus();
+    const badgeClass = `badge badge--${st.variant}`;
+    return `
+      <div class="overview-card">
+        <div class="overview-card-top">
+          <span class="material-symbols-outlined overview-card-icon">${s.icon}</span>
+          <span class="overview-card-name">${s.name}</span>
+        </div>
+        <div class="overview-card-desc">${st.desc}</div>
+        <div class="overview-card-footer">
+          <span class="${badgeClass}">${st.label}</span>
+          <button class="btn btn--ghost btn--small" onclick="navigate('${s.id}')">Go <span class="material-symbols-outlined ui-icon--sm" aria-hidden="true">arrow_forward</span></button>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+/* ════════════════════════════════════════════════
+   ACCOUNT INFO — INLINE EDIT
+════════════════════════════════════════════════ */
+const fieldLabels = {
+  accountName:    'Account name',
+  billingAddress: 'Billing address',
+  shippingAddress:'Shipping address',
+  contractType:   'Contract type',
+  funnelStatus:   'Funnel status',
+  platform:       'Platform',
+  currency:       'Currency',
+  paymentTerms:   'Payment terms',
+};
+
+const displayValues = {
+  accountName:     v => v,
+  billingAddress:  v => v,
+  shippingAddress: v => v,
+  contractType:    v => v === 'flex' ? 'Flex' : 'Fixed',
+  funnelStatus:    v => ({ possible: 'Possible', confident: 'Confident', committed: 'Committed' })[v] || v,
+  platform:        v => ({ 'reveal-pro': 'Reveal Pro', 'reveal': 'Reveal', 'reveal-starter': 'Reveal Starter' })[v] || v,
+  currency:        v => v.toUpperCase(),
+  paymentTerms:    v => termsLabel(v),
+  costCenter:      v => v,
+  lossReason:      v => ({ price: 'Price too high', competitor: 'Went with competitor', 'no-budget': 'No budget', 'no-decision': 'No decision', other: 'Other' })[v] || v,
+  proposalExpiry:  v => { const d = new Date(v + 'T00:00:00'); return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }); },
+  seasonalBilling: v => ({ standard: 'Standard (no seasonal adjustment)', 'seasonal-pause': 'Seasonal pause', 'seasonal-reduce': 'Seasonal reduction' })[v] || v,
+  contactName:     v => v,
+  contactInfo:     v => v,
+};
+
+function termsLabel(v) {
+  return { 'net-30': 'Net 30', 'net-60': 'Net 60', 'net-90': 'Net 90' }[v] || v;
+}
+
+function startEdit(field) {
+  document.getElementById('row-' + field)?.classList.add('hidden');
+  document.getElementById('edit-' + field)?.classList.remove('hidden');
+
+  // Pre-fill select inputs
+  const sel = document.getElementById('input-' + field);
+  if (sel && sel.tagName === 'SELECT') {
+    const src = field === 'paymentTerms' ? state.billing.paymentTerms : state.accountInfo[field];
+    sel.value = src || '';
+  }
+}
+
+function cancelEdit(field) {
+  document.getElementById('row-' + field)?.classList.remove('hidden');
+  document.getElementById('edit-' + field)?.classList.add('hidden');
+}
+
+// Required fields that show a tag
+const requiredFieldKeys = ['costCenter','lossReason','proposalExpiry','seasonalBilling'];
+
+function confirmField(field) {
+  // Mark totalFleet / totalAssets as confirmed
+  state.accountInfo[field] = true;
+  const actions = document.getElementById('actions-' + field);
+  if (actions) {
+    actions.innerHTML = '<span class="field-meta-muted">Confirmed</span>';
+  }
+  updateProgress();
+  showToast('Saved — Account information updated.');
+}
+
+function saveEdit(field) {
+  const input = document.getElementById('input-' + field);
+  const val   = input.value.trim();
+  if (!val) return;
+
+  if (field === 'paymentTerms' && state.billing.paymentMethod !== 'direct-bill') {
+    cancelEdit(field);
+    showToast('Payment terms apply only to Direct bill.');
+    return;
+  }
+
+  if (field === 'paymentTerms' && state.segment === 'SMB') {
+    cancelEdit(field);
+    showToast('Payment terms are fixed to Net 30 for SMB.');
+    return;
+  }
+
+  if (field === 'paymentTerms') {
+    state.billing.paymentTerms = val;
+    // Approval needed for net-60 / net-90
+    if (val === 'net-30') {
+      state.billing.termsApproval = 'none';
+      document.getElementById('terms-approval-chip').classList.add('hidden');
+    } else if (state.billing.termsApproval === 'none') {
+      state.billing.termsApproval = 'required';
+      showTermsApprovalRow();
+    }
+  } else {
+    state.accountInfo[field] = val;
+  }
+
+  const valEl = document.getElementById('val-' + field);
+  if (valEl) valEl.textContent = displayValues[field] ? displayValues[field](val) : val;
+
+  // Keep header cards in sync
+  const hdrEl = document.getElementById('hdr-' + field);
+  if (hdrEl) hdrEl.textContent = val;
+
+  // Toggle required tag to complete for newly filled required fields
+  const tag = document.getElementById('tag-' + field);
+  if (tag && requiredFieldKeys.includes(field) && val) {
+    tag.textContent = 'Complete'; tag.className = 'badge badge--green';
+  }
+  // Contact fields
+  if ((field === 'contactName' || field === 'contactInfo') && val) {
+    if (tag) { tag.textContent = 'Confirmed'; tag.className = 'badge badge--green'; }
+  }
+
+  cancelEdit(field);
+  updateProgress();
+  showToast('Saved — Account information updated.');
+}
+
+function onTermsChange() {
+  // preview only, actual save on button
+}
+
+/* ════════════════════════════════════════════════
+   BILLING — PAYMENT METHOD
+════════════════════════════════════════════════ */
+function selectPaymentMethod(method) {
+  state.billing.paymentMethod = method;
+
+  // Radio UI
+  ['autopay','direct'].forEach(k => {
+    const m = k === 'autopay' ? 'autopay' : 'direct-bill';
+    const option = document.getElementById('rc-' + k);
+    const radio = document.getElementById('dot-' + k);
+    option.classList.toggle('card--surface', method === m);
+    option.classList.toggle('card--outlined', method !== m);
+    if (radio) radio.checked = method === m;
+  });
+
+  const approvalRow = document.getElementById('direct-approval-row');
+  if (method === 'direct-bill') {
+    approvalRow.classList.remove('hidden');
+    // Check revenue threshold
+    if (state.monthlyRevenue > 1000) {
+      state.billing.directApproval = 'approved';
+      document.getElementById('direct-approval-chip').className = 'notification__title approval-note__status approval-note__status--approved';
+      document.getElementById('direct-approval-chip').textContent = 'Auto-approved';
+      document.getElementById('direct-approval-btn').classList.add('hidden');
+    } else {
+      if (state.billing.directApproval === 'none') state.billing.directApproval = 'required';
+      renderDirectApprovalState();
+    }
+    syncPaymentTermsByMethod(method);
+  } else {
+    approvalRow.classList.add('hidden');
+    state.billing.directApproval = 'none';
+    syncPaymentTermsByMethod(method);
+  }
+  updateProgress();
+}
+
+function syncPaymentTermsByMethod(method) {
+  const termsBlock = document.getElementById('finance-payment-terms');
+  if (!termsBlock) return;
+
+  const isDirect = method === 'direct-bill';
+  termsBlock.classList.toggle('hidden', !isDirect);
+
+  if (!isDirect) {
+    cancelEdit('paymentTerms');
+    state.billing.termsApproval = 'none';
+    return;
+  }
+
+  if (state.billing.paymentTerms === 'net-30') {
+    state.billing.termsApproval = 'none';
+    return;
+  }
+
+  if (state.billing.termsApproval === 'none') state.billing.termsApproval = 'required';
+  showTermsApprovalRow();
+
+  if (state.billing.termsApproval === 'requested') {
+    // Terms status is communicated by the top approval notification only.
+  }
+}
+
+function renderDirectApprovalState() {
+  const chip = document.getElementById('direct-approval-chip');
+  const btn  = document.getElementById('direct-approval-btn');
+  const ts   = document.getElementById('direct-approval-ts');
+  if (state.billing.directApproval === 'requested') {
+    chip.className = 'notification__title approval-note__status approval-note__status--requested';
+    chip.textContent = 'Approval requested';
+    btn.classList.add('hidden');
+    ts.classList.remove('hidden');
+  } else {
+    chip.className = 'notification__title approval-note__status';
+    chip.textContent = 'Director approval required';
+    btn.classList.remove('hidden');
+    ts.classList.add('hidden');
+  }
+}
+
+function requestDirectApproval() {
+  state.billing.directApproval = 'requested';
+  const ts = document.getElementById('direct-approval-ts');
+  ts.textContent = 'Sent ' + nowLabel();
+  renderDirectApprovalState();
+  if (state.billing.paymentTerms !== 'net-30') {
+    state.billing.termsApproval = 'requested';
+    renderTermsApprovalState();
+  }
+  updateProgress();
+  showToast('Approval requested — Director notified.');
+}
+
+/* ════════════════════════════════════════════════
+   BILLING — PAYMENT TERMS
+════════════════════════════════════════════════ */
+function showTermsApprovalRow() {
+  const row = document.getElementById('terms-approval-row');
+  if (row) row.classList.add('hidden');
+}
+
+function renderTermsApprovalState() {
+  // No inline chip in Payment terms.
+}
+
+function requestTermsApproval() {
+  state.billing.termsApproval = 'requested';
+  renderTermsApprovalState();
+  updateProgress();
+  showToast('Approval requested — Director notified.');
+}
+
+/* ════════════════════════════════════════════════
+   COMPLIANCE — GCH
+════════════════════════════════════════════════ */
+let gchSelectedOption = null;
+
+function openGchSubview() {
+  document.getElementById('gch-status-section').classList.add('hidden');
+  document.getElementById('gch-subview').classList.remove('hidden');
+  document.getElementById('gch-action-btn')?.setAttribute('aria-expanded', 'true');
+}
+
+function closeGchSubview() {
+  document.getElementById('gch-subview').classList.add('hidden');
+  document.getElementById('gch-status-section').classList.remove('hidden');
+  document.getElementById('gch-action-btn')?.setAttribute('aria-expanded', 'false');
+  gchSelectedOption = null;
+  [1,2].forEach(n => {
+    const option = document.getElementById('gch-opt-' + n);
+    const radio = document.getElementById('gch-dot-' + n);
+    option.classList.remove('card--surface');
+    option.classList.add('card--outlined');
+    if (radio) radio.checked = false;
+  });
+  const confirmBtn = document.getElementById('gch-confirm-btn');
+  confirmBtn.disabled = true;
+  confirmBtn.style.opacity = '0.4';
+  confirmBtn.style.cursor = 'not-allowed';
+}
+
+function selectGchOption(n) {
+  gchSelectedOption = n;
+  [1,2].forEach(i => {
+    const option = document.getElementById('gch-opt-' + i);
+    const radio = document.getElementById('gch-dot-' + i);
+    option.classList.toggle('card--surface', i === n);
+    option.classList.toggle('card--outlined', i !== n);
+    if (radio) radio.checked = i === n;
+  });
+  const confirmBtn = document.getElementById('gch-confirm-btn');
+  confirmBtn.disabled = false;
+  confirmBtn.style.opacity = '1';
+  confirmBtn.style.cursor = 'pointer';
+}
+
+function confirmGchSelection() {
+  state.compliance.gch = 'confirmed';
+  closeGchSubview();
+  renderGchStatus();
+  updateProgress();
+}
+
+function gchRequestNew() {
+  state.compliance.gch = 'review-requested';
+  closeGchSubview();
+  renderGchStatus();
+  updateProgress();
+  showToast('Request sent — GCH match review request has been submitted.');
+}
+
+function renderGchStatus() {
+  const chip    = document.getElementById('gch-status-chip');
+  const sub     = document.getElementById('gch-sub-text');
+  const btn     = document.getElementById('gch-action-btn');
+
+  if (state.compliance.gch === 'confirmed') {
+    chip.className = 'badge badge--green'; chip.textContent = 'Confirmed';
+    sub.textContent = 'GCH match confirmed successfully.';
+    btn.classList.add('hidden');
+  } else if (state.compliance.gch === 'review-requested') {
+    chip.className = 'badge badge--blue'; chip.textContent = 'Review requested';
+    sub.textContent = 'GCH review request submitted.';
+    btn.classList.add('hidden');
+  } else {
+    chip.className = 'badge badge--yellow'; chip.textContent = 'Pending';
+    sub.textContent = 'No GCH check found on this account';
+    btn.classList.remove('hidden');
+  }
+}
+
+/* ════════════════════════════════════════════════
+   SAVE ALL
+════════════════════════════════════════════════ */
+/* ── CARD INLINE EDIT ──────────────────────── */
+function openCardEdit(field) {
+  if (field === 'accountName') {
+    openAccountNameModal();
+    return;
+  }
+
+  if (field === 'billingAddress') {
+    openBillingAddressModal();
+    return;
+  }
+
+  if (field === 'shippingAddress') {
+    openShippingAddressModal();
+    return;
+  }
+
+  if (field === 'contact') {
+    openContactModal();
+    return;
+  }
+
+  const v = document.getElementById(`hdr-${field}-view`);
+  const e = document.getElementById(`hdr-${field}-edit`);
+  if (v) v.style.display = 'none';
+  if (e) {
+    e.style.display = 'block';
+    const sel = e.querySelector('select');
+    if (sel) { sel.value = state.accountInfo[field] || sel.options[0].value; sel.focus(); }
+    else { const inp = e.querySelector('input'); if (inp) { inp.focus(); inp.select(); } }
+  }
+}
+
+function parseAddressString(value) {
+  const raw = (value || '').trim();
+  const parsed = { street: '', city: '', state: '', postal: '' };
+  const m = raw.match(/^(.*?),\s*([^,]+),\s*([A-Z]{2})\s+([A-Za-z0-9-]+)$/);
+  if (m) {
+    parsed.street = m[1].trim();
+    parsed.city = m[2].trim();
+    parsed.state = m[3].trim();
+    parsed.postal = m[4].trim();
+    return parsed;
+  }
+  parsed.street = raw;
+  return parsed;
+}
+
+function composeAddressString(street, city, state, postal) {
+  const line1 = (street || '').trim();
+  const cityPart = (city || '').trim();
+  const stateZip = [state, postal].filter(Boolean).join(' ').trim();
+  const line2 = [cityPart, stateZip].filter(Boolean).join(', ');
+  return [line1, line2].filter(Boolean).join(', ');
+}
+
+function parseContactInfo(value) {
+  const raw = (value || '').trim();
+  if (!raw) return { role: '', phone: '' };
+  const parts = raw.split('·').map(part => part.trim()).filter(Boolean);
+  if (parts.length >= 2) {
+    return { role: parts[0], phone: parts.slice(1).join(' · ') };
+  }
+  return { role: raw, phone: '' };
+}
+
+function composeContactInfo(role, phone) {
+  const rolePart = (role || '').trim();
+  const phonePart = (phone || '').trim();
+  return [rolePart, phonePart].filter(Boolean).join(' · ');
+}
+
+function setAddressModalButtonState(type) {
+  if (type === 'shipping') {
+    const requiredFilled =
+      !!document.getElementById('ship-address1')?.value.trim() &&
+      !!document.getElementById('ship-city')?.value.trim() &&
+      !!document.getElementById('ship-country')?.value &&
+      !!document.getElementById('ship-state')?.value &&
+      !!document.getElementById('ship-zip')?.value.trim();
+    state.addressValidation.shipping = false;
+    const validateBtn = document.getElementById('ship-validate-btn');
+    const saveBtn = document.getElementById('ship-save-btn');
+    if (validateBtn) validateBtn.disabled = !requiredFilled;
+    if (saveBtn) saveBtn.disabled = true;
+    return;
+  }
+
+  if (type === 'billing') {
+    const requiredFilled =
+      !!document.getElementById('bill-street')?.value.trim() &&
+      !!document.getElementById('bill-city')?.value.trim() &&
+      !!document.getElementById('bill-country')?.value &&
+      !!document.getElementById('bill-state')?.value &&
+      !!document.getElementById('bill-postal')?.value.trim();
+    state.addressValidation.billing = false;
+    const validateBtn = document.getElementById('bill-validate-btn');
+    const saveBtn = document.getElementById('bill-save-btn');
+    if (validateBtn) validateBtn.disabled = !requiredFilled;
+    if (saveBtn) saveBtn.disabled = true;
+    return;
+  }
+
+  if (type === 'contact') {
+    const requiredFilled =
+      !!document.getElementById('contact-name')?.value.trim() &&
+      !!document.getElementById('contact-role')?.value.trim() &&
+      !!document.getElementById('contact-phone')?.value.trim();
+    const btn = document.getElementById('contact-save-btn');
+    if (btn) btn.disabled = !requiredFilled;
+    return;
+  }
+
+  if (type === 'accountName') {
+    const requiredFilled =
+      !!document.getElementById('account-name-input')?.value.trim() &&
+      !!state.accountNameDocument;
+    const btn = document.getElementById('account-name-save-btn');
+    if (btn) btn.disabled = !requiredFilled;
+  }
+}
+
+function clearAccountNameDocumentSelection() {
+  state.accountNameDocument = null;
+  state.accountNameDocumentName = '';
+  const input = document.getElementById('account-doc-input');
+  const fileName = document.getElementById('account-doc-file-name');
+  const error = document.getElementById('account-doc-file-error');
+  if (input) input.value = '';
+  if (fileName) {
+    fileName.textContent = '';
+    fileName.classList.add('hidden');
+  }
+  if (error) {
+    error.textContent = '';
+    error.classList.add('hidden');
+  }
+}
+
+function triggerAccountDocUpload() {
+  document.getElementById('account-doc-input')?.click();
+}
+
+function setAccountDocument(file) {
+  const fileName = document.getElementById('account-doc-file-name');
+  const error = document.getElementById('account-doc-file-error');
+  if (!file) return;
+
+  const isPdf = file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf');
+  if (!isPdf) {
+    state.accountNameDocument = null;
+    state.accountNameDocumentName = '';
+    if (fileName) {
+      fileName.textContent = '';
+      fileName.classList.add('hidden');
+    }
+    if (error) {
+      error.textContent = 'Only PDF files are allowed.';
+      error.classList.remove('hidden');
+    }
+    setAddressModalButtonState('accountName');
+    return;
+  }
+
+  state.accountNameDocument = file;
+  state.accountNameDocumentName = file.name;
+  if (error) {
+    error.textContent = '';
+    error.classList.add('hidden');
+  }
+  if (fileName) {
+    fileName.textContent = 'Selected: ' + file.name;
+    fileName.classList.remove('hidden');
+  }
+  setAddressModalButtonState('accountName');
+}
+
+function onAccountDocumentSelected(event) {
+  const file = event?.target?.files?.[0];
+  setAccountDocument(file);
+}
+
+function onAccountDocDragOver(event) {
+  event.preventDefault();
+  const dropzone = document.getElementById('account-doc-dropzone');
+  dropzone?.classList.add('is-dragover');
+}
+
+function onAccountDocDragLeave(event) {
+  event.preventDefault();
+  const dropzone = document.getElementById('account-doc-dropzone');
+  dropzone?.classList.remove('is-dragover');
+}
+
+function onAccountDocDrop(event) {
+  event.preventDefault();
+  const dropzone = document.getElementById('account-doc-dropzone');
+  dropzone?.classList.remove('is-dragover');
+  const file = event?.dataTransfer?.files?.[0];
+  setAccountDocument(file);
+}
+
+function openAccountNameModal() {
+  const modal = document.getElementById('account-name-modal');
+  if (!modal) return;
+
+  const input = document.getElementById('account-name-input');
+  if (input) input.value = state.accountInfo.accountName || '';
+
+  clearAccountNameDocumentSelection();
+
+  setAddressModalButtonState('accountName');
+  modal.classList.add('is-open');
+  input?.focus();
+  input?.select();
+}
+
+function closeAccountNameModal() {
+  const modal = document.getElementById('account-name-modal');
+  if (!modal) return;
+  modal.classList.remove('is-open');
+}
+
+function saveAccountNameFromModal() {
+  const value = document.getElementById('account-name-input')?.value.trim() || '';
+  if (!value || !state.accountNameDocument) return;
+
+  state.accountInfo.accountNamePendingUpdate = {
+    name: value,
+    documentName: state.accountNameDocumentName,
+  };
+  closeAccountNameModal();
+  openAccountNameLoaderModal();
+  setTimeout(() => {
+    closeAccountNameLoaderModal();
+    applyPendingAccountNameUpdate();
+    goToExistingAccountExamplePage();
+  }, 1400);
+}
+
+function goToExistingAccountExamplePage() {
+  window.location.href = './account-existing-view.html';
+}
+
+function applyPendingAccountNameUpdate() {
+  const pending = state.accountInfo.accountNamePendingUpdate;
+  if (!pending) return;
+
+  state.accountInfo.accountName = pending.name;
+  state.accountInfo.accountNamePendingUpdate = null;
+
+  const hdr = document.getElementById('hdr-accountName');
+  const inlineInput = document.getElementById('hdr-input-accountName');
+  if (hdr) hdr.textContent = state.accountInfo.accountName;
+  if (inlineInput) inlineInput.value = state.accountInfo.accountName;
+
+  updateProgress();
+  showToast('Saved — Account name and documents updated.');
+}
+
+function openAccountNameLoaderModal() {
+  const modal = document.getElementById('account-name-loading-modal');
+  modal?.classList.add('is-open');
+}
+
+function closeAccountNameLoaderModal() {
+  const modal = document.getElementById('account-name-loading-modal');
+  modal?.classList.remove('is-open');
+}
+
+function openShippingAddressModal() {
+  const modal = document.getElementById('shipping-address-modal');
+  if (!modal) return;
+
+  const current = parseAddressString(state.accountInfo.shippingAddress);
+  const shipAddress1 = document.getElementById('ship-address1');
+  const shipAddress2 = document.getElementById('ship-address2');
+  const shipCity = document.getElementById('ship-city');
+  const shipCountry = document.getElementById('ship-country');
+  const shipState = document.getElementById('ship-state');
+  const shipZip = document.getElementById('ship-zip');
+
+  if (shipAddress1) shipAddress1.value = current.street;
+  if (shipAddress2) shipAddress2.value = '';
+  if (shipCity) shipCity.value = current.city;
+  if (shipCountry) shipCountry.value = 'US';
+  if (shipState) shipState.value = current.state;
+  if (shipZip) shipZip.value = current.postal;
+
+  state.addressValidation.shipping = false;
+  setAddressModalButtonState('shipping');
+  modal.classList.add('is-open');
+  shipAddress1?.focus();
+}
+
+function validateShippingAddress() {
+  const requiredFilled =
+    !!document.getElementById('ship-address1')?.value.trim() &&
+    !!document.getElementById('ship-city')?.value.trim() &&
+    !!document.getElementById('ship-country')?.value &&
+    !!document.getElementById('ship-state')?.value &&
+    !!document.getElementById('ship-zip')?.value.trim();
+  if (!requiredFilled) return;
+
+  state.addressValidation.shipping = true;
+  const saveBtn = document.getElementById('ship-save-btn');
+  if (saveBtn) saveBtn.disabled = false;
+}
+
+function closeShippingAddressModal() {
+  const modal = document.getElementById('shipping-address-modal');
+  if (!modal) return;
+  modal.classList.remove('is-open');
+}
+
+function saveShippingAddressFromModal() {
+  if (!state.addressValidation.shipping) return;
+
+  const address1 = document.getElementById('ship-address1')?.value.trim() || '';
+  const address2 = document.getElementById('ship-address2')?.value.trim() || '';
+  const city = document.getElementById('ship-city')?.value.trim() || '';
+  const stateCode = document.getElementById('ship-state')?.value || '';
+  const postal = document.getElementById('ship-zip')?.value.trim() || '';
+
+  if (!address1 || !city || !stateCode || !postal) return;
+
+  const street = address2 ? `${address1} ${address2}` : address1;
+  const formatted = composeAddressString(street, city, stateCode, postal);
+
+  state.accountInfo.shippingAddress = formatted;
+  const hdr = document.getElementById('hdr-shippingAddress');
+  const inlineInput = document.getElementById('hdr-input-shippingAddress');
+  if (hdr) hdr.textContent = formatted;
+  if (inlineInput) inlineInput.value = formatted;
+
+  closeShippingAddressModal();
+  state.addressValidation.shipping = false;
+  updateProgress();
+  showToast('Saved — Shipping address updated.');
+}
+
+function openBillingAddressModal() {
+  const modal = document.getElementById('billing-address-modal');
+  if (!modal) return;
+
+  const current = parseAddressString(state.accountInfo.billingAddress);
+  const billStreet = document.getElementById('bill-street');
+  const billCity = document.getElementById('bill-city');
+  const billCountry = document.getElementById('bill-country');
+  const billState = document.getElementById('bill-state');
+  const billPostal = document.getElementById('bill-postal');
+
+  if (billStreet) billStreet.value = current.street;
+  if (billCity) billCity.value = current.city;
+  if (billCountry) billCountry.value = 'US';
+  if (billState) billState.value = current.state;
+  if (billPostal) billPostal.value = current.postal;
+
+  state.addressValidation.billing = false;
+  setAddressModalButtonState('billing');
+  modal.classList.add('is-open');
+  billStreet?.focus();
+}
+
+function validateBillingAddress() {
+  const requiredFilled =
+    !!document.getElementById('bill-street')?.value.trim() &&
+    !!document.getElementById('bill-city')?.value.trim() &&
+    !!document.getElementById('bill-country')?.value &&
+    !!document.getElementById('bill-state')?.value &&
+    !!document.getElementById('bill-postal')?.value.trim();
+  if (!requiredFilled) return;
+
+  state.addressValidation.billing = true;
+  const saveBtn = document.getElementById('bill-save-btn');
+  if (saveBtn) saveBtn.disabled = false;
+}
+
+function closeBillingAddressModal() {
+  const modal = document.getElementById('billing-address-modal');
+  if (!modal) return;
+  modal.classList.remove('is-open');
+}
+
+function saveBillingAddressFromModal() {
+  if (!state.addressValidation.billing) return;
+
+  const street = document.getElementById('bill-street')?.value.trim() || '';
+  const city = document.getElementById('bill-city')?.value.trim() || '';
+  const stateCode = document.getElementById('bill-state')?.value || '';
+  const postal = document.getElementById('bill-postal')?.value.trim() || '';
+
+  if (!street || !city || !stateCode || !postal) return;
+
+  const formatted = composeAddressString(street, city, stateCode, postal);
+
+  state.accountInfo.billingAddress = formatted;
+  const hdr = document.getElementById('hdr-billingAddress');
+  const inlineInput = document.getElementById('hdr-input-billingAddress');
+  if (hdr) hdr.textContent = formatted;
+  if (inlineInput) inlineInput.value = formatted;
+
+  closeBillingAddressModal();
+  state.addressValidation.billing = false;
+  updateProgress();
+  showToast('Saved — Billing address updated.');
+}
+
+function openContactModal() {
+  const modal = document.getElementById('contact-modal');
+  if (!modal) return;
+
+  if (!state.accountInfo.contactRole || !state.accountInfo.contactPhone) {
+    const parsed = parseContactInfo(state.accountInfo.contactInfo);
+    if (!state.accountInfo.contactRole) state.accountInfo.contactRole = parsed.role;
+    if (!state.accountInfo.contactPhone) state.accountInfo.contactPhone = parsed.phone;
+  }
+
+  const contactName = document.getElementById('contact-name');
+  const contactRole = document.getElementById('contact-role');
+  const contactPhone = document.getElementById('contact-phone');
+
+  if (contactName) contactName.value = state.accountInfo.contactName || '';
+  if (contactRole) contactRole.value = state.accountInfo.contactRole || '';
+  if (contactPhone) contactPhone.value = state.accountInfo.contactPhone || '';
+
+  setAddressModalButtonState('contact');
+  modal.classList.add('is-open');
+  contactName?.focus();
+}
+
+function closeContactModal() {
+  const modal = document.getElementById('contact-modal');
+  if (!modal) return;
+  modal.classList.remove('is-open');
+}
+
+function saveContactFromModal() {
+  const name = document.getElementById('contact-name')?.value.trim() || '';
+  const role = document.getElementById('contact-role')?.value.trim() || '';
+  const phone = document.getElementById('contact-phone')?.value.trim() || '';
+  if (!name || !role || !phone) return;
+
+  state.accountInfo.contactName = name;
+  state.accountInfo.contactRole = role;
+  state.accountInfo.contactPhone = phone;
+  state.accountInfo.contactInfo = composeContactInfo(role, phone);
+
+  const nameEl = document.getElementById('hdr-contactName');
+  const infoEl = document.getElementById('hdr-contactInfo');
+  if (nameEl) nameEl.textContent = state.accountInfo.contactName;
+  if (infoEl) infoEl.textContent = state.accountInfo.contactInfo;
+
+  closeContactModal();
+  updateProgress();
+  showToast('Saved — Contact updated.');
+}
+
+function cancelCardEdit(field) {
+  const v = document.getElementById(`hdr-${field}-view`);
+  const e = document.getElementById(`hdr-${field}-edit`);
+  if (v) v.style.display = 'flex';
+  if (e) e.style.display = 'none';
+}
+
+function saveCardEdit(field) {
+  if (field === 'contact') {
+    openContactModal();
+    return;
+  } else if (field === 'funnelStatus') {
+    const sel = document.getElementById('hdr-input-funnelStatus');
+    const val = sel.value;
+    const label = displayValues.funnelStatus(val);
+    document.getElementById('hdr-funnelStatus').textContent = label;
+    state.accountInfo.funnelStatus = val;
+  } else {
+    const val = document.getElementById(`hdr-input-${field}`)?.value.trim();
+    if (!val) return;
+    document.getElementById(`hdr-${field}`).textContent = val;
+    state.accountInfo[field] = val;
+  }
+  cancelCardEdit(field);
+  updateProgress();
+  showToast('Saved — Account information updated.');
+}
+
+function saveFunnelStatus(val) {
+  state.accountInfo.funnelStatus = val;
+  updateProgress();
+  showToast('Saved — Funnel status updated.');
+}
+
+function saveAll() {
+  updateProgress();
+  showToast('Saved — Account information updated.');
+}
+
+/* ════════════════════════════════════════════════
+   TOAST
+════════════════════════════════════════════════ */
+function showToast(msg) {
+  const container = document.getElementById('toast-container');
+  const t = document.createElement('div');
+  t.className = 'notification notification--success notification--toast';
+  t.setAttribute('role', 'status');
+  t.setAttribute('aria-live', 'polite');
+  t.setAttribute('aria-atomic', 'true');
+  t.innerHTML = `
+    <span class="notification__icon" aria-hidden="true">
+      <img src="../../../../assets/ds/icons/checkmark.svg" alt="" aria-hidden="true" width="20" height="20">
+    </span>
+    <div class="notification__body">
+      <p class="notification__message">${msg}</p>
+    </div>
+    <button class="notification__dismiss" aria-label="Dismiss">
+      <img src="../../../../assets/ds/icons/close.svg" alt="" aria-hidden="true" width="16" height="16">
+    </button>
+  `;
+  const dismissBtn = t.querySelector('.notification__dismiss');
+  if (dismissBtn) dismissBtn.addEventListener('click', () => t.remove());
+  container.replaceChildren(t);
+  setTimeout(() => t.remove(), 3000);
+}
+
+/* ════════════════════════════════════════════════
+   HELPERS
+════════════════════════════════════════════════ */
+function nowLabel() {
+  return new Date().toLocaleString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit' });
+}
+
+/* ════════════════════════════════════════════════
+   INIT
+════════════════════════════════════════════════ */
+function init() {
+  initAccordions();
+
+  // Apply segment rules
+  const seg = state.segment;
+
+  // Currency: lock for SMB
+  if (!currencyEditable(seg)) {
+    document.getElementById('actions-currency').innerHTML = '<span class="badge badge--gray-low">Not editable for SMB</span>';
+  }
+
+  // Contract type: lock for SMB & Seasonal
+  const ctRule = contractTypeRules[seg] || { default: 'flex', editable: true };
+  state.accountInfo.contractType = ctRule.default;
+  document.getElementById('val-contractType').textContent = displayValues.contractType(ctRule.default);
+  if (!ctRule.editable) {
+    document.getElementById('actions-contractType').innerHTML = '<span class="badge badge--gray-low">Not editable</span>';
+  }
+
+  // Pricebook
+  document.getElementById('val-pricebook').textContent = pricebookMap[seg] || 'Standard Pricebook';
+
+  // Payment terms: fixed Net 30 for SMB
+  if (seg === 'SMB') {
+    state.billing.paymentTerms = 'net-30';
+    state.billing.termsApproval = 'none';
+    document.getElementById('val-paymentTerms').textContent = termsLabel('net-30');
+    document.getElementById('terms-edit-btn').classList.add('hidden');
+    const termsHelper = document.querySelector('#section-account-info .terms-helper');
+    if (termsHelper) termsHelper.textContent = 'Net 30 is fixed and not editable for SMB.';
+  }
+
+  selectPaymentMethod(state.billing.paymentMethod);
+
+  // Funnel status dropdown
+  document.getElementById('hdr-input-funnelStatus').value = state.accountInfo.funnelStatus;
+
+  applySimulationPreset(state.simulationMode, { notify: false });
+
+  navigate('account-info');
+}
+
+init();
+</script>
+</body>
+</html>
