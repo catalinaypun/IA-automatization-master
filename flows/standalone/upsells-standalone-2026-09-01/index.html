@@ -1,0 +1,2997 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Capture Customer Data — Opportunity | Salesforce</title>
+  <link rel="stylesheet" href="./assets/ds/slds/salesforce-lightning-design-system.min.css">
+  <style>
+    :root {
+      --ux-shell-max-width: 1510px;
+      --ux-shell-side-gap: 0px;
+      --ux-bg-canvas: #3f5fa8;
+      --ux-bg-work: #f3f6fb;
+      --ux-border-shell: #8ea9d4;
+      --ux-border-card: #cfd8e6;
+      --ux-header-dark: #073a5a;
+    }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+    }
+
+    .ux-sf-shot {
+      background: linear-gradient(180deg, var(--ux-bg-canvas) 0%, #3a5aa1 100%);
+      color: #080707;
+    }
+
+    .ux-sf-shot .slds-global-header_container,
+    .ux-sf-shot .slds-context-bar,
+    .ux-sf-shot main {
+      width: 100% !important;
+      max-width: none;
+      margin-left: 0 !important;
+      margin-right: 0 !important;
+      border-left: 1px solid var(--ux-border-shell);
+      border-right: 1px solid var(--ux-border-shell);
+      box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.06) inset;
+    }
+
+    .ux-sf-shot .slds-global-header_container {
+      position: relative !important;
+      top: auto;
+      left: auto !important;
+      right: auto !important;
+      inset: auto !important;
+      width: 100% !important;
+      max-width: none !important;
+      border-top: 1px solid #0d5077;
+      background: var(--ux-header-dark);
+    }
+
+    .ux-sf-shot .slds-global-header {
+      min-height: 48px;
+      padding: 0 0.75rem;
+      background: var(--ux-header-dark);
+      color: #fff;
+    }
+
+    .ux-sf-shot .slds-global-header .slds-button__icon,
+    .ux-sf-shot .slds-global-header .slds-icon,
+    .ux-sf-shot .slds-global-header .slds-global-actions__label {
+      fill: #ffffff;
+      color: #ffffff;
+    }
+
+    .ux-sf-shot .slds-global-header__logo {
+      width: 28px;
+      height: 22px;
+      background: none;
+      margin-right: 0.5rem;
+    }
+
+    .ux-sf-shot .slds-global-header__item {
+      flex-shrink: 0;
+    }
+
+    .ux-sf-shot .slds-global-header__item.slds-grow {
+      flex-shrink: 1;
+      min-width: 16rem;
+    }
+
+    .ux-sf-shot .slds-global-actions,
+    .ux-sf-shot .slds-global-actions__item {
+      flex-wrap: nowrap;
+      flex-shrink: 0;
+    }
+
+    .ux-sf-shot .ux-avatar-circle {
+      background: #0ea5a3;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .ux-sf-shot .ux-avatar-icon {
+      fill: #fff;
+    }
+
+    .ux-sf-shot .slds-context-bar {
+      border-top: 2px solid #1b96ff;
+      border-bottom: 1px solid #b8c6dd;
+      background: #fff;
+    }
+
+    .ux-sf-shot .slds-context-bar__app-name .slds-context-bar__label-action {
+      -webkit-appearance: none;
+      appearance: none;
+      border: 1px solid #d8dde6;
+      border-top: 0;
+      border-bottom: 0;
+      border-radius: 0;
+      background: #ffffff;
+      box-shadow: none;
+      outline: none;
+    }
+
+    .ux-sf-shot .slds-context-bar__app-name .slds-context-bar__label-action:hover,
+    .ux-sf-shot .slds-context-bar__app-name .slds-context-bar__label-action:focus {
+      border-color: #d8dde6;
+      box-shadow: none;
+      outline: none;
+    }
+
+    .ux-main {
+      background: #3f62ad;
+      padding: 0.75rem;
+      border-bottom: 1px solid var(--ux-border-shell);
+    }
+
+    .ux-page-header {
+      background: #fff;
+      border: 1px solid #c9c7c5;
+      border-top: 3px solid #1b96ff;
+      border-radius: 0.3rem;
+      margin-bottom: 0.55rem;
+      padding: 0.45rem 0.7rem 0.55rem;
+      overflow: hidden;
+      box-shadow: none !important;
+    }
+
+    .ux-page-header .slds-page-header__title {
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .ux-page-header,
+    .ux-page-header .slds-page-header__row {
+      background-color: #ffffff !important;
+    }
+
+    .ux-page-header .slds-page-header__controls .slds-button {
+      min-height: 2rem;
+      line-height: 1.8rem;
+      font-size: 13px;
+      border-radius: 0;
+    }
+
+    .ux-page-header .slds-page-header__controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0;
+      justify-content: flex-end;
+    }
+
+    .ux-page-header .slds-page-header__control {
+      margin-left: 0;
+    }
+
+    .ux-page-header .slds-page-header__control + .slds-page-header__control .slds-button {
+      margin-left: -1px;
+    }
+
+    .ux-page-header .slds-page-header__control:first-child .slds-button {
+      border-top-left-radius: 0.3rem;
+      border-bottom-left-radius: 0.3rem;
+    }
+
+    .ux-page-header .slds-page-header__controls .slds-button-group .slds-button:last-child,
+    .ux-page-header .slds-page-header__control:last-child .slds-button {
+      border-top-right-radius: 0.3rem;
+      border-bottom-right-radius: 0.3rem;
+    }
+
+    .ux-page-header .slds-page-header__row {
+      align-items: center;
+    }
+
+    .ux-page-header .slds-text-title {
+      font-size: 13px;
+      color: #3e3e3c;
+    }
+
+    .ux-page-header .slds-page-header__detail-row {
+      margin-top: 0.35rem;
+    }
+
+    .ux-sf-shot .slds-button.slds-button_brand,
+    .ux-sf-shot .ux-page-header .slds-page-header__controls .slds-button.slds-button_brand {
+      background: #0b5cab !important;
+      border-color: #0b5cab !important;
+      color: #ffffff !important;
+      box-shadow: none;
+    }
+
+    .ux-sf-shot .slds-button.slds-button_brand:hover,
+    .ux-sf-shot .slds-button.slds-button_brand:focus,
+    .ux-sf-shot .ux-page-header .slds-page-header__controls .slds-button.slds-button_brand:hover,
+    .ux-sf-shot .ux-page-header .slds-page-header__controls .slds-button.slds-button_brand:focus {
+      background: #084a8c !important;
+      border-color: #084a8c !important;
+      color: #ffffff !important;
+      box-shadow: none;
+    }
+
+    .ux-sf-shot .slds-button.slds-button_neutral,
+    .ux-sf-shot .ux-page-header .slds-page-header__controls .slds-button.slds-button_neutral {
+      background: #ffffff !important;
+      border: 1px solid #9f9f9f !important;
+      color: #0b5cab !important;
+      box-shadow: none;
+    }
+
+    .ux-sf-shot .slds-button.slds-button_neutral:hover,
+    .ux-sf-shot .slds-button.slds-button_neutral:focus,
+    .ux-sf-shot .ux-page-header .slds-page-header__controls .slds-button.slds-button_neutral:hover,
+    .ux-sf-shot .ux-page-header .slds-page-header__controls .slds-button.slds-button_neutral:focus {
+      border-color: #7f8ea3 !important;
+      color: #084a8c !important;
+      background: #ffffff !important;
+      box-shadow: none;
+    }
+
+    .ux-page-header .slds-page-header__row.slds-page-header__row_gutters {
+      margin-left: 0;
+      margin-right: 0;
+    }
+
+    .ux-path {
+      margin-bottom: 0.55rem;
+    }
+
+    .ux-path .slds-path__track {
+      background: #fff;
+      padding: 0.35rem;
+      border: 1px solid var(--ux-border-card);
+      border-radius: 0.3rem;
+    }
+
+    .ux-path .slds-path__link {
+      min-height: 1.65rem;
+    }
+
+    .ux-path .slds-path__title {
+      font-size: 0.74rem;
+    }
+
+    .ux-shell-card {
+      border: 1px solid var(--ux-border-card);
+      border-radius: 0.3rem;
+      margin-bottom: 0.55rem;
+      background: #fff;
+    }
+
+    .ux-shell-card .slds-card__header {
+      padding: 0.45rem 0.7rem;
+    }
+
+    .ux-shell-card .slds-card__header-title {
+      font-size: 0.93rem;
+      font-weight: 700;
+      text-transform: none;
+      letter-spacing: 0;
+    }
+
+    .ux-shell-card .slds-card__body_inner {
+      padding: 0.55rem 0.7rem;
+    }
+
+    .ux-content-grid {
+      margin-left: -0.3rem;
+      margin-right: -0.3rem;
+    }
+
+    .ux-content-grid > .slds-col {
+      padding-left: 0.3rem;
+      padding-right: 0.3rem;
+    }
+
+    .ux-capture-panel {
+      background: #ffffff;
+      border: 1px solid #c9c7c5;
+      border-radius: 0.35rem;
+      padding: 0.65rem;
+      margin-bottom: 0.55rem;
+    }
+
+    .ux-capture-panel .ux-capture-tabs {
+      margin-bottom: 0;
+    }
+
+    .ux-capture-panel .ux-inline-actions {
+      border: 0;
+      border-radius: 0;
+      margin-top: 0;
+      margin-bottom: 0.6rem;
+      padding: 0.6rem 0;
+      background: #ffffff;
+    }
+
+    .ux-capture-panel .ux-shell-card {
+      margin-bottom: 0;
+    }
+
+    .ux-capture-tabs .slds-tabs_default__nav {
+      border-bottom: 1px solid #dddbda;
+      background: #fff;
+      border-radius: 0.3rem 0.3rem 0 0;
+      padding: 0 0.5rem;
+    }
+
+    .ux-capture-tabs .slds-tabs_default__item {
+      font-size: 16px;
+    }
+
+    .ux-inline-actions .slds-button {
+      min-height: 1.8rem;
+      font-size: 0.72rem;
+    }
+
+    .ux-inline-actions {
+      background: #ffffff;
+      border: 1px solid #c9c7c5;
+      border-top: 0;
+      border-radius: 0 0 0.3rem 0.3rem;
+      padding: 0.6rem 0.75rem;
+      margin-top: -0.55rem;
+    }
+
+    .ux-opportunity-table {
+      font-size: 0.74rem;
+    }
+
+    .ux-opportunity-table thead th {
+      background: #eef2f8;
+      font-weight: 700;
+    }
+
+    .ux-opportunity-table tbody tr {
+      height: 2rem;
+    }
+
+    .ux-opportunity-table .slds-truncate {
+      max-width: 17.5rem;
+    }
+
+    .ux-modal-progress {
+      background: #fff;
+      border-top: 1px solid #dddbda;
+      border-bottom: 1px solid #dddbda;
+    }
+
+    .ux-modal-progress .slds-path {
+      max-width: 40rem;
+      margin: 0 auto;
+    }
+
+    .ux-modal-progress .slds-path__track {
+      padding: 0;
+      background: transparent;
+      border: 0;
+    }
+
+    .ux-modal-progress .slds-path__nav {
+      width: 100%;
+    }
+
+    .ux-modal-progress .slds-path__title {
+      white-space: nowrap;
+    }
+
+    .ux-modal-progress .slds-path__item.slds-is-current .slds-path__stage .slds-icon {
+      display: none;
+    }
+
+    .ux-modal-progress {
+      display: none;
+    }
+
+    .slds-scrollable_x.ux-vehicle-scroll {
+      overflow-x: scroll !important;
+      overflow-y: hidden !important;
+      scrollbar-gutter: stable;
+      scrollbar-width: auto;
+      scrollbar-color: #706e6b #f3f2f2;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .slds-scrollable_x.ux-vehicle-scroll::-webkit-scrollbar {
+      height: 0.75rem;
+    }
+
+    .slds-scrollable_x.ux-vehicle-scroll::-webkit-scrollbar-track {
+      background: #f3f2f2;
+      border-radius: 0.25rem;
+    }
+
+    .slds-scrollable_x.ux-vehicle-scroll::-webkit-scrollbar-thumb {
+      background: #706e6b;
+      border-radius: 0.25rem;
+    }
+
+    .ux-vehicle-scroll > .slds-table {
+      min-width: 64rem;
+    }
+
+    .ux-vehicle-scroll > .slds-table.ux-upsell-vehicle-table {
+      min-width: 48rem;
+      width: 100%;
+      table-layout: auto;
+    }
+
+    .ux-vehicle-scroll > .slds-table.ux-upsell-vehicle-table th,
+    .ux-vehicle-scroll > .slds-table.ux-upsell-vehicle-table td {
+      padding-left: 0.5rem;
+      padding-right: 0.5rem;
+    }
+
+    .ux-compact-cards .slds-card__header {
+      min-height: 3.1rem;
+    }
+
+    .ux-compact-cards .slds-card__header-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+    }
+
+    .ux-activity .slds-tabs_default__item {
+      font-size: 0.72rem;
+    }
+
+    .ux-activity .slds-accordion__summary-action {
+      background: #f4f6f9;
+      border: 1px solid #dddbda;
+      border-radius: 0.2rem;
+      width: 100%;
+      padding: 0.33rem 0.45rem;
+    }
+
+    .ux-main .slds-card,
+    .ux-main .slds-tabs_default__nav,
+    .ux-main .slds-path__track {
+      box-shadow: 0 1px 0 rgba(15, 55, 95, 0.08);
+    }
+
+    .ux-activity .slds-accordion__content {
+      min-height: 5.2rem;
+      padding-top: 0.7rem;
+    }
+
+    @media (max-width: 767px) {
+      .ux-sf-shot .slds-global-header_container,
+      .ux-sf-shot .slds-context-bar,
+      .ux-sf-shot main {
+        margin-left: 0;
+        margin-right: 0;
+        width: 100%;
+        border-left: 0;
+        border-right: 0;
+      }
+
+      .ux-main {
+        background: #3f62ad;
+      }
+    }
+  </style>
+</head>
+<body class="slds-scope ux-sf-shot">
+
+  <!-- ============================================================
+       GLOBAL HEADER (Salesforce Lightning Experience shell)
+  ============================================================ -->
+  <div class="slds-global-header_container">
+    <header class="slds-global-header slds-grid slds-grid_align-spread">
+      <div class="slds-global-header__item">
+        <div class="slds-global-header__logo" role="img" aria-label="Salesforce">
+          <svg viewBox="0 0 52 36" aria-hidden="true">
+            <path fill="#00a1e0" d="M20.4 7.2c1.2-4.3 5.2-7.2 9.8-7.2 4.7 0 8.7 3 9.8 7.4 5 .5 9 4.7 9 9.8 0 5.5-4.5 10-10 10H12c-6.6 0-12-5.4-12-12 0-6.1 4.5-11.1 10.4-11.9 1.5-2 4-3.3 6.8-3.3 3.4 0 6.4 1.9 8 4.8-.6-.1-1.2-.2-1.8-.2-1.1 0-2.1.2-3 .6z"/>
+          </svg>
+        </div>
+      </div>
+      <div class="slds-global-header__item slds-grow slds-p-horizontal_small">
+        <div class="slds-global-header__search-input">
+          <div class="slds-form-element">
+            <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_left">
+              <svg class="slds-icon slds-icon_x-small slds-input__icon slds-input__icon_left slds-icon-text-default" aria-hidden="true">
+                <use xlink:href="./assets/ds/slds/assets/icons/utility-sprite/svg/symbols.svg#search"></use>
+              </svg>
+              <input type="text" class="slds-input" placeholder="Search...">
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="slds-global-header__item">
+        <ul class="slds-global-actions">
+          <li class="slds-global-actions__item">
+            <button class="slds-button slds-button_icon slds-global-actions__icon" title="Favorites">
+              <svg class="slds-button__icon" aria-hidden="true">
+                <use xlink:href="./assets/ds/slds/assets/icons/utility-sprite/svg/symbols.svg#favorite"></use>
+              </svg>
+              <span class="slds-assistive-text">Favorites</span>
+            </button>
+          </li>
+          <li class="slds-global-actions__item">
+            <button class="slds-button slds-button_icon slds-global-actions__icon" title="Create new">
+              <svg class="slds-button__icon" aria-hidden="true">
+                <use xlink:href="./assets/ds/slds/assets/icons/utility-sprite/svg/symbols.svg#add"></use>
+              </svg>
+              <span class="slds-assistive-text">Create new</span>
+            </button>
+          </li>
+          <li class="slds-global-actions__item">
+            <button class="slds-button slds-button_icon slds-global-actions__icon" title="Setup">
+              <svg class="slds-button__icon" aria-hidden="true">
+                <use xlink:href="./assets/ds/slds/assets/icons/utility-sprite/svg/symbols.svg#setup"></use>
+              </svg>
+              <span class="slds-assistive-text">Setup</span>
+            </button>
+          </li>
+          <li class="slds-global-actions__item">
+            <button class="slds-button slds-button_icon slds-global-actions__icon" title="Help">
+              <svg class="slds-button__icon" aria-hidden="true">
+                <use xlink:href="./assets/ds/slds/assets/icons/utility-sprite/svg/symbols.svg#help"></use>
+              </svg>
+              <span class="slds-assistive-text">Help</span>
+            </button>
+          </li>
+          <li class="slds-global-actions__item">
+            <button class="slds-button slds-button_icon slds-global-actions__icon" title="Notifications">
+              <svg class="slds-button__icon" aria-hidden="true">
+                <use xlink:href="./assets/ds/slds/assets/icons/utility-sprite/svg/symbols.svg#notification"></use>
+              </svg>
+              <span class="slds-assistive-text">Notifications</span>
+            </button>
+          </li>
+          <li class="slds-global-actions__item">
+            <span class="slds-avatar slds-avatar_circle slds-avatar_medium slds-global-header__avatar" title="Catalina Arango">
+              <span class="slds-avatar__initials slds-avatar__initials_circle ux-avatar-circle">
+                <svg class="slds-icon slds-icon_x-small ux-avatar-icon" aria-hidden="true">
+                  <use xlink:href="./assets/ds/slds/assets/icons/utility-sprite/svg/symbols.svg#user"></use>
+                </svg>
+              </span>
+            </span>
+          </li>
+        </ul>
+      </div>
+    </header>
+  </div>
+
+  <!-- ============================================================
+       GLOBAL NAVIGATION (app-level tab bar)
+  ============================================================ -->
+  <nav class="slds-context-bar" aria-label="Global navigation">
+    <div class="slds-context-bar__primary">
+      <div class="slds-context-bar__item slds-context-bar__app-name">
+        <button class="slds-context-bar__label-action" title="App Launcher">
+          <svg class="slds-icon slds-icon_x-small slds-icon-text-default slds-m-right_x-small" aria-hidden="true">
+            <use xlink:href="./assets/ds/slds/assets/icons/utility-sprite/svg/symbols.svg#apps"></use>
+          </svg>
+          <span>Sales</span>
+        </button>
+      </div>
+    </div>
+    <div class="slds-context-bar__secondary slds-grow">
+      <ul class="slds-grid" role="menubar">
+        <li class="slds-context-bar__item"><a class="slds-context-bar__label-action" href="#">Home</a></li>
+        <li class="slds-context-bar__item">
+          <a class="slds-context-bar__label-action" href="#">Accounts
+            <svg class="slds-icon slds-icon_xx-small slds-icon-text-default slds-m-left_xx-small" aria-hidden="true"><use xlink:href="./assets/ds/slds/assets/icons/utility-sprite/svg/symbols.svg#chevrondown"></use></svg>
+          </a>
+        </li>
+        <li class="slds-context-bar__item slds-is-active">
+          <a class="slds-context-bar__label-action slds-text-title_bold" href="#">Opportunities
+            <svg class="slds-icon slds-icon_xx-small slds-icon-text-default slds-m-left_xx-small" aria-hidden="true"><use xlink:href="./assets/ds/slds/assets/icons/utility-sprite/svg/symbols.svg#chevrondown"></use></svg>
+          </a>
+        </li>
+        <li class="slds-context-bar__item">
+          <a class="slds-context-bar__label-action" href="#">Quotes
+            <svg class="slds-icon slds-icon_xx-small slds-icon-text-default slds-m-left_xx-small" aria-hidden="true"><use xlink:href="./assets/ds/slds/assets/icons/utility-sprite/svg/symbols.svg#chevrondown"></use></svg>
+          </a>
+        </li>
+        <li class="slds-context-bar__item">
+          <a class="slds-context-bar__label-action" href="#">Orders
+            <svg class="slds-icon slds-icon_xx-small slds-icon-text-default slds-m-left_xx-small" aria-hidden="true"><use xlink:href="./assets/ds/slds/assets/icons/utility-sprite/svg/symbols.svg#chevrondown"></use></svg>
+          </a>
+        </li>
+        <li class="slds-context-bar__item">
+          <a class="slds-context-bar__label-action" href="#">Products
+            <svg class="slds-icon slds-icon_xx-small slds-icon-text-default slds-m-left_xx-small" aria-hidden="true"><use xlink:href="./assets/ds/slds/assets/icons/utility-sprite/svg/symbols.svg#chevrondown"></use></svg>
+          </a>
+        </li>
+        <li class="slds-context-bar__item">
+          <a class="slds-context-bar__label-action" href="#">Product Rules
+            <svg class="slds-icon slds-icon_xx-small slds-icon-text-default slds-m-left_xx-small" aria-hidden="true"><use xlink:href="./assets/ds/slds/assets/icons/utility-sprite/svg/symbols.svg#chevrondown"></use></svg>
+          </a>
+        </li>
+        <li class="slds-context-bar__item">
+          <a class="slds-context-bar__label-action" href="#">Price Rules
+            <svg class="slds-icon slds-icon_xx-small slds-icon-text-default slds-m-left_xx-small" aria-hidden="true"><use xlink:href="./assets/ds/slds/assets/icons/utility-sprite/svg/symbols.svg#chevrondown"></use></svg>
+          </a>
+        </li>
+        <li class="slds-context-bar__item"><a class="slds-context-bar__label-action" href="#">Summary Variables</a></li>
+        <li class="slds-context-bar__item">
+          <a class="slds-context-bar__label-action" href="#">More
+            <svg class="slds-icon slds-icon_xx-small slds-icon-text-default slds-m-left_xx-small" aria-hidden="true"><use xlink:href="./assets/ds/slds/assets/icons/utility-sprite/svg/symbols.svg#chevrondown"></use></svg>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+  <main class="ux-main">
+
+    <!-- ============================================================
+         RECORD HEADER — Opportunity
+    ============================================================ -->
+    <div class="slds-page-header slds-page-header_record-home slds-m-bottom_small ux-page-header">
+      <div class="slds-page-header__row">
+        <div class="slds-page-header__col-title">
+          <div class="slds-media">
+            <div class="slds-media__figure">
+              <span class="slds-icon_container slds-icon-standard-opportunity">
+                <svg class="slds-icon slds-page-header__icon" aria-hidden="true">
+                  <use xlink:href="./assets/ds/slds/assets/icons/standard-sprite/svg/symbols.svg#opportunity"></use>
+                </svg>
+              </span>
+            </div>
+            <div class="slds-media__body">
+              <p class="slds-text-title slds-line-height_reset">Opportunity</p>
+              <div class="slds-page-header__name">
+                <div class="slds-page-header__name-title">
+                  <h1>
+                    <span class="slds-page-header__title slds-truncate" title="Design-May-01-25-Opp">Design-May-01-25-Opp</span>
+                  </h1>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="slds-page-header__col-actions">
+          <div class="slds-page-header__controls">
+            <div class="slds-page-header__control"><button class="slds-button slds-button_neutral">Follow</button></div>
+            <div class="slds-page-header__control">
+              <button class="slds-button slds-button_neutral" data-hide-on-state="empty" onclick="ptOpenCaptureData()">Capture customer details</button>
+              <button class="slds-button slds-button_neutral" disabled data-show-on-state="empty" hidden title="Not yet available">Capture customer details</button>
+            </div>
+            <div class="slds-page-header__control"><button class="slds-button slds-button_neutral">Edit</button></div>
+            <div class="slds-page-header__control"><button class="slds-button slds-button_neutral">Schedule an Appt</button></div>
+            <div class="slds-page-header__control">
+              <div class="slds-button-group" role="group">
+                <button class="slds-button slds-button_neutral">Create Order</button>
+                <button class="slds-button slds-button_neutral" title="More actions">
+                  <svg class="slds-button__icon" aria-hidden="true">
+                    <use xlink:href="./assets/ds/slds/assets/icons/utility-sprite/svg/symbols.svg#chevrondown"></use>
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="slds-page-header__row slds-page-header__row_gutters">
+        <div class="slds-page-header__col-details">
+          <ul class="slds-page-header__detail-row">
+            <li class="slds-page-header__detail-block">
+              <p class="slds-text-title slds-truncate">Account Name</p>
+              <p class="slds-truncate"><a href="#">Design-May-01-25</a></p>
+            </li>
+            <li class="slds-page-header__detail-block">
+              <p class="slds-text-title slds-truncate">Close Date</p>
+              <p class="slds-truncate">6/1/2025</p>
+            </li>
+            <li class="slds-page-header__detail-block">
+              <p class="slds-text-title slds-truncate">Amount</p>
+              <p class="slds-truncate">—</p>
+            </li>
+            <li class="slds-page-header__detail-block">
+              <p class="slds-text-title slds-truncate">Opportunity Owner</p>
+              <p class="slds-truncate">
+                <span class="slds-icon_container slds-icon-utility-user slds-m-right_xx-small" title="User">
+                  <svg class="slds-icon slds-icon-text-default slds-icon_xx-small" aria-hidden="true">
+                    <use xlink:href="./assets/ds/slds/assets/icons/utility-sprite/svg/symbols.svg#user"></use>
+                  </svg>
+                </span>
+                John Smith
+              </p>
+            </li>
+            <li class="slds-page-header__detail-block">
+              <p class="slds-text-title slds-truncate">Contract flexibility</p>
+              <p class="slds-truncate"><input type="checkbox" class="slds-checkbox" disabled></p>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================================
+         PATH — Opportunity stage progress
+    ============================================================ -->
+    <div class="slds-path slds-m-bottom_small ux-path">
+      <div class="slds-grid slds-path__track">
+        <div class="slds-grid slds-path__scroller-container">
+          <div class="slds-path__scroller" role="application">
+            <div class="slds-path__scroller_inner">
+              <ul class="slds-path__nav" role="listbox" aria-orientation="horizontal">
+                <li class="slds-path__item slds-is-complete" role="presentation">
+                  <a aria-selected="false" class="slds-path__link" href="#" role="option" tabindex="-1">
+                    <span class="slds-path__stage">
+                      <svg class="slds-icon slds-icon_x-small" aria-hidden="true">
+                        <use xlink:href="./assets/ds/slds/assets/icons/utility-sprite/svg/symbols.svg#check"></use>
+                      </svg>
+                      <span class="slds-assistive-text">Complete</span>
+                    </span>
+                    <span class="slds-path__title slds-assistive-text">Prospecting</span>
+                  </a>
+                </li>
+                <li class="slds-path__item slds-is-complete" role="presentation">
+                  <a aria-selected="false" class="slds-path__link" href="#" role="option" tabindex="-1">
+                    <span class="slds-path__stage">
+                      <svg class="slds-icon slds-icon_x-small" aria-hidden="true">
+                        <use xlink:href="./assets/ds/slds/assets/icons/utility-sprite/svg/symbols.svg#check"></use>
+                      </svg>
+                      <span class="slds-assistive-text">Complete</span>
+                    </span>
+                    <span class="slds-path__title slds-assistive-text">Qualification</span>
+                  </a>
+                </li>
+                <li class="slds-path__item slds-is-current slds-is-active" role="presentation">
+                  <a aria-selected="true" class="slds-path__link" href="#" role="option" tabindex="0">
+                    <span class="slds-path__stage">
+                      <svg class="slds-icon slds-icon_x-small" aria-hidden="true">
+                        <use xlink:href="./assets/ds/slds/assets/icons/utility-sprite/svg/symbols.svg#check"></use>
+                      </svg>
+                      <span class="slds-assistive-text">Current Stage:</span>
+                    </span>
+                    <span class="slds-path__title">Developing</span>
+                  </a>
+                </li>
+                <li class="slds-path__item slds-is-incomplete" role="presentation">
+                  <a aria-selected="false" class="slds-path__link" href="#" role="option" tabindex="-1">
+                    <span class="slds-path__stage">
+                      <span class="slds-assistive-text">Stage:</span>
+                    </span>
+                    <span class="slds-path__title">Negotiating</span>
+                  </a>
+                </li>
+                <li class="slds-path__item slds-is-incomplete" role="presentation">
+                  <a aria-selected="false" class="slds-path__link" href="#" role="option" tabindex="-1">
+                    <span class="slds-path__stage">
+                      <span class="slds-assistive-text">Stage:</span>
+                    </span>
+                    <span class="slds-path__title">Close</span>
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="slds-path__action">
+          <button class="slds-button slds-button_brand">Mark Stage as Completed</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- EMPTY / NOT-AVAILABLE banner -->
+    <div data-show-on-state="empty" hidden
+         class="slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_warning slds-m-bottom_small" role="alert">
+      <span class="slds-assistive-text">Warning</span>
+      <svg class="slds-icon slds-icon_x-small slds-m-right_x-small" aria-hidden="true">
+        <use xlink:href="./assets/ds/slds/assets/icons/utility-sprite/svg/symbols.svg#warning"></use>
+      </svg>
+      <h2 class="slds-inline">The "Capture customer details" functionality is not yet available.</h2>
+    </div>
+
+    <!-- ============================================================
+         RELATED LIST QUICK LINKS
+    ============================================================ -->
+    <article class="slds-card slds-m-bottom_small ux-shell-card">
+      <div class="slds-card__header">
+        <h2 class="slds-card__header-title slds-text-title_caps">Related List Quick Links</h2>
+      </div>
+      <div class="slds-card__body slds-card__body_inner">
+        <ul class="slds-grid slds-wrap slds-gutters_small">
+          <li class="slds-col slds-size_1-of-4 slds-m-bottom_small">
+            <div class="slds-media slds-media_small slds-m-bottom_x-small">
+              <div class="slds-media__figure">
+                <svg class="slds-icon slds-icon-text-default slds-icon_x-small" aria-hidden="true"><use xlink:href="./assets/ds/slds/assets/icons/standard-sprite/svg/symbols.svg#quotes"></use></svg>
+              </div>
+              <div class="slds-media__body"><a href="#">Quote (1)</a></div>
+            </div>
+            <div class="slds-media slds-media_small">
+              <div class="slds-media__figure">
+                <svg class="slds-icon slds-icon-text-default slds-icon_x-small" aria-hidden="true"><use xlink:href="./assets/ds/slds/assets/icons/standard-sprite/svg/symbols.svg#approval"></use></svg>
+              </div>
+              <div class="slds-media__body"><a href="#">Approvals (1)</a></div>
+            </div>
+          </li>
+          <li class="slds-col slds-size_1-of-4 slds-m-bottom_small">
+            <div class="slds-media slds-media_small slds-m-bottom_x-small">
+              <div class="slds-media__figure">
+                <svg class="slds-icon slds-icon-text-default slds-icon_x-small" aria-hidden="true"><use xlink:href="./assets/ds/slds/assets/icons/custom-sprite/svg/symbols.svg#custom13"></use></svg>
+              </div>
+              <div class="slds-media__body"><a href="#">Commissions (0)</a></div>
+            </div>
+            <div class="slds-media slds-media_small">
+              <div class="slds-media__figure">
+                <svg class="slds-icon slds-icon-text-default slds-icon_x-small" aria-hidden="true"><use xlink:href="./assets/ds/slds/assets/icons/standard-sprite/svg/symbols.svg#opportunity_contact_role"></use></svg>
+              </div>
+              <div class="slds-media__body"><a href="#">Contact Roles (1)</a></div>
+            </div>
+          </li>
+          <li class="slds-col slds-size_1-of-4 slds-m-bottom_small">
+            <div class="slds-media slds-media_small slds-m-bottom_x-small">
+              <div class="slds-media__figure">
+                <svg class="slds-icon slds-icon-text-default slds-icon_x-small" aria-hidden="true"><use xlink:href="./assets/ds/slds/assets/icons/standard-sprite/svg/symbols.svg#contract"></use></svg>
+              </div>
+              <div class="slds-media__body"><a href="#">Contracts (2)</a></div>
+            </div>
+            <div class="slds-media slds-media_small">
+              <div class="slds-media__figure">
+                <svg class="slds-icon slds-icon-text-default slds-icon_x-small" aria-hidden="true"><use xlink:href="./assets/ds/slds/assets/icons/standard-sprite/svg/symbols.svg#custom"></use></svg>
+              </div>
+              <div class="slds-media__body"><a href="#">Order Line Items (2)</a></div>
+            </div>
+          </li>
+          <li class="slds-col slds-size_1-of-4 slds-m-bottom_small">
+            <div class="slds-media slds-media_small slds-m-bottom_x-small">
+              <div class="slds-media__figure">
+                <svg class="slds-icon slds-icon-text-default slds-icon_x-small" aria-hidden="true"><use xlink:href="./assets/ds/slds/assets/icons/standard-sprite/svg/symbols.svg#messaging_conversation"></use></svg>
+              </div>
+              <div class="slds-media__body"><a href="#">Gong Conversations (0)</a></div>
+            </div>
+            <div class="slds-media slds-media_small">
+              <div class="slds-media__figure">
+                <svg class="slds-icon slds-icon-text-default slds-icon_x-small" aria-hidden="true"><use xlink:href="./assets/ds/slds/assets/icons/custom-sprite/svg/symbols.svg#custom18"></use></svg>
+              </div>
+              <div class="slds-media__body"><a href="#">DocuSign Status (0)</a></div>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </article>
+
+    <!-- ============================================================
+         TWO-COLUMN LAYOUT: Capture tab (left) / Activity sidebar (right)
+    ============================================================ -->
+    <div class="slds-grid slds-wrap slds-gutters ux-content-grid">
+      <div class="slds-col slds-size_1-of-1 slds-large-size_2-of-3 ux-capture-panel">
+
+        <!-- Tabs -->
+        <div class="slds-tabs_default slds-m-bottom_medium ux-capture-tabs">
+          <ul class="slds-tabs_default__nav" role="tablist">
+            <li class="slds-tabs_default__item" role="presentation"><a class="slds-tabs_default__link" href="#">Details</a></li>
+            <li class="slds-tabs_default__item" role="presentation"><a class="slds-tabs_default__link" href="#">Related</a></li>
+            <li class="slds-tabs_default__item" role="presentation"><a class="slds-tabs_default__link" href="#">CF Opportunity Product Info</a></li>
+            <li class="slds-tabs_default__item" role="presentation"><a class="slds-tabs_default__link" href="#">Gong</a></li>
+            <li class="slds-tabs_default__item slds-is-active" role="presentation"><a class="slds-tabs_default__link" href="#">Capture</a></li>
+          </ul>
+        </div>
+
+        <div class="slds-grid slds-grid_align-end slds-m-bottom_small ux-inline-actions">
+          <button class="slds-button slds-button_neutral">Export</button>
+          <button class="slds-button slds-button_brand">Finalize</button>
+        </div>
+
+        <!-- ============================================================
+             CAPTURE TAB — Opportunity product
+        ============================================================ -->
+        <article class="slds-card slds-m-bottom_medium ux-shell-card">
+          <div class="slds-card__header slds-grid">
+            <header class="slds-media slds-media_center slds-has-flexi-truncate">
+              <div class="slds-media__figure">
+                <span class="slds-icon_container slds-icon-standard-opportunity" title="Opportunity product">
+                  <svg class="slds-icon slds-icon_small" aria-hidden="true">
+                    <use xlink:href="./assets/ds/slds/assets/icons/standard-sprite/svg/symbols.svg#opportunity"></use>
+                  </svg>
+                </span>
+              </div>
+              <div class="slds-media__body">
+                <h2 class="slds-card__header-title"><span>Opportunity product</span></h2>
+                <p class="slds-text-body_small slds-text-color_weak">5 items · Sorted by product · Updated a few seconds ago</p>
+              </div>
+            </header>
+            <div class="slds-no-flex">
+              <button class="slds-button slds-button_neutral">Add products</button>
+              <div class="slds-button-group" role="group">
+                <button class="slds-button slds-button_neutral">Edit products</button>
+                <button class="slds-button slds-button_neutral" title="More edit options">
+                  <svg class="slds-button__icon" aria-hidden="true">
+                    <use xlink:href="./assets/ds/slds/assets/icons/utility-sprite/svg/symbols.svg#chevrondown"></use>
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="slds-card__body slds-card__body_inner">
+            <table class="slds-table slds-table_bordered slds-table_cell-buffer ux-opportunity-table">
+              <thead>
+                <tr class="slds-line-height_reset">
+                  <th scope="col"><div class="slds-truncate">Product</div></th>
+                  <th scope="col"><div class="slds-truncate">Parent Bundle Name</div></th>
+                  <th scope="col"><div class="slds-truncate">Quantity</div></th>
+                  <th scope="col"><div class="slds-truncate">Hardware type</div></th>
+                  <th scope="col"><div class="slds-truncate">Order Detail Type</div></th>
+                  <th scope="col"><div class="slds-truncate">VMI</div></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><div class="slds-truncate"><a href="#">Vehicle Tracking Subscription</a></div></td>
+                  <td><div class="slds-truncate">Bundle Plan | VTU + AI Dash Cam</div></td>
+                  <td><div id="pt-oppty-qty-expansion-vtu" class="slds-truncate">0/5</div></td>
+                  <td><div class="slds-truncate">New</div></td>
+                  <td><div class="slds-truncate">Expansion</div></td>
+                  <td><input type="checkbox" class="slds-checkbox" checked disabled></td>
+                </tr>
+                <tr>
+                  <td><div class="slds-truncate"><a href="#">AI Dash Cam Subscription</a></div></td>
+                  <td><div class="slds-truncate">Bundle Plan | VTU + AI Dash Cam</div></td>
+                  <td><div id="pt-oppty-qty-expansion-aidashcam" class="slds-truncate">0/5</div></td>
+                  <td><div class="slds-truncate">New</div></td>
+                  <td><div class="slds-truncate">Expansion</div></td>
+                  <td><input type="checkbox" class="slds-checkbox" checked disabled></td>
+                </tr>
+                <tr>
+                  <td><div class="slds-truncate"><a href="#">EVC</a></div></td>
+                  <td><div class="slds-truncate">Bundle Plan | VTU + Driver ID</div></td>
+                  <td><div id="pt-oppty-qty-upsell-evc" class="slds-truncate">0/5</div></td>
+                  <td><div class="slds-truncate">New</div></td>
+                  <td><div class="slds-truncate">Upsell</div></td>
+                  <td><input type="checkbox" class="slds-checkbox" checked disabled></td>
+                </tr>
+                <tr>
+                  <td><div class="slds-truncate"><a href="#">Vehicle Tracking Subscription</a></div></td>
+                  <td><div class="slds-truncate">Bundle Plan | VTU + Driver ID</div></td>
+                  <td><div class="slds-truncate">5/5</div></td>
+                  <td><div class="slds-truncate">Existing</div></td>
+                  <td><div class="slds-truncate">Initial Sale</div></td>
+                  <td><input type="checkbox" class="slds-checkbox" checked disabled></td>
+                </tr>
+                <tr>
+                  <td><div class="slds-truncate"><a href="#">Driver ID Subscription</a></div></td>
+                  <td><div class="slds-truncate">Bundle Plan | VTU + Driver ID</div></td>
+                  <td><div class="slds-truncate">5/5</div></td>
+                  <td><div class="slds-truncate">Existing</div></td>
+                  <td><div class="slds-truncate">Initial Sale</div></td>
+                  <td><input type="checkbox" class="slds-checkbox" checked disabled></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </article>
+
+        <article class="slds-card slds-m-bottom_x-small ux-shell-card ux-compact-cards">
+          <div class="slds-card__header slds-grid slds-grid_align-spread">
+            <h2 class="slds-card__header-title">
+              <span class="slds-media slds-media_center">
+                <span class="slds-media__figure">
+                  <span class="slds-icon_container slds-icon-standard-generic_object" title="Vehicles">
+                    <svg class="slds-icon slds-icon_small" aria-hidden="true">
+                      <use xlink:href="./assets/ds/slds/assets/icons/standard-sprite/svg/symbols.svg#generic_loading"></use>
+                    </svg>
+                  </span>
+                </span>
+                <span class="slds-media__body">Vehicles (0)</span>
+              </span>
+            </h2>
+            <div class="slds-no-flex">
+              <button class="slds-button slds-button_neutral">Edit Installation address</button>
+              <button class="slds-button slds-button_neutral">Edit shipping address</button>
+            </div>
+          </div>
+        </article>
+        <article class="slds-card slds-m-bottom_x-small ux-shell-card ux-compact-cards">
+          <div class="slds-card__header slds-grid slds-grid_align-spread">
+            <h2 class="slds-card__header-title">
+              <span class="slds-media slds-media_center">
+                <span class="slds-media__figure">
+                  <span class="slds-icon_container slds-icon-standard-generic_object" title="Asset Trackers">
+                    <svg class="slds-icon slds-icon_small" aria-hidden="true">
+                      <use xlink:href="./assets/ds/slds/assets/icons/standard-sprite/svg/symbols.svg#generic_loading"></use>
+                    </svg>
+                  </span>
+                </span>
+                <span class="slds-media__body">Asset Trackers (0)</span>
+              </span>
+            </h2>
+            <div class="slds-no-flex">
+              <button class="slds-button slds-button_neutral">Edit Installation address</button>
+              <button class="slds-button slds-button_neutral">Edit shipping address</button>
+            </div>
+          </div>
+        </article>
+        <article class="slds-card slds-m-bottom_medium ux-shell-card ux-compact-cards">
+          <div class="slds-card__header slds-grid slds-grid_align-spread">
+            <h2 class="slds-card__header-title">
+              <span class="slds-media slds-media_center">
+                <span class="slds-media__figure">
+                  <span class="slds-icon_container slds-icon-standard-generic_object" title="Key Fob IDs">
+                    <svg class="slds-icon slds-icon_small" aria-hidden="true">
+                      <use xlink:href="./assets/ds/slds/assets/icons/standard-sprite/svg/symbols.svg#generic_loading"></use>
+                    </svg>
+                  </span>
+                </span>
+                <span class="slds-media__body">Key Fob IDs (0)</span>
+              </span>
+            </h2>
+            <div class="slds-no-flex">
+              <button class="slds-button slds-button_neutral">Edit shipping address</button>
+            </div>
+          </div>
+        </article>
+      </div>
+
+      <!-- ============================================================
+           RIGHT SIDEBAR — Activity / Chatter / Cases / Promo Details
+      ============================================================ -->
+      <div class="slds-col slds-size_1-of-1 slds-large-size_1-of-3">
+        <article class="slds-card ux-shell-card ux-activity">
+          <div class="slds-tabs_default">
+            <ul class="slds-tabs_default__nav" role="tablist">
+              <li class="slds-tabs_default__item slds-is-active" role="presentation"><a class="slds-tabs_default__link" href="#">Activity</a></li>
+              <li class="slds-tabs_default__item" role="presentation"><a class="slds-tabs_default__link" href="#">Chatter</a></li>
+              <li class="slds-tabs_default__item" role="presentation"><a class="slds-tabs_default__link" href="#">Cases</a></li>
+              <li class="slds-tabs_default__item" role="presentation"><a class="slds-tabs_default__link" href="#">Promo Details</a></li>
+            </ul>
+            <div class="slds-tabs_default__content slds-show">
+              <ul class="slds-accordion">
+                <li class="slds-accordion__list-item">
+                  <section class="slds-accordion__section slds-is-open">
+                    <div class="slds-accordion__summary">
+                      <h3 class="slds-accordion__summary-heading">
+                        <button class="slds-button slds-button_reset slds-accordion__summary-action">
+                          <svg class="slds-accordion__summary-action-icon slds-button__icon slds-button__icon_left" aria-hidden="true">
+                            <use xlink:href="./assets/ds/slds/assets/icons/utility-sprite/svg/symbols.svg#chevrondown"></use>
+                          </svg>
+                          <span class="slds-truncate">Upcoming &amp; Overdue's</span>
+                        </button>
+                      </h3>
+                    </div>
+                    <div class="slds-accordion__content">
+                      <p class="slds-text-align_center slds-text-color_weak slds-m-bottom_x-small">No Action to show</p>
+                      <p class="slds-text-align_center slds-text-body_small slds-text-color_weak">Get started by sending an email, scheduling a task, and more.</p>
+                    </div>
+                  </section>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+
+        <!-- ============================================================
+          MODAL — Step 1 of 3: Fulfillment + Bundle summary
+        ============================================================ -->
+        <div data-show-on-state="capture-data" hidden>
+      <div class="slds-backdrop slds-backdrop_open"></div>
+      <section class="slds-modal slds-fade-in-open" role="dialog" aria-modal="true">
+        <div class="slds-modal__container">
+          <header class="slds-modal__header slds-grid slds-grid_align-spread slds-grid_vertical-align-center slds-text-align_left">
+            <h2 class="slds-text-heading_small slds-truncate" title="Capture customer data">Capture customer data</h2>
+            <button class="slds-button slds-button_icon slds-button_icon-border-filled" title="Close" onclick="ptSetState('default')">
+              <svg class="slds-button__icon" aria-hidden="true">
+                <use xlink:href="./assets/ds/slds/assets/icons/utility-sprite/svg/symbols.svg#close"></use>
+              </svg>
+              <span class="slds-assistive-text">Close</span>
+            </button>
+          </header>
+          <div class="ux-modal-progress slds-p-horizontal_medium slds-p-top_small slds-p-bottom_x-small">
+            <div class="slds-path">
+              <div class="slds-grid slds-path__track">
+                <div class="slds-grid slds-path__scroller-container">
+                  <div class="slds-path__scroller" role="application">
+                    <div class="slds-path__scroller_inner">
+                      <ul class="slds-path__nav" role="listbox" aria-orientation="horizontal">
+                        <li class="slds-path__item slds-is-current slds-is-active" role="presentation" data-show-on-state="capture-data" hidden>
+                          <a aria-selected="true" class="slds-path__link" href="#" role="option" tabindex="0">
+                            <span class="slds-path__stage">
+                              <svg class="slds-icon slds-icon_x-small" aria-hidden="true">
+                                <use xlink:href="./assets/ds/slds/assets/icons/utility-sprite/svg/symbols.svg#check"></use>
+                              </svg>
+                              <span class="slds-assistive-text">Current Stage:</span>
+                            </span>
+                            <span class="slds-path__title">Shipping & Installation</span>
+                          </a>
+                        </li>
+                        <li class="slds-path__item slds-is-complete" role="presentation" data-show-on-state="select-product,validation-error,vehicle-info-1-of-3,vehicle-info-2-of-3,vehicle-info-3-of-3,checking-compatibility,incompatible,success" hidden>
+                          <a aria-selected="false" class="slds-path__link" href="#" role="option" tabindex="-1">
+                            <span class="slds-path__stage">
+                              <svg class="slds-icon slds-icon_x-small" aria-hidden="true">
+                                <use xlink:href="./assets/ds/slds/assets/icons/utility-sprite/svg/symbols.svg#check"></use>
+                              </svg>
+                              <span class="slds-assistive-text">Complete</span>
+                            </span>
+                            <span class="slds-path__title slds-assistive-text">Shipping & Installation</span>
+                          </a>
+                        </li>
+
+                        <li class="slds-path__item slds-is-incomplete" role="presentation" data-show-on-state="capture-data" hidden>
+                          <a aria-selected="false" class="slds-path__link" href="#" role="option" tabindex="-1">
+                            <span class="slds-path__stage">
+                              <span class="slds-assistive-text">Stage:</span>
+                            </span>
+                            <span class="slds-path__title">Fulfillment</span>
+                          </a>
+                        </li>
+                        <li class="slds-path__item slds-is-current slds-is-active" role="presentation" data-show-on-state="select-product,validation-error" hidden>
+                          <a aria-selected="true" class="slds-path__link" href="#" role="option" tabindex="0">
+                            <span class="slds-path__stage">
+                              <svg class="slds-icon slds-icon_x-small" aria-hidden="true">
+                                <use xlink:href="./assets/ds/slds/assets/icons/utility-sprite/svg/symbols.svg#check"></use>
+                              </svg>
+                              <span class="slds-assistive-text">Current Stage:</span>
+                            </span>
+                            <span class="slds-path__title">Fulfillment</span>
+                          </a>
+                        </li>
+                        <li class="slds-path__item slds-is-complete" role="presentation" data-show-on-state="vehicle-info-1-of-3,vehicle-info-2-of-3,vehicle-info-3-of-3,checking-compatibility,incompatible,success" hidden>
+                          <a aria-selected="false" class="slds-path__link" href="#" role="option" tabindex="-1">
+                            <span class="slds-path__stage">
+                              <svg class="slds-icon slds-icon_x-small" aria-hidden="true">
+                                <use xlink:href="./assets/ds/slds/assets/icons/utility-sprite/svg/symbols.svg#check"></use>
+                              </svg>
+                              <span class="slds-assistive-text">Complete</span>
+                            </span>
+                            <span class="slds-path__title slds-assistive-text">Fulfillment</span>
+                          </a>
+                        </li>
+
+                        <li class="slds-path__item slds-is-incomplete" role="presentation" data-show-on-state="capture-data,select-product,validation-error" hidden>
+                          <a aria-selected="false" class="slds-path__link" href="#" role="option" tabindex="-1">
+                            <span class="slds-path__stage">
+                              <span class="slds-assistive-text">Stage:</span>
+                            </span>
+                            <span class="slds-path__title">Vehicle Info</span>
+                          </a>
+                        </li>
+                        <li class="slds-path__item slds-is-current slds-is-active" role="presentation" data-show-on-state="vehicle-info-1-of-3,vehicle-info-2-of-3,vehicle-info-3-of-3,checking-compatibility,incompatible,success" hidden>
+                          <a aria-selected="true" class="slds-path__link" href="#" role="option" tabindex="0">
+                            <span class="slds-path__stage">
+                              <svg class="slds-icon slds-icon_x-small" aria-hidden="true">
+                                <use xlink:href="./assets/ds/slds/assets/icons/utility-sprite/svg/symbols.svg#check"></use>
+                              </svg>
+                              <span class="slds-assistive-text">Current Stage:</span>
+                            </span>
+                            <span class="slds-path__title">Vehicle Info</span>
+                          </a>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="slds-modal__content slds-p-around_medium">
+            <p class="slds-m-bottom_small">You will complete the fulfillment information for the following products</p>
+
+            <table class="slds-table slds-table_bordered slds-no-row-hover slds-m-bottom_medium">
+              <thead>
+                <tr class="slds-line-height_reset">
+                  <th scope="col"><div class="slds-truncate">Bundle</div></th>
+                  <th scope="col"><div class="slds-truncate">Order Type</div></th>
+                  <th scope="col"><div class="slds-truncate">Quantity</div></th>
+                  <th scope="col"><div class="slds-truncate">VIN</div></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><div class="slds-truncate">Bundle Plan | VTU + AI Dash Cam</div></td>
+                  <td><div class="slds-truncate">Expansion</div></td>
+                  <td><div class="slds-truncate">0/5</div></td>
+                  <td>
+                    <label class="slds-checkbox">
+                      <input type="checkbox" checked disabled>
+                      <span class="slds-checkbox_faux"></span>
+                      <span class="slds-assistive-text">VIN enabled</span>
+                    </label>
+                  </td>
+                </tr>
+                <tr>
+                  <td><div class="slds-truncate">Bundle Plan | VTU + AI Dash Cam</div></td>
+                  <td><div class="slds-truncate">Expansion</div></td>
+                  <td><div class="slds-truncate">0/5</div></td>
+                  <td>
+                    <label class="slds-checkbox">
+                      <input type="checkbox" checked disabled>
+                      <span class="slds-checkbox_faux"></span>
+                      <span class="slds-assistive-text">VIN enabled</span>
+                    </label>
+                  </td>
+                </tr>
+                <tr>
+                  <td><div class="slds-truncate">Bundle Plan | VTU + Driver ID + EVC</div></td>
+                  <td><div class="slds-truncate">Upsell</div></td>
+                  <td><div class="slds-truncate">0/5</div></td>
+                  <td>
+                    <label class="slds-checkbox">
+                      <input type="checkbox" checked disabled>
+                      <span class="slds-checkbox_faux"></span>
+                      <span class="slds-assistive-text">VIN enabled</span>
+                    </label>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+
+            <div class="slds-form-element slds-m-bottom_medium">
+              <div class="slds-form-element__control">
+                <label class="slds-checkbox">
+                  <input id="pt-shipping-installation-same-all-products" type="checkbox" onchange="document.getElementById('pt-proposal-lower-fields').hidden = !this.checked; document.getElementById('pt-proposal-installation-fields').hidden = this.checked;">
+                  <span class="slds-checkbox_faux"></span>
+                  <span class="slds-form-element__label slds-m-bottom_none">Shipping and Installation Address is the same for all products</span>
+                </label>
+              </div>
+            </div>
+
+            <div id="pt-proposal-lower-fields" hidden>
+            <p class="slds-text-title_bold slds-m-bottom_x-small">Address</p>
+            <div class="slds-form-element slds-m-bottom_x-small">
+              <div class="slds-form-element__control">
+                <label class="slds-checkbox">
+                  <input type="checkbox" checked>
+                  <span class="slds-checkbox_faux"></span>
+                  <span class="slds-form-element__label slds-m-bottom_none">Use existing address</span>
+                </label>
+              </div>
+            </div>
+            <div class="slds-form-element slds-m-bottom_medium">
+              <div class="slds-form-element__control">
+                <div class="slds-select_container">
+                  <select class="slds-select">
+                    <option value="" selected>None</option>
+                    <option>89 Morian Boulevard San Francisco</option>
+                    <option>1450 Mission Street San Francisco</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <p class="slds-text-title_bold slds-m-bottom_x-small">Contact</p>
+            <div class="slds-form-element slds-m-bottom_x-small">
+              <div class="slds-form-element__control">
+                <label class="slds-checkbox">
+                  <input type="checkbox" checked>
+                  <span class="slds-checkbox_faux"></span>
+                  <span class="slds-form-element__label slds-m-bottom_none">Use existing contact</span>
+                </label>
+              </div>
+            </div>
+            <div class="slds-form-element slds-m-bottom_medium">
+              <div class="slds-form-element__control">
+                <div class="slds-select_container">
+                  <select class="slds-select">
+                    <option value="" selected>None</option>
+                    <option>Laura Johnson</option>
+                    <option>Carlos Mendez</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div id="pt-proposal-installation-fields" hidden>
+              <p class="slds-text-title_bold slds-m-bottom_x-small">Installation</p>
+
+              <p class="slds-text-body_small slds-m-bottom_xx-small">Address</p>
+              <div class="slds-form-element slds-m-bottom_medium">
+                <div class="slds-form-element__control">
+                  <div class="slds-select_container">
+                    <select class="slds-select">
+                      <option value="" selected>None</option>
+                      <option>89 Morian Boulevard San Francisco</option>
+                      <option>1450 Mission Street San Francisco</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <p class="slds-text-body_small slds-m-bottom_xx-small">Contact</p>
+              <div class="slds-form-element slds-m-bottom_medium">
+                <div class="slds-form-element__control">
+                  <div class="slds-select_container">
+                    <select class="slds-select">
+                      <option value="" selected>None</option>
+                      <option>Laura Johnson</option>
+                      <option>Carlos Mendez</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+          <footer class="slds-modal__footer">
+            <button class="slds-button slds-button_brand" onclick="ptSetState('select-product')">Next</button>
+          </footer>
+        </div>
+      </section>
+    </div>
+
+    <!-- ============================================================
+         MODAL — Step 2 of 3: Fulfillment
+    ============================================================ -->
+    <div data-show-on-state="select-product,validation-error" hidden>
+      <div class="slds-backdrop slds-backdrop_open"></div>
+      <section class="slds-modal slds-fade-in-open" role="dialog" aria-modal="true">
+        <div class="slds-modal__container">
+          <header class="slds-modal__header slds-grid slds-grid_align-spread slds-grid_vertical-align-center slds-text-align_left">
+            <h2 class="slds-text-heading_small slds-truncate" title="Capture customer data">Capture customer data</h2>
+            <button class="slds-button slds-button_icon slds-button_icon-border-filled" title="Close" onclick="ptSetState('default')">
+              <svg class="slds-button__icon" aria-hidden="true">
+                <use xlink:href="./assets/ds/slds/assets/icons/utility-sprite/svg/symbols.svg#close"></use>
+              </svg>
+              <span class="slds-assistive-text">Close</span>
+            </button>
+          </header>
+          <div class="ux-modal-progress slds-p-horizontal_medium slds-p-top_small slds-p-bottom_x-small">
+            <div class="slds-path">
+              <div class="slds-grid slds-path__track">
+                <div class="slds-grid slds-path__scroller-container">
+                  <div class="slds-path__scroller" role="application">
+                    <div class="slds-path__scroller_inner">
+                      <ul class="slds-path__nav" role="listbox" aria-orientation="horizontal">
+                        <li class="slds-path__item slds-is-current slds-is-active" role="presentation" data-show-on-state="capture-data" hidden>
+                          <a aria-selected="true" class="slds-path__link" href="#" role="option" tabindex="0">
+                            <span class="slds-path__stage">
+                              <svg class="slds-icon slds-icon_x-small" aria-hidden="true">
+                                <use xlink:href="./assets/ds/slds/assets/icons/utility-sprite/svg/symbols.svg#check"></use>
+                              </svg>
+                              <span class="slds-assistive-text">Current Stage:</span>
+                            </span>
+                            <span class="slds-path__title">Shipping & Installation</span>
+                          </a>
+                        </li>
+                        <li class="slds-path__item slds-is-complete" role="presentation" data-show-on-state="select-product,validation-error,vehicle-info-1-of-3,vehicle-info-2-of-3,vehicle-info-3-of-3,checking-compatibility,incompatible,success" hidden>
+                          <a aria-selected="false" class="slds-path__link" href="#" role="option" tabindex="-1">
+                            <span class="slds-path__stage">
+                              <svg class="slds-icon slds-icon_x-small" aria-hidden="true">
+                                <use xlink:href="./assets/ds/slds/assets/icons/utility-sprite/svg/symbols.svg#check"></use>
+                              </svg>
+                              <span class="slds-assistive-text">Complete</span>
+                            </span>
+                            <span class="slds-path__title slds-assistive-text">Shipping & Installation</span>
+                          </a>
+                        </li>
+
+                        <li class="slds-path__item slds-is-incomplete" role="presentation" data-show-on-state="capture-data" hidden>
+                          <a aria-selected="false" class="slds-path__link" href="#" role="option" tabindex="-1">
+                            <span class="slds-path__stage">
+                              <span class="slds-assistive-text">Stage:</span>
+                            </span>
+                            <span class="slds-path__title">Fulfillment</span>
+                          </a>
+                        </li>
+                        <li class="slds-path__item slds-is-current slds-is-active" role="presentation" data-show-on-state="select-product,validation-error" hidden>
+                          <a aria-selected="true" class="slds-path__link" href="#" role="option" tabindex="0">
+                            <span class="slds-path__stage">
+                              <svg class="slds-icon slds-icon_x-small" aria-hidden="true">
+                                <use xlink:href="./assets/ds/slds/assets/icons/utility-sprite/svg/symbols.svg#check"></use>
+                              </svg>
+                              <span class="slds-assistive-text">Current Stage:</span>
+                            </span>
+                            <span class="slds-path__title">Fulfillment</span>
+                          </a>
+                        </li>
+                        <li class="slds-path__item slds-is-complete" role="presentation" data-show-on-state="vehicle-info-1-of-3,vehicle-info-2-of-3,vehicle-info-3-of-3,checking-compatibility,incompatible,success" hidden>
+                          <a aria-selected="false" class="slds-path__link" href="#" role="option" tabindex="-1">
+                            <span class="slds-path__stage">
+                              <svg class="slds-icon slds-icon_x-small" aria-hidden="true">
+                                <use xlink:href="./assets/ds/slds/assets/icons/utility-sprite/svg/symbols.svg#check"></use>
+                              </svg>
+                              <span class="slds-assistive-text">Complete</span>
+                            </span>
+                            <span class="slds-path__title slds-assistive-text">Fulfillment</span>
+                          </a>
+                        </li>
+
+                        <li class="slds-path__item slds-is-incomplete" role="presentation" data-show-on-state="capture-data,select-product,validation-error" hidden>
+                          <a aria-selected="false" class="slds-path__link" href="#" role="option" tabindex="-1">
+                            <span class="slds-path__stage">
+                              <span class="slds-assistive-text">Stage:</span>
+                            </span>
+                            <span class="slds-path__title">Vehicle Info</span>
+                          </a>
+                        </li>
+                        <li class="slds-path__item slds-is-current slds-is-active" role="presentation" data-show-on-state="vehicle-info-1-of-3,vehicle-info-2-of-3,vehicle-info-3-of-3,checking-compatibility,incompatible,success" hidden>
+                          <a aria-selected="true" class="slds-path__link" href="#" role="option" tabindex="0">
+                            <span class="slds-path__stage">
+                              <svg class="slds-icon slds-icon_x-small" aria-hidden="true">
+                                <use xlink:href="./assets/ds/slds/assets/icons/utility-sprite/svg/symbols.svg#check"></use>
+                              </svg>
+                              <span class="slds-assistive-text">Current Stage:</span>
+                            </span>
+                            <span class="slds-path__title">Vehicle Info</span>
+                          </a>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="slds-modal__content slds-p-around_medium">
+            <p class="slds-m-bottom_small">Select the bundle to configure next.</p>
+            <table class="slds-table slds-table_bordered slds-no-row-hover slds-m-bottom_medium">
+              <thead>
+                <tr class="slds-line-height_reset">
+                  <th scope="col"><div class="slds-truncate"></div></th>
+                  <th scope="col"><div class="slds-truncate">Bundle</div></th>
+                  <th scope="col"><div class="slds-truncate">Order Type</div></th>
+                  <th scope="col"><div class="slds-truncate">Quantity</div></th>
+                  <th scope="col"><div class="slds-truncate">VIN</div></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    <label class="slds-radio" title="Select Vehicle Tracking Subscription">
+                      <input type="radio" name="bundle-config" data-next-state="vehicle-info-1-of-3" onclick="ptSelectBundleToConfigure(this)">
+                      <span class="slds-radio_faux"></span>
+                      <span class="slds-assistive-text">Select Vehicle Tracking Subscription</span>
+                    </label>
+                  </td>
+                  <td><div class="slds-truncate">Bundle Plan | VTU + AI Dash Cam</div></td>
+                  <td><div class="slds-truncate">Expansion</div></td>
+                  <td><div class="slds-truncate">0/5</div></td>
+                  <td>
+                    <label class="slds-checkbox">
+                      <input type="checkbox" checked disabled>
+                      <span class="slds-checkbox_faux"></span>
+                      <span class="slds-assistive-text">VIN enabled</span>
+                    </label>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <label class="slds-radio" title="Select AI Dash Cam Subscription">
+                      <input type="radio" name="bundle-config" data-next-state="vehicle-info-1-of-3" onclick="ptSelectBundleToConfigure(this)">
+                      <span class="slds-radio_faux"></span>
+                      <span class="slds-assistive-text">Select AI Dash Cam Subscription</span>
+                    </label>
+                  </td>
+                  <td><div class="slds-truncate">Bundle Plan | VTU + AI Dash Cam</div></td>
+                  <td><div class="slds-truncate">Expansion</div></td>
+                  <td><div class="slds-truncate">0/5</div></td>
+                  <td>
+                    <label class="slds-checkbox">
+                      <input type="checkbox" checked disabled>
+                      <span class="slds-checkbox_faux"></span>
+                      <span class="slds-assistive-text">VIN enabled</span>
+                    </label>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <label class="slds-radio" title="Select EVC">
+                      <input type="radio" name="bundle-config" data-next-state="vehicle-info-3-of-3" onclick="ptSelectBundleToConfigure(this)">
+                      <span class="slds-radio_faux"></span>
+                      <span class="slds-assistive-text">Select EVC</span>
+                    </label>
+                  </td>
+                  <td><div class="slds-truncate">Bundle Plan | VTU + Driver ID</div></td>
+                  <td><div class="slds-truncate">Upsell</div></td>
+                  <td><div class="slds-truncate">0/5</div></td>
+                  <td>
+                    <label class="slds-checkbox">
+                      <input type="checkbox" checked disabled>
+                      <span class="slds-checkbox_faux"></span>
+                      <span class="slds-assistive-text">VIN enabled</span>
+                    </label>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <footer class="slds-modal__footer">
+            <button class="slds-button slds-button_neutral" onclick="ptSetState('capture-data')">Back</button>
+            <button class="slds-button slds-button_brand" onclick="ptGoToSelectedBundleConfig()">Next</button>
+          </footer>
+        </div>
+      </section>
+    </div>
+
+        <!-- ============================================================
+          MODAL — Step 3 of 3 (Loop item 3 of 3): Select vehicles (Upsell)
+        ============================================================ -->
+        <div data-show-on-state="vehicle-info-3-of-3" hidden>
+      <div class="slds-backdrop slds-backdrop_open"></div>
+      <section class="slds-modal slds-fade-in-open" role="dialog" aria-modal="true">
+        <div class="slds-modal__container">
+          <header class="slds-modal__header slds-grid slds-grid_align-spread slds-grid_vertical-align-center slds-text-align_left">
+            <h2 class="slds-text-heading_small slds-truncate" title="Capture customer data">Capture customer data</h2>
+            <button class="slds-button slds-button_icon slds-button_icon-border-filled" title="Close" onclick="ptSetState('default')">
+              <svg class="slds-button__icon" aria-hidden="true">
+                <use xlink:href="./assets/ds/slds/assets/icons/utility-sprite/svg/symbols.svg#close"></use>
+              </svg>
+              <span class="slds-assistive-text">Close</span>
+            </button>
+          </header>
+          <div class="ux-modal-progress slds-p-horizontal_medium slds-p-top_small slds-p-bottom_x-small">
+            <div class="slds-path">
+              <div class="slds-grid slds-path__track">
+                <div class="slds-grid slds-path__scroller-container">
+                  <div class="slds-path__scroller" role="application">
+                    <div class="slds-path__scroller_inner">
+                      <ul class="slds-path__nav" role="listbox" aria-orientation="horizontal">
+                        <li class="slds-path__item slds-is-current slds-is-active" role="presentation" data-show-on-state="capture-data" hidden>
+                          <a aria-selected="true" class="slds-path__link" href="#" role="option" tabindex="0">
+                            <span class="slds-path__stage">
+                              <svg class="slds-icon slds-icon_x-small" aria-hidden="true">
+                                <use xlink:href="./assets/ds/slds/assets/icons/utility-sprite/svg/symbols.svg#check"></use>
+                              </svg>
+                              <span class="slds-assistive-text">Current Stage:</span>
+                            </span>
+                            <span class="slds-path__title">Shipping & Installation</span>
+                          </a>
+                        </li>
+                        <li class="slds-path__item slds-is-complete" role="presentation" data-show-on-state="select-product,validation-error,vehicle-info-1-of-3,vehicle-info-2-of-3,vehicle-info-3-of-3,checking-compatibility,incompatible,success" hidden>
+                          <a aria-selected="false" class="slds-path__link" href="#" role="option" tabindex="-1">
+                            <span class="slds-path__stage">
+                              <svg class="slds-icon slds-icon_x-small" aria-hidden="true">
+                                <use xlink:href="./assets/ds/slds/assets/icons/utility-sprite/svg/symbols.svg#check"></use>
+                              </svg>
+                              <span class="slds-assistive-text">Complete</span>
+                            </span>
+                            <span class="slds-path__title slds-assistive-text">Shipping & Installation</span>
+                          </a>
+                        </li>
+
+                        <li class="slds-path__item slds-is-incomplete" role="presentation" data-show-on-state="capture-data" hidden>
+                          <a aria-selected="false" class="slds-path__link" href="#" role="option" tabindex="-1">
+                            <span class="slds-path__stage">
+                              <span class="slds-assistive-text">Stage:</span>
+                            </span>
+                            <span class="slds-path__title">Fulfillment</span>
+                          </a>
+                        </li>
+                        <li class="slds-path__item slds-is-current slds-is-active" role="presentation" data-show-on-state="select-product,validation-error" hidden>
+                          <a aria-selected="true" class="slds-path__link" href="#" role="option" tabindex="0">
+                            <span class="slds-path__stage">
+                              <svg class="slds-icon slds-icon_x-small" aria-hidden="true">
+                                <use xlink:href="./assets/ds/slds/assets/icons/utility-sprite/svg/symbols.svg#check"></use>
+                              </svg>
+                              <span class="slds-assistive-text">Current Stage:</span>
+                            </span>
+                            <span class="slds-path__title">Fulfillment</span>
+                          </a>
+                        </li>
+                        <li class="slds-path__item slds-is-complete" role="presentation" data-show-on-state="vehicle-info-1-of-3,vehicle-info-2-of-3,vehicle-info-3-of-3,checking-compatibility,incompatible,success" hidden>
+                          <a aria-selected="false" class="slds-path__link" href="#" role="option" tabindex="-1">
+                            <span class="slds-path__stage">
+                              <svg class="slds-icon slds-icon_x-small" aria-hidden="true">
+                                <use xlink:href="./assets/ds/slds/assets/icons/utility-sprite/svg/symbols.svg#check"></use>
+                              </svg>
+                              <span class="slds-assistive-text">Complete</span>
+                            </span>
+                            <span class="slds-path__title slds-assistive-text">Fulfillment</span>
+                          </a>
+                        </li>
+
+                        <li class="slds-path__item slds-is-incomplete" role="presentation" data-show-on-state="capture-data,select-product,validation-error" hidden>
+                          <a aria-selected="false" class="slds-path__link" href="#" role="option" tabindex="-1">
+                            <span class="slds-path__stage">
+                              <span class="slds-assistive-text">Stage:</span>
+                            </span>
+                            <span class="slds-path__title">Vehicle Info</span>
+                          </a>
+                        </li>
+                        <li class="slds-path__item slds-is-current slds-is-active" role="presentation" data-show-on-state="vehicle-info-1-of-3,vehicle-info-2-of-3,vehicle-info-3-of-3,checking-compatibility,incompatible,success" hidden>
+                          <a aria-selected="true" class="slds-path__link" href="#" role="option" tabindex="0">
+                            <span class="slds-path__stage">
+                              <svg class="slds-icon slds-icon_x-small" aria-hidden="true">
+                                <use xlink:href="./assets/ds/slds/assets/icons/utility-sprite/svg/symbols.svg#check"></use>
+                              </svg>
+                              <span class="slds-assistive-text">Current Stage:</span>
+                            </span>
+                            <span class="slds-path__title">Vehicle Info</span>
+                          </a>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="slds-modal__content slds-p-around_medium">
+            <p class="slds-text-title_caps slds-m-bottom_xx-small">UPSELL</p>
+            <p class="slds-text-title_bold slds-m-top_none slds-m-bottom_xx-small">EVC</p>
+            <p class="slds-text-body_small slds-text-color_weak slds-m-top_none slds-m-bottom_small"><strong>Existing core:</strong> VTU + Driver ID</p>
+            <p id="pt-vehicle-selected-count" class="slds-text-body_small slds-text-color_weak slds-m-bottom_xx-small">0 of 5 selected</p>
+            <div class="slds-scrollable_x slds-m-bottom_x-small ux-vehicle-scroll">
+              <table class="slds-table slds-table_bordered ux-upsell-vehicle-table">
+                <thead>
+                  <tr class="slds-line-height_reset">
+                    <th scope="col">
+                      <div class="slds-truncate"></div>
+                    </th>
+                    <th scope="col"><div class="slds-truncate">YMM</div></th>
+                    <th scope="col"><div class="slds-truncate">VIN</div></th>
+                    <th scope="col"><div class="slds-truncate">Class</div></th>
+                    <th scope="col"><div class="slds-truncate">Traits</div></th>
+                    <th scope="col"><div class="slds-truncate">OEM</div></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr id="pt-ferrari-vehicle-row">
+                    <td>
+                      <label class="slds-checkbox" title="Select vehicle 1">
+                        <input id="pt-ferrari-vehicle-checkbox" type="checkbox" name="capture-vehicle" onclick="ptSyncSelectAll('capture-vehicle', 'pt-select-vehicles-all')">
+                        <span class="slds-checkbox_faux"></span>
+                        <span class="slds-assistive-text">Select vehicle 1</span>
+                      </label>
+                    </td>
+                    <td id="pt-ferrari-vehicle-name-cell"><div class="slds-truncate">2024 Ferrari F8</div></td>
+                    <td id="pt-ferrari-vehicle-vin-cell"><div class="slds-truncate">ZFF92LLA4R0304251</div></td>
+                    <td><div class="slds-truncate">LW</div></td>
+                    <td><div class="slds-truncate"></div></td>
+                    <td><input type="checkbox" class="slds-checkbox" checked disabled></td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <label class="slds-checkbox" title="Select vehicle 2">
+                        <input type="checkbox" name="capture-vehicle" onclick="ptSyncSelectAll('capture-vehicle', 'pt-select-vehicles-all')">
+                        <span class="slds-checkbox_faux"></span>
+                        <span class="slds-assistive-text">Select vehicle 2</span>
+                      </label>
+                    </td>
+                    <td><div class="slds-truncate">2024 Freightliner Cascadia</div></td>
+                    <td><div class="slds-truncate">1FUJHHDR8RLXZ1021</div></td>
+                    <td><div class="slds-truncate">HD</div></td>
+                    <td><div class="slds-truncate"></div></td>
+                    <td><input type="checkbox" class="slds-checkbox" disabled></td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <label class="slds-checkbox" title="Select vehicle 3">
+                        <input type="checkbox" name="capture-vehicle" onclick="ptSyncSelectAll('capture-vehicle', 'pt-select-vehicles-all')">
+                        <span class="slds-checkbox_faux"></span>
+                        <span class="slds-assistive-text">Select vehicle 3</span>
+                      </label>
+                    </td>
+                    <td><div class="slds-truncate">2024 Kenworth T680</div></td>
+                    <td><div class="slds-truncate">1XKYD49X7RJ567890</div></td>
+                    <td><div class="slds-truncate">HD</div></td>
+                    <td><div class="slds-truncate"></div></td>
+                    <td><input type="checkbox" class="slds-checkbox" checked disabled></td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <label class="slds-checkbox" title="Select vehicle 4">
+                        <input type="checkbox" name="capture-vehicle" onclick="ptSyncSelectAll('capture-vehicle', 'pt-select-vehicles-all')">
+                        <span class="slds-checkbox_faux"></span>
+                        <span class="slds-assistive-text">Select vehicle 4</span>
+                      </label>
+                    </td>
+                    <td><div class="slds-truncate">2024 Volvo VNL 760</div></td>
+                    <td><div class="slds-truncate">4V4NC9EH7RN298765</div></td>
+                    <td><div class="slds-truncate">HD</div></td>
+                    <td><div class="slds-truncate">Emergency vehicle</div></td>
+                    <td><input type="checkbox" class="slds-checkbox" disabled></td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <label class="slds-checkbox" title="Select vehicle 5">
+                        <input type="checkbox" name="capture-vehicle" onclick="ptSyncSelectAll('capture-vehicle', 'pt-select-vehicles-all')">
+                        <span class="slds-checkbox_faux"></span>
+                        <span class="slds-assistive-text">Select vehicle 5</span>
+                      </label>
+                    </td>
+                    <td><div class="slds-truncate">2024 Peterbilt 579</div></td>
+                    <td><div class="slds-truncate">1XPBDP9X6RD456321</div></td>
+                    <td><div class="slds-truncate">HD</div></td>
+                    <td><div class="slds-truncate"></div></td>
+                    <td><input type="checkbox" class="slds-checkbox" checked disabled></td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <label class="slds-checkbox" title="Select vehicle 6">
+                        <input type="checkbox" name="capture-vehicle" onclick="ptSyncSelectAll('capture-vehicle', 'pt-select-vehicles-all')">
+                        <span class="slds-checkbox_faux"></span>
+                        <span class="slds-assistive-text">Select vehicle 6</span>
+                      </label>
+                    </td>
+                    <td><div class="slds-truncate">2024 International LT625</div></td>
+                    <td><div class="slds-truncate">3HSDZAPR6RN712345</div></td>
+                    <td><div class="slds-truncate">HD</div></td>
+                    <td><div class="slds-truncate"></div></td>
+                    <td><input type="checkbox" class="slds-checkbox" disabled></td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <label class="slds-checkbox" title="Select vehicle 7">
+                        <input id="pt-mack-vehicle-checkbox" type="checkbox" name="capture-vehicle" onclick="ptSyncSelectAll('capture-vehicle', 'pt-select-vehicles-all')">
+                        <span class="slds-checkbox_faux"></span>
+                        <span class="slds-assistive-text">Select vehicle 7</span>
+                      </label>
+                    </td>
+                    <td><div class="slds-truncate">2024 Mack Anthem</div></td>
+                    <td><div class="slds-truncate">1M2AX09C2RM045678</div></td>
+                    <td><div class="slds-truncate">HD</div></td>
+                    <td><div class="slds-truncate">PTO enabled</div></td>
+                    <td><input type="checkbox" class="slds-checkbox" checked disabled></td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <label class="slds-checkbox" title="Select vehicle 8">
+                        <input type="checkbox" name="capture-vehicle" onclick="ptSyncSelectAll('capture-vehicle', 'pt-select-vehicles-all')">
+                        <span class="slds-checkbox_faux"></span>
+                        <span class="slds-assistive-text">Select vehicle 8</span>
+                      </label>
+                    </td>
+                    <td><div class="slds-truncate">2024 Western Star 49X</div></td>
+                    <td><div class="slds-truncate">5KKHXLDR7RP567432</div></td>
+                    <td><div class="slds-truncate">HD</div></td>
+                    <td><div class="slds-truncate"></div></td>
+                    <td><input type="checkbox" class="slds-checkbox" disabled></td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <label class="slds-checkbox" title="Select vehicle 9">
+                        <input type="checkbox" name="capture-vehicle" onclick="ptSyncSelectAll('capture-vehicle', 'pt-select-vehicles-all')">
+                        <span class="slds-checkbox_faux"></span>
+                        <span class="slds-assistive-text">Select vehicle 9</span>
+                      </label>
+                    </td>
+                    <td><div class="slds-truncate">2024 Volvo VNR 640</div></td>
+                    <td><div class="slds-truncate">4V4NC9EH9RN667890</div></td>
+                    <td><div class="slds-truncate">HD</div></td>
+                    <td><div class="slds-truncate"></div></td>
+                    <td><input type="checkbox" class="slds-checkbox" checked disabled></td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <label class="slds-checkbox" title="Select vehicle 10">
+                        <input type="checkbox" name="capture-vehicle" onclick="ptSyncSelectAll('capture-vehicle', 'pt-select-vehicles-all')">
+                        <span class="slds-checkbox_faux"></span>
+                        <span class="slds-assistive-text">Select vehicle 10</span>
+                      </label>
+                    </td>
+                    <td><div class="slds-truncate">2024 Kenworth W990</div></td>
+                    <td><div class="slds-truncate">1XKWD49X8RJ778901</div></td>
+                    <td><div class="slds-truncate">HD</div></td>
+                    <td><div class="slds-truncate">Hazmat</div></td>
+                    <td><input type="checkbox" class="slds-checkbox" disabled></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div id="pt-ferrari-compat-error" class="slds-form-element slds-has-error slds-m-top_small" role="alert" hidden>
+              <div id="pt-ferrari-compat-error-text" class="slds-form-element__help">This vehicle is not compatible with this subscription. Select another vehicle.</div>
+            </div>
+            <div id="pt-vehicle-overselect-error" class="slds-form-element slds-has-error slds-m-top_small" role="alert" hidden>
+              <div id="pt-vehicle-overselect-error-text" class="slds-form-element__help">You selected more vehicles than required. Deselect extra vehicles to continue.</div>
+            </div>
+          </div>
+          <footer class="slds-modal__footer">
+            <button class="slds-button slds-button_neutral" onclick="ptSetState('select-product')">Back</button>
+            <button class="slds-button slds-button_brand" onclick="ptRunHardwareSpecifierCheck()">Save</button>
+          </footer>
+        </div>
+      </section>
+    </div>
+
+    <!-- ============================================================
+         MODAL — Hardware compatibility check in progress
+    ============================================================ -->
+    <div data-show-on-state="checking-compatibility" hidden>
+      <div class="slds-backdrop slds-backdrop_open"></div>
+      <section class="slds-modal slds-fade-in-open" role="dialog" aria-modal="true">
+        <div class="slds-modal__container">
+          <div class="ux-modal-progress slds-p-horizontal_medium slds-p-top_small slds-p-bottom_x-small">
+            <div class="slds-path">
+              <div class="slds-grid slds-path__track">
+                <div class="slds-grid slds-path__scroller-container">
+                  <div class="slds-path__scroller" role="application">
+                    <div class="slds-path__scroller_inner">
+                      <ul class="slds-path__nav" role="listbox" aria-orientation="horizontal">
+                        <li class="slds-path__item slds-is-complete" role="presentation">
+                          <a aria-selected="false" class="slds-path__link" href="#" role="option" tabindex="-1">
+                            <span class="slds-path__stage">
+                              <svg class="slds-icon slds-icon_x-small" aria-hidden="true">
+                                <use xlink:href="./assets/ds/slds/assets/icons/utility-sprite/svg/symbols.svg#check"></use>
+                              </svg>
+                              <span class="slds-assistive-text">Complete</span>
+                            </span>
+                            <span class="slds-path__title slds-assistive-text">Shipping & Installation</span>
+                          </a>
+                        </li>
+                        <li class="slds-path__item slds-is-complete" role="presentation">
+                          <a aria-selected="false" class="slds-path__link" href="#" role="option" tabindex="-1">
+                            <span class="slds-path__stage">
+                              <svg class="slds-icon slds-icon_x-small" aria-hidden="true">
+                                <use xlink:href="./assets/ds/slds/assets/icons/utility-sprite/svg/symbols.svg#check"></use>
+                              </svg>
+                              <span class="slds-assistive-text">Complete</span>
+                            </span>
+                            <span class="slds-path__title slds-assistive-text">Fulfillment</span>
+                          </a>
+                        </li>
+                        <li class="slds-path__item slds-is-current slds-is-active" role="presentation">
+                          <a aria-selected="true" class="slds-path__link" href="#" role="option" tabindex="0">
+                            <span class="slds-path__stage">
+                              <svg class="slds-icon slds-icon_x-small" aria-hidden="true">
+                                <use xlink:href="./assets/ds/slds/assets/icons/utility-sprite/svg/symbols.svg#check"></use>
+                              </svg>
+                              <span class="slds-assistive-text">Current Stage:</span>
+                            </span>
+                            <span class="slds-path__title">Vehicle Info</span>
+                          </a>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="slds-modal__content slds-p-around_medium slds-align_absolute-center" style="min-height: 220px;">
+            <div class="slds-text-align_center">
+              <div role="status" class="slds-spinner slds-spinner_medium slds-spinner_brand">
+                <span class="slds-assistive-text">Loading</span>
+                <div class="slds-spinner__dot-a"></div>
+                <div class="slds-spinner__dot-b"></div>
+              </div>
+              <p class="slds-m-top_medium">Checking compatibility...</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+        <!-- ============================================================
+          MODAL — Step 3 of 3 (Loop item 1 of 3): Enter vehicles (Expansion)
+        ============================================================ -->
+        <div data-show-on-state="vehicle-info-1-of-3" hidden>
+      <div class="slds-backdrop slds-backdrop_open"></div>
+      <section class="slds-modal slds-fade-in-open" role="dialog" aria-modal="true">
+        <div class="slds-modal__container">
+          <header class="slds-modal__header slds-grid slds-grid_align-spread slds-grid_vertical-align-center slds-text-align_left">
+            <h2 class="slds-text-heading_small slds-truncate" title="Capture customer data">Capture customer data</h2>
+            <button class="slds-button slds-button_icon slds-button_icon-border-filled" title="Close" onclick="ptSetState('default')">
+              <svg class="slds-button__icon" aria-hidden="true">
+                <use xlink:href="./assets/ds/slds/assets/icons/utility-sprite/svg/symbols.svg#close"></use>
+              </svg>
+              <span class="slds-assistive-text">Close</span>
+            </button>
+          </header>
+          <div class="ux-modal-progress slds-p-horizontal_medium slds-p-top_small slds-p-bottom_x-small">
+            <div class="slds-path">
+              <div class="slds-grid slds-path__track">
+                <div class="slds-grid slds-path__scroller-container">
+                  <div class="slds-path__scroller" role="application">
+                    <div class="slds-path__scroller_inner">
+                      <ul class="slds-path__nav" role="listbox" aria-orientation="horizontal">
+                        <li class="slds-path__item slds-is-current slds-is-active" role="presentation" data-show-on-state="capture-data" hidden>
+                          <a aria-selected="true" class="slds-path__link" href="#" role="option" tabindex="0">
+                            <span class="slds-path__stage">
+                              <svg class="slds-icon slds-icon_x-small" aria-hidden="true">
+                                <use xlink:href="./assets/ds/slds/assets/icons/utility-sprite/svg/symbols.svg#check"></use>
+                              </svg>
+                              <span class="slds-assistive-text">Current Stage:</span>
+                            </span>
+                            <span class="slds-path__title">Shipping & Installation</span>
+                          </a>
+                        </li>
+                        <li class="slds-path__item slds-is-complete" role="presentation" data-show-on-state="select-product,validation-error,vehicle-info-1-of-3,vehicle-info-2-of-3,vehicle-info-3-of-3,checking-compatibility,incompatible,success" hidden>
+                          <a aria-selected="false" class="slds-path__link" href="#" role="option" tabindex="-1">
+                            <span class="slds-path__stage">
+                              <svg class="slds-icon slds-icon_x-small" aria-hidden="true">
+                                <use xlink:href="./assets/ds/slds/assets/icons/utility-sprite/svg/symbols.svg#check"></use>
+                              </svg>
+                              <span class="slds-assistive-text">Complete</span>
+                            </span>
+                            <span class="slds-path__title slds-assistive-text">Shipping & Installation</span>
+                          </a>
+                        </li>
+
+                        <li class="slds-path__item slds-is-incomplete" role="presentation" data-show-on-state="capture-data" hidden>
+                          <a aria-selected="false" class="slds-path__link" href="#" role="option" tabindex="-1">
+                            <span class="slds-path__stage">
+                              <span class="slds-assistive-text">Stage:</span>
+                            </span>
+                            <span class="slds-path__title">Fulfillment</span>
+                          </a>
+                        </li>
+                        <li class="slds-path__item slds-is-current slds-is-active" role="presentation" data-show-on-state="select-product,validation-error" hidden>
+                          <a aria-selected="true" class="slds-path__link" href="#" role="option" tabindex="0">
+                            <span class="slds-path__stage">
+                              <svg class="slds-icon slds-icon_x-small" aria-hidden="true">
+                                <use xlink:href="./assets/ds/slds/assets/icons/utility-sprite/svg/symbols.svg#check"></use>
+                              </svg>
+                              <span class="slds-assistive-text">Current Stage:</span>
+                            </span>
+                            <span class="slds-path__title">Fulfillment</span>
+                          </a>
+                        </li>
+                        <li class="slds-path__item slds-is-complete" role="presentation" data-show-on-state="vehicle-info-1-of-3,vehicle-info-2-of-3,vehicle-info-3-of-3,checking-compatibility,incompatible,success" hidden>
+                          <a aria-selected="false" class="slds-path__link" href="#" role="option" tabindex="-1">
+                            <span class="slds-path__stage">
+                              <svg class="slds-icon slds-icon_x-small" aria-hidden="true">
+                                <use xlink:href="./assets/ds/slds/assets/icons/utility-sprite/svg/symbols.svg#check"></use>
+                              </svg>
+                              <span class="slds-assistive-text">Complete</span>
+                            </span>
+                            <span class="slds-path__title slds-assistive-text">Fulfillment</span>
+                          </a>
+                        </li>
+
+                        <li class="slds-path__item slds-is-incomplete" role="presentation" data-show-on-state="capture-data,select-product,validation-error" hidden>
+                          <a aria-selected="false" class="slds-path__link" href="#" role="option" tabindex="-1">
+                            <span class="slds-path__stage">
+                              <span class="slds-assistive-text">Stage:</span>
+                            </span>
+                            <span class="slds-path__title">Vehicle Info</span>
+                          </a>
+                        </li>
+                        <li class="slds-path__item slds-is-current slds-is-active" role="presentation" data-show-on-state="vehicle-info-1-of-3,vehicle-info-2-of-3,vehicle-info-3-of-3,checking-compatibility,incompatible,success" hidden>
+                          <a aria-selected="true" class="slds-path__link" href="#" role="option" tabindex="0">
+                            <span class="slds-path__stage">
+                              <svg class="slds-icon slds-icon_x-small" aria-hidden="true">
+                                <use xlink:href="./assets/ds/slds/assets/icons/utility-sprite/svg/symbols.svg#check"></use>
+                              </svg>
+                              <span class="slds-assistive-text">Current Stage:</span>
+                            </span>
+                            <span class="slds-path__title">Vehicle Info</span>
+                          </a>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="slds-modal__content slds-p-around_medium">
+            <p class="slds-text-title_caps slds-m-bottom_xx-small">EXPANSION</p>
+            <p class="slds-text-title_bold slds-m-bottom_medium">Vehicle Tracking Subscription (0/5)</p>
+
+            <p class="slds-text-body_small slds-m-bottom_x-small">Enter 5 VINs, one per line.</p>
+            <div class="slds-form-element slds-m-bottom_small">
+              <div class="slds-form-element__control">
+                <textarea class="slds-textarea" rows="7" placeholder="One VIN per line"></textarea>
+              </div>
+            </div>
+            <button class="slds-button slds-button_neutral slds-m-bottom_medium" onclick="ptSetConfiguredQuantity('expansionVtu', 5); ptSetState('vins-validated-1-of-3')">Validate VINs</button>
+
+            <div class="slds-form-element slds-m-bottom_small">
+              <label class="slds-checkbox">
+                <input type="checkbox" onchange="document.getElementById('pt-ymm-capture-1').hidden = !this.checked">
+                <span class="slds-checkbox_faux"></span>
+                <span class="slds-form-element__label">I don't have VINs, enter YMM instead</span>
+              </label>
+            </div>
+
+            <div id="pt-ymm-capture-1" hidden>
+              <div class="slds-form-element">
+                <div class="slds-form-element__control">
+                  <textarea class="slds-textarea" rows="5" placeholder="Year Make Model, one per line"></textarea>
+                </div>
+              </div>
+            </div>
+          </div>
+          <footer class="slds-modal__footer">
+            <button class="slds-button slds-button_neutral" onclick="ptSetState('select-product')">Back</button>
+            <button class="slds-button slds-button_brand" onclick="ptSetState('vehicle-info-2-of-3')">Next</button>
+          </footer>
+        </div>
+      </section>
+    </div>
+
+    <!-- ============================================================
+         MODAL — Step 3 of 3 (Loop item 2 of 3): Enter vehicles (Expansion)
+    ============================================================ -->
+    <div data-show-on-state="vehicle-info-2-of-3" hidden>
+      <div class="slds-backdrop slds-backdrop_open"></div>
+      <section class="slds-modal slds-fade-in-open" role="dialog" aria-modal="true">
+        <div class="slds-modal__container">
+          <header class="slds-modal__header slds-grid slds-grid_align-spread slds-grid_vertical-align-center slds-text-align_left">
+            <h2 class="slds-text-heading_small slds-truncate" title="Capture customer data">Capture customer data</h2>
+            <button class="slds-button slds-button_icon slds-button_icon-border-filled" title="Close" onclick="ptSetState('default')">
+              <svg class="slds-button__icon" aria-hidden="true">
+                <use xlink:href="./assets/ds/slds/assets/icons/utility-sprite/svg/symbols.svg#close"></use>
+              </svg>
+              <span class="slds-assistive-text">Close</span>
+            </button>
+          </header>
+          <div class="ux-modal-progress slds-p-horizontal_medium slds-p-top_small slds-p-bottom_x-small">
+            <div class="slds-path">
+              <div class="slds-grid slds-path__track">
+                <div class="slds-grid slds-path__scroller-container">
+                  <div class="slds-path__scroller" role="application">
+                    <div class="slds-path__scroller_inner">
+                      <ul class="slds-path__nav" role="listbox" aria-orientation="horizontal">
+                        <li class="slds-path__item slds-is-current slds-is-active" role="presentation" data-show-on-state="capture-data" hidden>
+                          <a aria-selected="true" class="slds-path__link" href="#" role="option" tabindex="0">
+                            <span class="slds-path__stage">
+                              <svg class="slds-icon slds-icon_x-small" aria-hidden="true">
+                                <use xlink:href="./assets/ds/slds/assets/icons/utility-sprite/svg/symbols.svg#check"></use>
+                              </svg>
+                              <span class="slds-assistive-text">Current Stage:</span>
+                            </span>
+                            <span class="slds-path__title">Shipping & Installation</span>
+                          </a>
+                        </li>
+                        <li class="slds-path__item slds-is-complete" role="presentation" data-show-on-state="select-product,validation-error,vehicle-info-1-of-3,vehicle-info-2-of-3,vehicle-info-3-of-3,checking-compatibility,incompatible,success" hidden>
+                          <a aria-selected="false" class="slds-path__link" href="#" role="option" tabindex="-1">
+                            <span class="slds-path__stage">
+                              <svg class="slds-icon slds-icon_x-small" aria-hidden="true">
+                                <use xlink:href="./assets/ds/slds/assets/icons/utility-sprite/svg/symbols.svg#check"></use>
+                              </svg>
+                              <span class="slds-assistive-text">Complete</span>
+                            </span>
+                            <span class="slds-path__title slds-assistive-text">Shipping & Installation</span>
+                          </a>
+                        </li>
+
+                        <li class="slds-path__item slds-is-incomplete" role="presentation" data-show-on-state="capture-data" hidden>
+                          <a aria-selected="false" class="slds-path__link" href="#" role="option" tabindex="-1">
+                            <span class="slds-path__stage">
+                              <span class="slds-assistive-text">Stage:</span>
+                            </span>
+                            <span class="slds-path__title">Fulfillment</span>
+                          </a>
+                        </li>
+                        <li class="slds-path__item slds-is-current slds-is-active" role="presentation" data-show-on-state="select-product,validation-error" hidden>
+                          <a aria-selected="true" class="slds-path__link" href="#" role="option" tabindex="0">
+                            <span class="slds-path__stage">
+                              <svg class="slds-icon slds-icon_x-small" aria-hidden="true">
+                                <use xlink:href="./assets/ds/slds/assets/icons/utility-sprite/svg/symbols.svg#check"></use>
+                              </svg>
+                              <span class="slds-assistive-text">Current Stage:</span>
+                            </span>
+                            <span class="slds-path__title">Fulfillment</span>
+                          </a>
+                        </li>
+                        <li class="slds-path__item slds-is-complete" role="presentation" data-show-on-state="vehicle-info-1-of-3,vehicle-info-2-of-3,vehicle-info-3-of-3,checking-compatibility,incompatible,success" hidden>
+                          <a aria-selected="false" class="slds-path__link" href="#" role="option" tabindex="-1">
+                            <span class="slds-path__stage">
+                              <svg class="slds-icon slds-icon_x-small" aria-hidden="true">
+                                <use xlink:href="./assets/ds/slds/assets/icons/utility-sprite/svg/symbols.svg#check"></use>
+                              </svg>
+                              <span class="slds-assistive-text">Complete</span>
+                            </span>
+                            <span class="slds-path__title slds-assistive-text">Fulfillment</span>
+                          </a>
+                        </li>
+
+                        <li class="slds-path__item slds-is-incomplete" role="presentation" data-show-on-state="capture-data,select-product,validation-error" hidden>
+                          <a aria-selected="false" class="slds-path__link" href="#" role="option" tabindex="-1">
+                            <span class="slds-path__stage">
+                              <span class="slds-assistive-text">Stage:</span>
+                            </span>
+                            <span class="slds-path__title">Vehicle Info</span>
+                          </a>
+                        </li>
+                        <li class="slds-path__item slds-is-current slds-is-active" role="presentation" data-show-on-state="vehicle-info-1-of-3,vehicle-info-2-of-3,vehicle-info-3-of-3,checking-compatibility,incompatible,success" hidden>
+                          <a aria-selected="true" class="slds-path__link" href="#" role="option" tabindex="0">
+                            <span class="slds-path__stage">
+                              <svg class="slds-icon slds-icon_x-small" aria-hidden="true">
+                                <use xlink:href="./assets/ds/slds/assets/icons/utility-sprite/svg/symbols.svg#check"></use>
+                              </svg>
+                              <span class="slds-assistive-text">Current Stage:</span>
+                            </span>
+                            <span class="slds-path__title">Vehicle Info</span>
+                          </a>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="slds-modal__content slds-p-around_medium">
+            <p class="slds-text-title_caps slds-m-bottom_xx-small">EXPANSION</p>
+            <p class="slds-text-title_bold slds-m-bottom_medium">AI Dash Cam Subscription (0/5)</p>
+
+            <p class="slds-text-body_small slds-m-bottom_x-small">Enter 5 VINs, one per line.</p>
+            <div class="slds-form-element slds-m-bottom_small">
+              <div class="slds-form-element__control">
+                <textarea class="slds-textarea" rows="7" placeholder="One VIN per line"></textarea>
+              </div>
+            </div>
+            <button class="slds-button slds-button_neutral slds-m-bottom_medium" onclick="ptSetConfiguredQuantity('expansionAIDashCam', 5); ptSetState('vins-validated-2-of-3')">Validate VINs</button>
+
+            <div class="slds-form-element slds-m-bottom_small">
+              <label class="slds-checkbox">
+                <input type="checkbox" onchange="document.getElementById('pt-ymm-capture-2').hidden = !this.checked">
+                <span class="slds-checkbox_faux"></span>
+                <span class="slds-form-element__label">I don't have VINs, enter YMM instead</span>
+              </label>
+            </div>
+
+            <div id="pt-ymm-capture-2" hidden>
+              <div class="slds-form-element">
+                <div class="slds-form-element__control">
+                  <textarea class="slds-textarea" rows="5" placeholder="Year Make Model, one per line"></textarea>
+                </div>
+              </div>
+            </div>
+          </div>
+          <footer class="slds-modal__footer">
+            <button class="slds-button slds-button_neutral" onclick="ptSetState('vehicle-info-1-of-3')">Back</button>
+            <button class="slds-button slds-button_brand" onclick="ptSetState('vehicle-info-3-of-3')">Next</button>
+          </footer>
+        </div>
+      </section>
+    </div>
+
+    <!-- ============================================================
+         MODAL — Step 3 of 3: VIN validation results (Expansion)
+    ============================================================ -->
+    <div data-show-on-state="vins-validated-1-of-3,vins-validated-2-of-3" hidden>
+      <div class="slds-backdrop slds-backdrop_open"></div>
+      <section class="slds-modal slds-fade-in-open" role="dialog" aria-modal="true">
+        <div class="slds-modal__container">
+          <header class="slds-modal__header slds-grid slds-grid_align-spread slds-grid_vertical-align-center slds-text-align_left">
+            <h2 class="slds-text-heading_small slds-truncate" title="Capture customer data">Capture customer data</h2>
+            <button class="slds-button slds-button_icon slds-button_icon-border-filled" title="Close" onclick="ptSetState('default')">
+              <svg class="slds-button__icon" aria-hidden="true">
+                <use xlink:href="./assets/ds/slds/assets/icons/utility-sprite/svg/symbols.svg#close"></use>
+              </svg>
+              <span class="slds-assistive-text">Close</span>
+            </button>
+          </header>
+          <div class="ux-modal-progress slds-p-horizontal_medium slds-p-top_small slds-p-bottom_x-small">
+            <div class="slds-path">
+              <div class="slds-grid slds-path__track">
+                <div class="slds-grid slds-path__scroller-container">
+                  <div class="slds-path__scroller" role="application">
+                    <div class="slds-path__scroller_inner">
+                      <ul class="slds-path__nav" role="listbox" aria-orientation="horizontal">
+                        <li class="slds-path__item slds-is-current slds-is-active" role="presentation" data-show-on-state="capture-data" hidden>
+                          <a aria-selected="true" class="slds-path__link" href="#" role="option" tabindex="0">
+                            <span class="slds-path__stage">
+                              <svg class="slds-icon slds-icon_x-small" aria-hidden="true">
+                                <use xlink:href="./assets/ds/slds/assets/icons/utility-sprite/svg/symbols.svg#check"></use>
+                              </svg>
+                              <span class="slds-assistive-text">Current Stage:</span>
+                            </span>
+                            <span class="slds-path__title">Shipping & Installation</span>
+                          </a>
+                        </li>
+                        <li class="slds-path__item slds-is-complete" role="presentation" data-show-on-state="select-product,validation-error,vehicle-info-1-of-3,vehicle-info-2-of-3,vehicle-info-3-of-3,vins-validated-1-of-3,vins-validated-2-of-3,checking-compatibility,incompatible,success" hidden>
+                          <a aria-selected="false" class="slds-path__link" href="#" role="option" tabindex="-1">
+                            <span class="slds-path__stage">
+                              <svg class="slds-icon slds-icon_x-small" aria-hidden="true">
+                                <use xlink:href="./assets/ds/slds/assets/icons/utility-sprite/svg/symbols.svg#check"></use>
+                              </svg>
+                              <span class="slds-assistive-text">Complete</span>
+                            </span>
+                            <span class="slds-path__title slds-assistive-text">Shipping & Installation</span>
+                          </a>
+                        </li>
+
+                        <li class="slds-path__item slds-is-incomplete" role="presentation" data-show-on-state="capture-data" hidden>
+                          <a aria-selected="false" class="slds-path__link" href="#" role="option" tabindex="-1">
+                            <span class="slds-path__stage">
+                              <span class="slds-assistive-text">Stage:</span>
+                            </span>
+                            <span class="slds-path__title">Fulfillment</span>
+                          </a>
+                        </li>
+                        <li class="slds-path__item slds-is-current slds-is-active" role="presentation" data-show-on-state="select-product,validation-error" hidden>
+                          <a aria-selected="true" class="slds-path__link" href="#" role="option" tabindex="0">
+                            <span class="slds-path__stage">
+                              <svg class="slds-icon slds-icon_x-small" aria-hidden="true">
+                                <use xlink:href="./assets/ds/slds/assets/icons/utility-sprite/svg/symbols.svg#check"></use>
+                              </svg>
+                              <span class="slds-assistive-text">Current Stage:</span>
+                            </span>
+                            <span class="slds-path__title">Fulfillment</span>
+                          </a>
+                        </li>
+                        <li class="slds-path__item slds-is-complete" role="presentation" data-show-on-state="vehicle-info-1-of-3,vehicle-info-2-of-3,vehicle-info-3-of-3,vins-validated-1-of-3,vins-validated-2-of-3,checking-compatibility,incompatible,success" hidden>
+                          <a aria-selected="false" class="slds-path__link" href="#" role="option" tabindex="-1">
+                            <span class="slds-path__stage">
+                              <svg class="slds-icon slds-icon_x-small" aria-hidden="true">
+                                <use xlink:href="./assets/ds/slds/assets/icons/utility-sprite/svg/symbols.svg#check"></use>
+                              </svg>
+                              <span class="slds-assistive-text">Complete</span>
+                            </span>
+                            <span class="slds-path__title slds-assistive-text">Fulfillment</span>
+                          </a>
+                        </li>
+
+                        <li class="slds-path__item slds-is-incomplete" role="presentation" data-show-on-state="capture-data,select-product,validation-error" hidden>
+                          <a aria-selected="false" class="slds-path__link" href="#" role="option" tabindex="-1">
+                            <span class="slds-path__stage">
+                              <span class="slds-assistive-text">Stage:</span>
+                            </span>
+                            <span class="slds-path__title">Vehicle Info</span>
+                          </a>
+                        </li>
+                        <li class="slds-path__item slds-is-current slds-is-active" role="presentation" data-show-on-state="vehicle-info-1-of-3,vehicle-info-2-of-3,vehicle-info-3-of-3,vins-validated-1-of-3,vins-validated-2-of-3,checking-compatibility,incompatible,success" hidden>
+                          <a aria-selected="true" class="slds-path__link" href="#" role="option" tabindex="0">
+                            <span class="slds-path__stage">
+                              <svg class="slds-icon slds-icon_x-small" aria-hidden="true">
+                                <use xlink:href="./assets/ds/slds/assets/icons/utility-sprite/svg/symbols.svg#check"></use>
+                              </svg>
+                              <span class="slds-assistive-text">Current Stage:</span>
+                            </span>
+                            <span class="slds-path__title">Vehicle Info</span>
+                          </a>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="slds-modal__content slds-p-around_medium">
+
+            <p class="slds-text-title_caps slds-m-bottom_xx-small">EXPANSION</p>
+            <p class="slds-text-title_bold slds-m-bottom_xx-small" data-show-on-state="vins-validated-1-of-3" hidden>Vehicle Tracking Subscription (5/5)</p>
+            <p class="slds-text-title_bold slds-m-bottom_xx-small" data-show-on-state="vins-validated-2-of-3" hidden>AI Dash Cam Subscription (5/5)</p>
+
+            <p class="slds-text-body_small slds-m-bottom_x-small">Enter 5 VINs, one per line.</p>
+            <div class="slds-form-element slds-m-bottom_small">
+              <div class="slds-form-element__control">
+                <textarea class="slds-textarea" rows="7">1GC4YLE73PF251698
+WFOYXXTTGYPC30425
+1FTBR1C81PKB20422
+111INVALIDVIN000000
+12345678901234567</textarea>
+              </div>
+            </div>
+            <button class="slds-button slds-button_neutral slds-m-bottom_medium">Validate VINs</button>
+
+            <div class="slds-form-element slds-m-bottom_medium">
+              <label class="slds-checkbox">
+                <input type="checkbox" onchange="document.getElementById('pt-ymm-capture-validated').hidden = !this.checked">
+                <span class="slds-checkbox_faux"></span>
+                <span class="slds-form-element__label">I don't have VINs, enter YMM instead</span>
+              </label>
+            </div>
+
+            <div id="pt-ymm-capture-validated" hidden class="slds-m-bottom_medium">
+              <div class="slds-form-element">
+                <div class="slds-form-element__control">
+                  <textarea class="slds-textarea" rows="5" placeholder="Year Make Model, one per line"></textarea>
+                </div>
+              </div>
+            </div>
+
+            <p class="slds-text-color_error slds-m-bottom_small">Only valid VINs can be saved. Remove or correct the invalid ones.</p>
+            <p class="slds-text-body_small slds-text-color_weak slds-m-bottom_x-small">7 of 7 item</p>
+            <div class="slds-scrollable_x slds-m-bottom_medium">
+              <table class="slds-table slds-table_bordered slds-table_cell-buffer">
+                <thead>
+                  <tr class="slds-line-height_reset">
+                    <th scope="col"><div class="slds-truncate">Delete</div></th>
+                    <th scope="col"><div class="slds-truncate">Name</div></th>
+                    <th scope="col"><div class="slds-truncate">VIN</div></th>
+                    <th scope="col"><div class="slds-truncate">YMM</div></th>
+                    <th scope="col"><div class="slds-truncate">Class</div></th>
+                    <th scope="col"><div class="slds-truncate">OEM</div></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><a href="#" onclick="return false;">Delete</a></td>
+                    <td><div class="slds-truncate">Fleet Unit 01</div></td>
+                    <td><div class="slds-truncate">1GC4YLE73PF251698</div></td>
+                    <td><div class="slds-truncate">2023 Fiat Ducato</div></td>
+                    <td><div class="slds-truncate">Class P</div></td>
+                    <td><input type="checkbox" class="slds-checkbox"></td>
+                  </tr>
+                  <tr>
+                    <td><a href="#" onclick="return false;">Delete</a></td>
+                    <td><div class="slds-truncate">Fleet Unit 02</div></td>
+                    <td><div class="slds-truncate">WFOYXXTTGYPC30425</div></td>
+                    <td><div class="slds-truncate">2023 Fiat Ducato</div></td>
+                    <td><div class="slds-truncate">Class P</div></td>
+                    <td><input type="checkbox" class="slds-checkbox"></td>
+                  </tr>
+                  <tr>
+                    <td><a href="#" onclick="return false;">Delete</a></td>
+                    <td><div class="slds-truncate">Fleet Unit 03</div></td>
+                    <td><div class="slds-truncate">1FTBR1C81PKB20422</div></td>
+                    <td><div class="slds-truncate">2023 Ford Transit</div></td>
+                    <td><div class="slds-truncate">Class H</div></td>
+                    <td><input type="checkbox" class="slds-checkbox"></td>
+                  </tr>
+                  <tr>
+                    <td><a href="#" onclick="return false;">Delete</a></td>
+                    <td><div class="slds-truncate">Invalid</div></td>
+                    <td><div class="slds-truncate">111INVALIDVIN000000</div></td>
+                    <td><div class="slds-truncate">—</div></td>
+                    <td><div class="slds-truncate">—</div></td>
+                    <td><div class="slds-truncate">—</div></td>
+                  </tr>
+                  <tr>
+                    <td><a href="#" onclick="return false;">Delete</a></td>
+                    <td><div class="slds-truncate">Pre-1981</div></td>
+                    <td><div class="slds-truncate">12345678901234567</div></td>
+                    <td><div class="slds-truncate">—</div></td>
+                    <td><div class="slds-truncate">—</div></td>
+                    <td><div class="slds-truncate">—</div></td>
+                  </tr>
+                  <tr>
+                    <td><a href="#" onclick="return false;">Delete</a></td>
+                    <td><div class="slds-truncate"></div></td>
+                    <td><div class="slds-truncate">3FA6P0H73HR199001</div></td>
+                    <td><div class="slds-truncate">2017 Ford Fusion</div></td>
+                    <td><div class="slds-truncate">Class P</div></td>
+                    <td><input type="checkbox" class="slds-checkbox" checked></td>
+                  </tr>
+                  <tr>
+                    <td><a href="#" onclick="return false;">Delete</a></td>
+                    <td><div class="slds-truncate"></div></td>
+                    <td><div class="slds-truncate">1G1ZC5ST1HF123456</div></td>
+                    <td><div class="slds-truncate">2017 Chevrolet Malibu</div></td>
+                    <td><div class="slds-truncate">Class P</div></td>
+                    <td><input type="checkbox" class="slds-checkbox"></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <p class="slds-text-title_bold slds-m-bottom_small">Select vehicle traits (optional)</p>
+            <div class="slds-form-element slds-m-bottom_x-small">
+              <label class="slds-checkbox">
+                <input type="checkbox">
+                <span class="slds-checkbox_faux"></span>
+                <span class="slds-form-element__label">Wheelchair Lift</span>
+              </label>
+            </div>
+            <div class="slds-form-element slds-m-bottom_x-small">
+              <label class="slds-checkbox">
+                <input type="checkbox">
+                <span class="slds-checkbox_faux"></span>
+                <span class="slds-form-element__label">Emergency vehicle</span>
+              </label>
+            </div>
+            <div class="slds-form-element slds-m-bottom_medium">
+              <label class="slds-checkbox">
+                <input type="checkbox">
+                <span class="slds-checkbox_faux"></span>
+                <span class="slds-form-element__label">Master Shutoff</span>
+              </label>
+            </div>
+          </div>
+          <footer class="slds-modal__footer">
+            <button class="slds-button slds-button_neutral" data-show-on-state="vins-validated-1-of-3" onclick="ptSetState('vehicle-info-1-of-3')" hidden>Back</button>
+            <button class="slds-button slds-button_neutral" data-show-on-state="vins-validated-2-of-3" onclick="ptSetState('vehicle-info-1-of-3')" hidden>Back</button>
+            <button class="slds-button slds-button_brand" data-show-on-state="vins-validated-1-of-3" onclick="ptSetState('vehicle-info-2-of-3')" hidden>Next</button>
+            <button class="slds-button slds-button_brand" data-show-on-state="vins-validated-2-of-3" onclick="ptSetState('vehicle-info-3-of-3')" hidden>Next</button>
+          </footer>
+        </div>
+      </section>
+    </div>
+
+    <!-- ============================================================
+         MODAL — Hardware compatibility result: incompatible
+    ============================================================ -->
+    <div data-show-on-state="incompatible" hidden>
+      <div class="slds-backdrop slds-backdrop_open"></div>
+      <section class="slds-modal slds-fade-in-open" role="dialog" aria-modal="true">
+        <div class="slds-modal__container">
+          <header class="slds-modal__header slds-grid slds-grid_align-spread slds-grid_vertical-align-center slds-text-align_left">
+            <h2 class="slds-text-heading_small slds-truncate" title="Capture customer data">Capture customer data</h2>
+            <button class="slds-button slds-button_icon slds-button_icon-border-filled" title="Close" onclick="ptSetState('default')">
+              <svg class="slds-button__icon" aria-hidden="true">
+                <use xlink:href="./assets/ds/slds/assets/icons/utility-sprite/svg/symbols.svg#close"></use>
+              </svg>
+              <span class="slds-assistive-text">Close</span>
+            </button>
+          </header>
+          <div class="ux-modal-progress slds-p-horizontal_medium slds-p-top_small slds-p-bottom_x-small">
+            <div class="slds-path">
+              <div class="slds-grid slds-path__track">
+                <div class="slds-grid slds-path__scroller-container">
+                  <div class="slds-path__scroller" role="application">
+                    <div class="slds-path__scroller_inner">
+                      <ul class="slds-path__nav" role="listbox" aria-orientation="horizontal">
+                        <li class="slds-path__item slds-is-current slds-is-active" role="presentation" data-show-on-state="capture-data" hidden>
+                          <a aria-selected="true" class="slds-path__link" href="#" role="option" tabindex="0">
+                            <span class="slds-path__stage">
+                              <svg class="slds-icon slds-icon_x-small" aria-hidden="true">
+                                <use xlink:href="./assets/ds/slds/assets/icons/utility-sprite/svg/symbols.svg#check"></use>
+                              </svg>
+                              <span class="slds-assistive-text">Current Stage:</span>
+                            </span>
+                            <span class="slds-path__title">Shipping & Installation</span>
+                          </a>
+                        </li>
+                        <li class="slds-path__item slds-is-complete" role="presentation" data-show-on-state="select-product,validation-error,vehicle-info-1-of-3,vehicle-info-2-of-3,vehicle-info-3-of-3,checking-compatibility,incompatible,success" hidden>
+                          <a aria-selected="false" class="slds-path__link" href="#" role="option" tabindex="-1">
+                            <span class="slds-path__stage">
+                              <svg class="slds-icon slds-icon_x-small" aria-hidden="true">
+                                <use xlink:href="./assets/ds/slds/assets/icons/utility-sprite/svg/symbols.svg#check"></use>
+                              </svg>
+                              <span class="slds-assistive-text">Complete</span>
+                            </span>
+                            <span class="slds-path__title slds-assistive-text">Shipping & Installation</span>
+                          </a>
+                        </li>
+
+                        <li class="slds-path__item slds-is-incomplete" role="presentation" data-show-on-state="capture-data" hidden>
+                          <a aria-selected="false" class="slds-path__link" href="#" role="option" tabindex="-1">
+                            <span class="slds-path__stage">
+                              <span class="slds-assistive-text">Stage:</span>
+                            </span>
+                            <span class="slds-path__title">Fulfillment</span>
+                          </a>
+                        </li>
+                        <li class="slds-path__item slds-is-current slds-is-active" role="presentation" data-show-on-state="select-product,validation-error" hidden>
+                          <a aria-selected="true" class="slds-path__link" href="#" role="option" tabindex="0">
+                            <span class="slds-path__stage">
+                              <svg class="slds-icon slds-icon_x-small" aria-hidden="true">
+                                <use xlink:href="./assets/ds/slds/assets/icons/utility-sprite/svg/symbols.svg#check"></use>
+                              </svg>
+                              <span class="slds-assistive-text">Current Stage:</span>
+                            </span>
+                            <span class="slds-path__title">Fulfillment</span>
+                          </a>
+                        </li>
+                        <li class="slds-path__item slds-is-complete" role="presentation" data-show-on-state="vehicle-info-1-of-3,vehicle-info-2-of-3,vehicle-info-3-of-3,checking-compatibility,incompatible,success" hidden>
+                          <a aria-selected="false" class="slds-path__link" href="#" role="option" tabindex="-1">
+                            <span class="slds-path__stage">
+                              <svg class="slds-icon slds-icon_x-small" aria-hidden="true">
+                                <use xlink:href="./assets/ds/slds/assets/icons/utility-sprite/svg/symbols.svg#check"></use>
+                              </svg>
+                              <span class="slds-assistive-text">Complete</span>
+                            </span>
+                            <span class="slds-path__title slds-assistive-text">Fulfillment</span>
+                          </a>
+                        </li>
+                        <li class="slds-path__item slds-is-current slds-is-active" role="presentation" data-show-on-state="vehicle-info-1-of-3,vehicle-info-2-of-3,vehicle-info-3-of-3,checking-compatibility,incompatible,success" hidden>
+                          <a aria-selected="true" class="slds-path__link" href="#" role="option" tabindex="0">
+                            <span class="slds-path__stage">
+                              <svg class="slds-icon slds-icon_x-small" aria-hidden="true">
+                                <use xlink:href="./assets/ds/slds/assets/icons/utility-sprite/svg/symbols.svg#check"></use>
+                              </svg>
+                              <span class="slds-assistive-text">Current Stage:</span>
+                            </span>
+                            <span class="slds-path__title">Vehicle Info</span>
+                          </a>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="slds-modal__content slds-p-around_medium">
+            <p class="slds-text-title_bold slds-m-bottom_small">Compatibility check</p>
+            <div class="slds-media slds-m-bottom_medium">
+              <div class="slds-media__figure">
+                <svg class="slds-icon slds-icon_small slds-icon-text-warning" aria-hidden="true">
+                  <use xlink:href="./assets/ds/slds/assets/icons/utility-sprite/svg/symbols.svg#warning"></use>
+                </svg>
+              </div>
+              <div class="slds-media__body">
+                <p>We found the following vehicles that require hardware replacement.</p>
+              </div>
+            </div>
+            <table class="slds-table slds-table_bordered slds-m-bottom_medium">
+              <thead>
+                <tr class="slds-line-height_reset">
+                  <th scope="col"><div class="slds-truncate">Vehicle</div></th>
+                  <th scope="col"><div class="slds-truncate">Current hardware</div></th>
+                  <th scope="col"><div class="slds-truncate">Replacement hardware</div></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><div id="pt-incompatible-vehicle-value" class="slds-truncate">2024 Mack Anthem - VIN 1M2AX09C2RM045678</div></td>
+                  <td><div id="pt-incompatible-current-core-value" class="slds-truncate">VDD</div></td>
+                  <td><div id="pt-incompatible-required-core-value" class="slds-truncate">Xirgo</div></td>
+                </tr>
+              </tbody>
+            </table>
+            <p class="slds-text-body_small slds-text-color_weak">Click Finish to complete the capture.</p>
+          </div>
+          <footer class="slds-modal__footer">
+            <button class="slds-button slds-button_neutral" onclick="ptSetState('vehicle-info-3-of-3')">Back</button>
+            <button class="slds-button slds-button_brand" onclick="ptFinishFlow('Capture completed successfully.')">Finish</button>
+          </footer>
+        </div>
+      </section>
+    </div>
+
+    <!-- ============================================================
+         MODAL — Hardware compatibility result: success
+    ============================================================ -->
+    <div data-show-on-state="success" hidden>
+      <div class="slds-backdrop slds-backdrop_open"></div>
+      <section class="slds-modal slds-fade-in-open" role="dialog" aria-modal="true">
+        <div class="slds-modal__container">
+          <header class="slds-modal__header slds-grid slds-grid_align-spread slds-grid_vertical-align-center slds-text-align_left">
+            <h2 class="slds-text-heading_small slds-truncate" title="Capture customer data">Capture customer data</h2>
+            <button class="slds-button slds-button_icon slds-button_icon-border-filled" title="Close" onclick="ptSetState('default')">
+              <svg class="slds-button__icon" aria-hidden="true">
+                <use xlink:href="./assets/ds/slds/assets/icons/utility-sprite/svg/symbols.svg#close"></use>
+              </svg>
+              <span class="slds-assistive-text">Close</span>
+            </button>
+          </header>
+          <div class="ux-modal-progress slds-p-horizontal_medium slds-p-top_small slds-p-bottom_x-small">
+            <div class="slds-path">
+              <div class="slds-grid slds-path__track">
+                <div class="slds-grid slds-path__scroller-container">
+                  <div class="slds-path__scroller" role="application">
+                    <div class="slds-path__scroller_inner">
+                      <ul class="slds-path__nav" role="listbox" aria-orientation="horizontal">
+                        <li class="slds-path__item slds-is-complete" role="presentation">
+                          <a aria-selected="false" class="slds-path__link" href="#" role="option" tabindex="-1">
+                            <span class="slds-path__stage"><svg class="slds-icon slds-icon_x-small" aria-hidden="true"><use xlink:href="./assets/ds/slds/assets/icons/utility-sprite/svg/symbols.svg#check"></use></svg><span class="slds-assistive-text">Complete</span></span>
+                            <span class="slds-path__title slds-assistive-text">Shipping & Installation</span>
+                          </a>
+                        </li>
+                        <li class="slds-path__item slds-is-complete" role="presentation">
+                          <a aria-selected="false" class="slds-path__link" href="#" role="option" tabindex="-1">
+                            <span class="slds-path__stage"><svg class="slds-icon slds-icon_x-small" aria-hidden="true"><use xlink:href="./assets/ds/slds/assets/icons/utility-sprite/svg/symbols.svg#check"></use></svg><span class="slds-assistive-text">Complete</span></span>
+                            <span class="slds-path__title slds-assistive-text">Fulfillment</span>
+                          </a>
+                        </li>
+                        <li class="slds-path__item slds-is-current slds-is-active" role="presentation">
+                          <a aria-selected="true" class="slds-path__link" href="#" role="option" tabindex="0">
+                            <span class="slds-path__stage"><svg class="slds-icon slds-icon_x-small" aria-hidden="true"><use xlink:href="./assets/ds/slds/assets/icons/utility-sprite/svg/symbols.svg#check"></use></svg><span class="slds-assistive-text">Current Stage:</span></span>
+                            <span class="slds-path__title">Vehicle Info</span>
+                          </a>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="slds-modal__content slds-p-around_medium">
+            <p class="slds-text-title_bold slds-m-bottom_small">Compatibility check</p>
+            <div class="slds-media slds-m-bottom_medium">
+              <div class="slds-media__figure">
+                <svg class="slds-icon slds-icon_small slds-icon-text-success" aria-hidden="true">
+                  <use xlink:href="./assets/ds/slds/assets/icons/utility-sprite/svg/symbols.svg#success"></use>
+                </svg>
+              </div>
+              <div class="slds-media__body">
+                <p>Compatibility check passed. No core replacement is required.</p>
+              </div>
+            </div>
+            <p class="slds-text-body_small slds-text-color_weak">Click Finish to complete the capture.</p>
+          </div>
+          <footer class="slds-modal__footer">
+            <button class="slds-button slds-button_neutral" onclick="ptSetState('vehicle-info-3-of-3')">Back</button>
+            <button class="slds-button slds-button_brand" onclick="ptFinishFlow('Capture completed successfully.')">Finish</button>
+          </footer>
+        </div>
+      </section>
+    </div>
+
+  </main>
+
+  <script>
+    function ptEnableLocalIconFallback() {
+      if (window.location.protocol !== 'file:') {
+        return;
+      }
+
+      var localSymbols = [
+        '<symbol viewBox="0 0 520 520" id="search" xmlns="http://www.w3.org/2000/svg"><path d="M496 453L362 320a189 189 0 10-340-92 190 190 0 00298 135l133 133a14 14 0 0021 0l21-21a17 17 0 001-22M210 338a129 129 0 11130-130 129 129 0 01-130 130"/></symbol>',
+        '<symbol viewBox="0 0 520 520" id="favorite" xmlns="http://www.w3.org/2000/svg"><path d="M274 31l46 150c2 6 8 9 14 9h150c15 0 21 20 9 29l-122 90c-5 4-7 11-5 17l58 154c4 14-11 26-23 17l-131-98c-5-4-12-4-18 0l-132 98c-12 9-28-3-23-17l56-154c2-6 0-13-5-17L26 219c-12-9-5-29 9-29h150c7 0 12-2 14-9l47-151c4-14 24-13 28 1"/></symbol>',
+        '<symbol viewBox="0 0 520 520" id="add" xmlns="http://www.w3.org/2000/svg"><path d="M300 290h165c8 0 15-7 15-15v-30c0-8-7-15-15-15H300c-6 0-10-4-10-10V55c0-8-7-15-15-15h-30c-8 0-15 7-15 15v165c0 6-4 10-10 10H55c-8 0-15 7-15 15v30c0 8 7 15 15 15h165c6 0 10 4 10 10v165c0 8 7 15 15 15h30c8 0 15-7 15-15V300c0-6 4-10 10-10"/></symbol>',
+        '<symbol viewBox="0 0 520 520" id="setup" xmlns="http://www.w3.org/2000/svg"><path d="M468 324l-37-31a195 195 0 000-68l37-31c12-10 16-28 8-42l-16-29a34 34 0 00-40-14l-45 17a173 173 0 00-58-34l-8-47c-3-16-17-25-33-25h-32c-16 0-30 9-33 25l-8 46c-22 7-41 19-59 34l-44-17-11-2c-12 0-23 6-29 16l-16 28c-8 14-5 32 8 42l37 31a195 195 0 000 68l-37 31a34 34 0 00-8 42l16 30a34 34 0 0040 14l45-17c18 16 38 27 58 34l8 48a33 33 0 0033 27h32c16 0 30-12 33-28l8-48c23-8 43-20 61-37l42 17 12 2c12 0 23-6 29-16l15-26c8-12 4-30-8-40m-207 47a110 110 0 01-109-110 109 109 0 11218 0 110 110 0 01-109 110m29-191h-46c-7 0-13 4-15 10l-28 72c-2 5 2 11 8 11h47l-17 60c-2 6 5 9 9 5l71-83c5-5 1-13-6-13h-35l31-49c3-5-1-12-7-12h-12z"/></symbol>',
+        '<symbol viewBox="0 0 520 520" id="help" xmlns="http://www.w3.org/2000/svg"><path d="M284 380h-50c-8 0-14-6-14-14v-15c0-42 27-80 67-94a80 80 0 00-24-155c-22-1-43 7-59 22a70.4 70.4 0 00-23 44c-1 6-7 11-15 11h-50c-9 0-16-7-15-16 4-38 21-72 48-99 32-30 73-46 117-45 83 3 151 71 154 154 3 70-40 133-105 157-9 4-15 11-15 20v15c0 9-8 15-16 15m16 105c0 8-7 15-15 15h-50c-8 0-15-7-15-15v-50c0-8 7-15 15-15h50c8 0 15 7 15 15z"/></symbol>',
+        '<symbol viewBox="0 0 520 520" id="notification" xmlns="http://www.w3.org/2000/svg"><path d="M460 330h-5a35 35 0 01-35-35V180A160 160 0 00252 20c-86 4-152 78-152 165v111c0 19-16 34-35 34h-5c-22 0-40 19-40 41v15c0 7 7 14 15 14h450c8 0 15-7 15-15v-15a40 40 0 00-40-40M309 440h-98a10 10 0 00-10 12c5 28 30 48 59 48s54-21 59-48a10 10 0 00-10-12"/></symbol>',
+        '<symbol viewBox="0 0 520 520" id="user" xmlns="http://www.w3.org/2000/svg"><path d="M500 430v22c0 26-22 48-48 48H68a49 49 0 01-48-48v-22c0-58 68-94 132-122l6-3c5-2 10-2 15 1a155 155 0 00172 0c5-3 10-3 15-1l6 3c66 28 134 63 134 122M260 20c66 0 119 59 119 132s-53 132-119 132-119-59-119-132S194 20 260 20"/></symbol>',
+        '<symbol viewBox="0 0 52 52" id="apps" xmlns="http://www.w3.org/2000/svg"><path d="M13 4H7a3 3 0 00-3 3v6a3 3 0 003 3h6a3 3 0 003-3V7a3 3 0 00-3-3m0 32H7a3 3 0 00-3 3v6a3 3 0 003 3h6a3 3 0 003-3v-6a3 3 0 00-3-3m0-16H7a3 3 0 00-3 3v6a3 3 0 003 3h6a3 3 0 003-3v-6a3 3 0 00-3-3M29 4h-6a3 3 0 00-3 3v6a3 3 0 003 3h6a3 3 0 003-3V7a3 3 0 00-3-3m0 32h-6a3 3 0 00-3 3v6a3 3 0 003 3h6a3 3 0 003-3v-6a3 3 0 00-3-3m0-16h-6a3 3 0 00-3 3v6a3 3 0 003 3h6a3 3 0 003-3v-6a3 3 0 00-3-3M45 4h-6a3 3 0 00-3 3v6a3 3 0 003 3h6a3 3 0 003-3V7a3 3 0 00-3-3m0 32h-6a3 3 0 00-3 3v6a3 3 0 003 3h6a3 3 0 003-3v-6a3 3 0 00-3-3m0-16h-6a3 3 0 00-3 3v6a3 3 0 003 3h6a3 3 0 003-3v-6a3 3 0 00-3-3"/></symbol>',
+        '<symbol viewBox="0 0 520 520" id="chevrondown" xmlns="http://www.w3.org/2000/svg"><path d="M476 178L271 385c-6 6-16 6-22 0L44 178c-6-6-6-16 0-22l22-22c6-6 16-6 22 0l161 163c6 6 16 6 22 0l161-162c6-6 16-6 22 0l22 22c5 6 5 15 0 21"/></symbol>',
+        '<symbol viewBox="0 0 520 520" id="check" xmlns="http://www.w3.org/2000/svg"><path d="M191 425L26 259c-6-6-6-16 0-22l22-22c6-6 16-6 22 0l124 125a10 10 0 0015 0L452 95c6-6 16-6 22 0l22 22c6 6 6 16 0 22L213 425c-6 7-16 7-22 0"/></symbol>',
+        '<symbol viewBox="0 0 520 520" id="success" xmlns="http://www.w3.org/2000/svg"><path d="M260 20C128 20 20 128 20 260s108 240 240 240 240-108 240-240S392 20 260 20m116 159L241 355c-6 6-15 6-21 0l-76-76c-6-6-6-15 0-21l21-21c6-6 15-6 21 0l44 44 125-125c6-6 15-6 21 0l21 21c6 6 6 16-1 22"/></symbol>',
+        '<symbol viewBox="0 0 520 520" id="warning" xmlns="http://www.w3.org/2000/svg"><path d="M514 425L285 55a28 28 0 00-50 0L6 425c-14 23 0 55 25 55h458c25 0 40-32 25-55m-254-25c-17 0-30-13-30-30s13-30 30-30 30 13 30 30-13 30-30 30m30-90c0 6-4 10-10 10h-40c-6 0-10-4-10-10V180c0-6 4-10 10-10h40c6 0 10 4 10 10z"/></symbol>',
+        '<symbol viewBox="0 0 520 520" id="close" xmlns="http://www.w3.org/2000/svg"><path d="M310 254l130-131c6-6 6-15 0-21l-20-21c-6-6-15-6-21 0L268 212a10 10 0 01-14 0L123 80c-6-6-15-6-21 0l-21 21c-6 6-6 15 0 21l131 131c4 4 4 10 0 14L80 399c-6 6-6 15 0 21l21 21c6 6 15 6 21 0l131-131a10 10 0 0114 0l131 131c6 6 15 6 21 0l21-21c6-6 6-15 0-21L310 268a10 10 0 010-14"/></symbol>',
+        '<symbol viewBox="0 0 520 520" id="error" xmlns="http://www.w3.org/2000/svg"><path d="M260 20C128 20 20 128 20 260s108 240 240 240 240-108 240-240S392 20 260 20M80 260a180 180 0 01284-147L113 364a176 176 0 01-33-104m180 180c-39 0-75-12-104-33l251-251a180 180 0 01-147 284"/></symbol>',
+        '<symbol viewBox="0 0 1000 1000" id="opportunity" xmlns="http://www.w3.org/2000/svg"><path d="M711 690H289c-10 0-19 9-19 19v1c0 33 27 60 60 60h340c33 0 60-27 60-60v-1c0-10-9-19-19-19m49-410a60 60 0 00-39 106c-17 39-56 66-102 64-53-3-96-46-99-99 0-9 0-17 2-25a60 60 0 00-22-116 60 60 0 00-22 116c2 8 2 16 2 25-3 53-46 96-99 99-46 3-86-25-102-64a60 60 0 00-39-106c-33 0-60 27-60 60s27 60 60 60l28 214c1 9 9 16 19 16h426c9 0 17-7 19-16l28-214c33 0 60-27 60-60s-27-60-60-60"/></symbol>'
+      ].join('');
+
+      var defsHost = document.createElement('div');
+      defsHost.style.display = 'none';
+      defsHost.innerHTML = '<svg id="pt-local-icon-sprite" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">' + localSymbols + '</svg>';
+      document.body.insertBefore(defsHost, document.body.firstChild);
+
+      var localIds = new Set();
+      defsHost.querySelectorAll('symbol[id]').forEach(function (symbol) {
+        localIds.add(symbol.id);
+      });
+
+      document.querySelectorAll('svg use').forEach(function (useNode) {
+        var href = useNode.getAttribute('href') || useNode.getAttribute('xlink:href') || '';
+        var hashPos = href.lastIndexOf('#');
+        if (hashPos < 0) {
+          return;
+        }
+
+        var iconId = href.slice(hashPos + 1);
+        if (!localIds.has(iconId)) {
+          return;
+        }
+
+        var localHref = '#' + iconId;
+        useNode.setAttribute('href', localHref);
+        useNode.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href', localHref);
+      });
+    }
+
+    ptEnableLocalIconFallback();
+
+    (function () {
+      try {
+        var url = new URL(window.location.href);
+        var legacyStateMap = {
+          'capture-data-per-product': 'capture-data',
+          'select-product-per-item': 'select-product',
+          'product-shipping-details': 'select-product',
+          'product-shipping-details-editable': 'select-product',
+          'product-shipping-details-per-item': 'select-product',
+          'select-vehicles': 'vehicle-info-3-of-3',
+          'enter-vehicles': 'vehicle-info-1-of-3'
+        };
+
+        var legacyState = url.searchParams.get('state');
+        if (legacyStateMap[legacyState]) {
+          url.searchParams.set('state', legacyStateMap[legacyState]);
+        }
+
+        if (url.searchParams.get('presenter') !== 'true') {
+          url.searchParams.set('presenter', 'true');
+          if (!url.searchParams.get('state')) {
+            url.searchParams.set('state', 'default');
+          }
+        }
+
+        history.replaceState(null, '', url.toString());
+      } catch (err) {
+        console.warn('presenter bootstrap: could not update URL (page still loads normally):', err);
+      }
+    }());
+
+    function ptToggleSelectAll(source, itemName) {
+      document.querySelectorAll('input[name="' + itemName + '"]').forEach(function (checkbox) {
+        checkbox.checked = source.checked;
+      });
+    }
+
+    function ptOpenCaptureData() {
+      if (typeof window.ptSetState === 'function') {
+        window.ptSetState('capture-data');
+        return;
+      }
+
+      try {
+        var url = new URL(window.location.href);
+        url.searchParams.set('state', 'capture-data');
+        window.location.href = url.toString();
+      } catch (err) {
+        console.warn('Could not open capture modal:', err);
+      }
+    }
+
+    var ptCompatibilityTimer = null;
+    var ptFerrariErrorPending = false;
+    var ptFerrariErrorDetails = null;
+    var ptConfiguredQuantities = {
+      expansionVtu: 0,
+      expansionAIDashCam: 0,
+      evcUpsell: 0
+    };
+
+    function ptSetOpportunityQuantity(cellId, configuredCount, totalCount) {
+      var quantityNode = document.getElementById(cellId);
+      if (!quantityNode) {
+        return;
+      }
+
+      var total = typeof totalCount === 'number' ? totalCount : 5;
+      var count = typeof configuredCount === 'number' ? configuredCount : 0;
+      var normalizedCount = Math.max(0, Math.min(total, count));
+      quantityNode.textContent = normalizedCount + '/' + total;
+    }
+
+    function ptRenderOpportunityConfiguredQuantities() {
+      ptSetOpportunityQuantity('pt-oppty-qty-expansion-vtu', ptConfiguredQuantities.expansionVtu, 5);
+      ptSetOpportunityQuantity('pt-oppty-qty-expansion-aidashcam', ptConfiguredQuantities.expansionAIDashCam, 5);
+      ptSetOpportunityQuantity('pt-oppty-qty-upsell-evc', ptConfiguredQuantities.evcUpsell, 5);
+    }
+
+    function ptSetConfiguredQuantity(productKey, configuredCount) {
+      if (!Object.prototype.hasOwnProperty.call(ptConfiguredQuantities, productKey)) {
+        return;
+      }
+
+      ptConfiguredQuantities[productKey] = configuredCount;
+      ptRenderOpportunityConfiguredQuantities();
+    }
+
+    function ptSetFerrariCompatibilityRowError(isVisible) {
+      var ferrariRow = document.getElementById('pt-ferrari-vehicle-row');
+      var ferrariNameCell = document.getElementById('pt-ferrari-vehicle-name-cell');
+      var ferrariVinCell = document.getElementById('pt-ferrari-vehicle-vin-cell');
+
+      if (ferrariRow) {
+        ferrariRow.classList.toggle('slds-has-error', !!isVisible);
+      }
+
+      if (ferrariNameCell) {
+        ferrariNameCell.classList.toggle('slds-cell-error', !!isVisible);
+      }
+
+      if (ferrariVinCell) {
+        ferrariVinCell.classList.toggle('slds-cell-error', !!isVisible);
+      }
+    }
+
+    function ptSetIncompatibleVehicleDetails(vehicleLabel, vinLabel) {
+      var vehicleNode = document.getElementById('pt-incompatible-vehicle-value');
+      var currentCoreNode = document.getElementById('pt-incompatible-current-core-value');
+      var requiredCoreNode = document.getElementById('pt-incompatible-required-core-value');
+      var vehicle = vehicleLabel || '2024 Mack Anthem';
+      var vin = vinLabel || '1M2AX09C2RM045678';
+
+      if (vehicleNode) {
+        vehicleNode.textContent = vehicle + ' — VIN ' + vin;
+      }
+
+      if (currentCoreNode) {
+        currentCoreNode.textContent = 'VDD';
+      }
+
+      if (requiredCoreNode) {
+        requiredCoreNode.textContent = 'Xirgo';
+      }
+    }
+
+    function ptSetFerrariCompatibilityError(isVisible, vehicleLabel, vinLabel) {
+      var errorNode = document.getElementById('pt-ferrari-compat-error');
+      var errorTextNode = document.getElementById('pt-ferrari-compat-error-text');
+      if (!errorNode) {
+        return;
+      }
+
+      if (isVisible && errorTextNode) {
+        var vehicle = vehicleLabel || (ptFerrariErrorDetails && ptFerrariErrorDetails.vehicle) || 'Selected vehicle';
+        var vin = vinLabel || (ptFerrariErrorDetails && ptFerrariErrorDetails.vin) || 'Unknown VIN';
+        errorTextNode.textContent = vehicle + ' (VIN ' + vin + ') is not compatible with this subscription. Select another vehicle.';
+      }
+
+      errorNode.hidden = !isVisible;
+      errorNode.style.display = isVisible ? '' : 'none';
+      ptSetFerrariCompatibilityRowError(isVisible);
+    }
+
+    function ptSetVehicleOverSelectionError(isVisible, selectedCount, requiredCount) {
+      var errorNode = document.getElementById('pt-vehicle-overselect-error');
+      var errorTextNode = document.getElementById('pt-vehicle-overselect-error-text');
+      if (!errorNode) {
+        return;
+      }
+
+      if (isVisible && errorTextNode) {
+        var selected = typeof selectedCount === 'number' ? selectedCount : document.querySelectorAll('input[name="capture-vehicle"]:checked').length;
+        var required = typeof requiredCount === 'number' ? requiredCount : 5;
+        errorTextNode.textContent = 'You selected ' + selected + ' vehicles. Select only ' + required + ' vehicles to continue.';
+      }
+
+      errorNode.hidden = !isVisible;
+      errorNode.style.display = isVisible ? '' : 'none';
+    }
+
+    function ptRunHardwareSpecifierCheck() {
+      var selectedVehicles = document.querySelectorAll('input[name="capture-vehicle"]:checked').length;
+      var requiredVehicles = 5;
+      var isOverSelected = selectedVehicles > requiredVehicles;
+      var targetState = 'success';
+      var ferrariVehicle = document.getElementById('pt-ferrari-vehicle-checkbox');
+      var mackVehicle = document.getElementById('pt-mack-vehicle-checkbox');
+      var ferrariSelected = !!(ferrariVehicle && ferrariVehicle.checked);
+      var mackSelected = !!(mackVehicle && mackVehicle.checked);
+      var selectedVehicleLabel = '';
+      var selectedVinLabel = '';
+      var mackVehicleLabel = '';
+      var mackVinLabel = '';
+
+      if (ferrariSelected && ferrariVehicle) {
+        var ferrariRow = ferrariVehicle.closest('tr');
+        if (ferrariRow) {
+          var cells = ferrariRow.querySelectorAll('td .slds-truncate');
+          if (cells.length >= 2) {
+            selectedVehicleLabel = cells[0].textContent.trim();
+            selectedVinLabel = cells[1].textContent.trim();
+          }
+        }
+      }
+
+      if (mackSelected && mackVehicle) {
+        var mackRow = mackVehicle.closest('tr');
+        if (mackRow) {
+          var mackCells = mackRow.querySelectorAll('td .slds-truncate');
+          if (mackCells.length >= 2) {
+            mackVehicleLabel = mackCells[0].textContent.trim();
+            mackVinLabel = mackCells[1].textContent.trim();
+          }
+        }
+      }
+
+      ptSetFerrariCompatibilityError(false);
+      ptSetVehicleOverSelectionError(isOverSelected, selectedVehicles, requiredVehicles);
+
+      if (isOverSelected) {
+        return;
+      }
+
+      ptSetConfiguredQuantity('evcUpsell', selectedVehicles);
+
+      if (typeof window.ptSetState === 'function') {
+        window.ptSetState('checking-compatibility');
+        if (ptCompatibilityTimer) {
+          window.clearTimeout(ptCompatibilityTimer);
+        }
+        ptCompatibilityTimer = window.setTimeout(function () {
+          if (ferrariSelected) {
+            ptFerrariErrorPending = true;
+            ptFerrariErrorDetails = {
+              vehicle: selectedVehicleLabel,
+              vin: selectedVinLabel
+            };
+            window.ptSetState('vehicle-info-3-of-3');
+            ptCompatibilityTimer = null;
+            return;
+          }
+
+          if (mackSelected) {
+            ptSetIncompatibleVehicleDetails(mackVehicleLabel, mackVinLabel);
+            window.ptSetState('incompatible');
+            ptCompatibilityTimer = null;
+            return;
+          }
+
+          window.ptSetState(targetState);
+          ptCompatibilityTimer = null;
+        }, 900);
+      }
+    }
+
+    function ptSyncSelectAll(itemName, headerId) {
+      var items = Array.from(document.querySelectorAll('input[name="' + itemName + '"]'));
+      var header = document.getElementById(headerId);
+
+      if (header) {
+        if (!items.length) {
+          header.checked = false;
+        } else {
+          header.checked = items.every(function (checkbox) {
+            return checkbox.checked;
+          });
+        }
+      }
+
+      if (itemName === 'capture-vehicle') {
+        ptUpdateVehicleSelectedCount();
+      }
+    }
+
+    function ptUpdateVehicleSelectedCount() {
+      var countNode = document.getElementById('pt-vehicle-selected-count');
+      if (!countNode) {
+        return;
+      }
+
+      var selected = document.querySelectorAll('input[name="capture-vehicle"]:checked').length;
+      var required = 5;
+      countNode.textContent = selected + ' of ' + required + ' selected';
+      ptSetVehicleOverSelectionError(selected > required, selected, required);
+    }
+
+    function ptToggleInstallationFields(source) {
+      var block = document.getElementById('pt-installation-fields');
+      if (!block) {
+        return;
+      }
+
+      block.hidden = source.checked;
+    }
+
+    function ptSelectBundleToConfigure(source) {
+      var options = document.querySelectorAll('input[name="bundle-config"]');
+      options.forEach(function (option) {
+        if (option !== source) {
+          option.checked = false;
+        }
+      });
+    }
+
+    function ptGoToSelectedBundleConfig() {
+      var selected = document.querySelector('input[name="bundle-config"]:checked');
+      if (!selected) {
+        window.alert('Select one bundle to configure.');
+        return;
+      }
+
+      var targetState = selected.getAttribute('data-next-state') || 'vehicle-info-1-of-3';
+      if (typeof window.ptSetState === 'function') {
+        if (targetState === 'vehicle-info-3-of-3') {
+          ptFerrariErrorPending = false;
+          ptFerrariErrorDetails = null;
+          ptSetFerrariCompatibilityError(false);
+          ptSetFerrariCompatibilityRowError(false);
+        }
+        window.ptSetState(targetState);
+      }
+    }
+
+    function ptInitUpsellValidationState() {
+      var upsellState = document.querySelector('[data-show-on-state="vehicle-info-3-of-3"]');
+      if (!upsellState) {
+        return;
+      }
+
+      var observer = new MutationObserver(function () {
+        if (!upsellState.hidden) {
+          ptSetFerrariCompatibilityError(
+            ptFerrariErrorPending,
+            ptFerrariErrorDetails && ptFerrariErrorDetails.vehicle,
+            ptFerrariErrorDetails && ptFerrariErrorDetails.vin
+          );
+          ptFerrariErrorPending = false;
+          ptFerrariErrorDetails = null;
+          ptUpdateVehicleSelectedCount();
+        }
+      });
+
+      observer.observe(upsellState, { attributes: true, attributeFilter: ['hidden'] });
+
+      if (!upsellState.hidden) {
+        ptSetFerrariCompatibilityError(
+          ptFerrariErrorPending,
+          ptFerrariErrorDetails && ptFerrariErrorDetails.vehicle,
+          ptFerrariErrorDetails && ptFerrariErrorDetails.vin
+        );
+        ptFerrariErrorPending = false;
+        ptFerrariErrorDetails = null;
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', function () {
+      ptSyncSelectAll('capture-product', 'pt-select-products-all');
+      ptSyncSelectAll('capture-vehicle', 'pt-select-vehicles-all');
+      ptSetFerrariCompatibilityError(false);
+      ptSetFerrariCompatibilityRowError(false);
+      ptSetVehicleOverSelectionError(false);
+      ptUpdateVehicleSelectedCount();
+      ptRenderOpportunityConfiguredQuantities();
+      ptInitUpsellValidationState();
+
+      var installationToggle = document.getElementById('pt-installation-same-as-shipping');
+      if (installationToggle) {
+        ptToggleInstallationFields(installationToggle);
+      }
+    });
+
+    window.FLOW_STATES = [
+      { id: 'default', label: 'Default' },
+      { id: 'capture-data', label: 'Shipping & Installation' },
+      { id: 'select-product', label: 'Select Bundle to Configure' },
+      { id: 'validation-error', label: 'Validation Error' },
+      { id: 'vehicle-info-1-of-3', label: 'Vehicle Info 1 of 3 (Vehicle Tracking Subscription - Expansion)' },
+      { id: 'vehicle-info-2-of-3', label: 'Vehicle Info 2 of 3 (AI Dash Cam Subscription - Expansion)' },
+      { id: 'vins-validated-1-of-3', label: 'VINs Validated 1 of 3 (Expansion Results)' },
+      { id: 'vins-validated-2-of-3', label: 'VINs Validated 2 of 3 (Expansion Results)' },
+      { id: 'vehicle-info-3-of-3', label: 'Vehicle Info 3 of 3 (EVC - Upsell)' },
+      { id: 'checking-compatibility', label: 'Checking compatibility' },
+      { id: 'incompatible', label: 'Incompatible Hardware' },
+      { id: 'success', label: 'Compatible Hardware' },
+      { id: 'empty', label: 'Feature Not Available' }
+    ];
+  </script>
+  <script src="./assets/prototype-tools.js"></script>
+</body>
+</html>
