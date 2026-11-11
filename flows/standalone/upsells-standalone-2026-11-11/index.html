@@ -3278,7 +3278,7 @@ WFOYXXTTGYPC30425
       });
       document.getElementById('pt-missing-addfeature').hidden = true;
       document.getElementById('pt-missing-ymm-check').checked = false;
-      document.getElementById('pt-missing-ymm-toggle').hidden = PT_AF_EVC;
+      document.getElementById('pt-missing-ymm-toggle').hidden = PT_AF_EVC && !PT_AF_STEP2;
       ptToggleYmmMode();
       document.getElementById('pt-missing-vins-addfeature').value = '';
       var missingResult = document.getElementById('pt-missing-result-addfeature');
@@ -3478,6 +3478,11 @@ WFOYXXTTGYPC30425
       return line;
     }
 
+    // A vehicle added by YMM has no VIN, so it cannot receive EVC
+    function ptAfAllowed(row, k) {
+      return !(k === 'evc' && row.dataset.novin === '1');
+    }
+
     function ptAfInsertLine(tb, line) {
       tb.insertBefore(line, tb.querySelector('.pt-af-addrow'));
     }
@@ -3498,10 +3503,12 @@ WFOYXXTTGYPC30425
         var tb = document.createElement('tbody');
         tb.dataset.vin = v.vid;
         tb.dataset.added = v.added ? '1' : '';
+        tb.dataset.novin = v.vin ? '' : '1';
         tb.innerHTML = '<tr class="slds-theme_shade"><td class="slds-border_top"><div class="slds-truncate pt-label"></div></td><td class="slds-border_top"><div class="slds-truncate pt-ymm"></div></td><td class="slds-border_top"><div class="slds-truncate pt-vin"></div></td>' +
           '<td class="slds-border_top"><div class="slds-truncate pt-status"></div></td><td class="slds-border_top"><div class="slds-truncate pt-class"></div></td></tr>' +
           '<tr class="pt-af-addrow"><td colspan="5"><div class="slds-m-bottom_x-small"><a href="#" class="pt-af-add" onclick="ptAfAddLine(this); return false;">' +
-          '<svg class="slds-button__icon slds-button__icon_left" aria-hidden="true"><use xlink:href="#pt-icon-add"></use></svg>Add feature</a></div></td></tr>';
+          '<svg class="slds-button__icon slds-button__icon_left" aria-hidden="true"><use xlink:href="#pt-icon-add"></use></svg>Add feature</a>' +
+          (v.vin ? '' : '<span class="slds-text-body_small slds-text-color_weak slds-m-left_small">EVC is not available without a VIN</span>') + '</div></td></tr>';
         tb.querySelector('.pt-label').textContent = v.label;
         tb.querySelector('.pt-ymm').textContent = v.ymm;
         tb.querySelector('.pt-vin').textContent = v.vin;
@@ -3547,7 +3554,7 @@ WFOYXXTTGYPC30425
       var s = ptAfCompute();
       var taken = Array.prototype.map.call(row.querySelectorAll('.pt-af-feat'), function (sel) { return sel.value; });
       var available = Object.keys(PT_AF_QTY).filter(function (k) {
-        return taken.indexOf(k) === -1 && s.counts[k] < PT_AF_QTY[k];
+        return taken.indexOf(k) === -1 && s.counts[k] < PT_AF_QTY[k] && ptAfAllowed(row, k);
       });
       if (!available.length) { return; }
       // New lines start with "Select feature" so the agent is not nudged toward one option
@@ -3594,6 +3601,7 @@ WFOYXXTTGYPC30425
           line.querySelector('input').disabled = !current;
           Object.keys(PT_AF_QTY).forEach(function (k) {
             if (taken.indexOf(k) !== -1 && k !== current) { return; }
+            if (!ptAfAllowed(row, k)) { return; }
             var exhausted = k !== current && s.counts[k] >= PT_AF_QTY[k];
             html += '<option value="' + k + '"' + (exhausted ? ' disabled' : '') + '>' + PT_AF_LABEL[k] + '</option>';
           });
@@ -3611,7 +3619,7 @@ WFOYXXTTGYPC30425
           });
         });
         var canAdd = taken.indexOf('') === -1 &&
-          Object.keys(PT_AF_QTY).some(function (k) { return taken.indexOf(k) === -1 && s.counts[k] < PT_AF_QTY[k]; });
+          Object.keys(PT_AF_QTY).some(function (k) { return taken.indexOf(k) === -1 && s.counts[k] < PT_AF_QTY[k] && ptAfAllowed(row, k); });
         // Keep the row (and its space) when no more features can be added; only hide the link
         var addLink = row.querySelector('.pt-af-add');
         if (addLink) { addLink.classList.toggle('slds-hidden', !canAdd); }
