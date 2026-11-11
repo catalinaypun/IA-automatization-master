@@ -1740,18 +1740,67 @@
                 <p id="pt-afv-count" class="slds-text-title_bold slds-m-top_none slds-m-bottom_xx-small">Select vehicles (0/5)</p>
               </div>
               <div class="slds-no-flex">
-                <p class="slds-text-body_small slds-m-bottom_x-small"><a href="#" onclick="ptToggleMissingVins('addfeature'); return false;">Missing vehicles? Enter VINs</a></p>
+                <p class="slds-text-body_small slds-m-bottom_x-small"><a href="#" onclick="ptToggleMissingVins('addfeature'); return false;">Missing vehicles? Add them</a></p>
               </div>
             </div>
             <div id="pt-missing-addfeature" class="slds-m-bottom_small" hidden>
-              <p class="slds-text-body_small slds-m-bottom_x-small">Paste a list from a spreadsheet or enter one VIN per line</p>
-              <div class="slds-form-element slds-m-bottom_small">
+              <div id="pt-missing-ymm-toggle" class="slds-form-element slds-m-bottom_small">
                 <div class="slds-form-element__control">
-                  <textarea id="pt-missing-vins-addfeature" class="slds-textarea" rows="4" placeholder="One VIN per line"></textarea>
+                  <label class="slds-checkbox">
+                    <input type="checkbox" id="pt-missing-ymm-check" onchange="ptToggleYmmMode()">
+                    <span class="slds-checkbox_faux"></span>
+                    <span class="slds-form-element__label">I don't have VINs, enter YMM</span>
+                  </label>
                 </div>
               </div>
-              <button class="slds-button slds-button_neutral" onclick="ptValidateMissingVins('addfeature')">Validate VINs</button>
-              <p id="pt-missing-result-addfeature" class="slds-text-body_small slds-text-color_weak slds-m-top_x-small" hidden></p>
+              <div id="pt-missing-vin-mode">
+                <p class="slds-text-body_small slds-m-bottom_x-small">Paste a list from a spreadsheet or enter one VIN per line</p>
+                <div class="slds-form-element slds-m-bottom_small">
+                  <div class="slds-form-element__control">
+                    <textarea id="pt-missing-vins-addfeature" class="slds-textarea" rows="4" placeholder="One VIN per line"></textarea>
+                  </div>
+                </div>
+                <button class="slds-button slds-button_neutral" onclick="ptValidateMissingVins('addfeature')">Validate VINs</button>
+                <p id="pt-missing-result-addfeature" class="slds-text-body_small slds-text-color_weak slds-m-top_x-small" hidden></p>
+              </div>
+              <div id="pt-missing-ymm-mode" hidden>
+                <div class="slds-grid slds-gutters slds-m-bottom_small">
+                  <div class="slds-col">
+                    <div class="slds-form-element">
+                      <label class="slds-form-element__label" for="pt-ymm-year">Year</label>
+                      <div class="slds-form-element__control">
+                        <div class="slds-select_container"><select id="pt-ymm-year" class="slds-select"></select></div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="slds-col">
+                    <div class="slds-form-element">
+                      <label class="slds-form-element__label" for="pt-ymm-make">Make</label>
+                      <div class="slds-form-element__control">
+                        <div class="slds-select_container"><select id="pt-ymm-make" class="slds-select" onchange="ptYmmMakeChange()"></select></div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="slds-col">
+                    <div class="slds-form-element">
+                      <label class="slds-form-element__label" for="pt-ymm-model">Model</label>
+                      <div class="slds-form-element__control">
+                        <div class="slds-select_container"><select id="pt-ymm-model" class="slds-select"></select></div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="slds-col">
+                    <div class="slds-form-element">
+                      <label class="slds-form-element__label" for="pt-ymm-qty">Quantity</label>
+                      <div class="slds-form-element__control">
+                        <input id="pt-ymm-qty" class="slds-input" type="number" min="1">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <button class="slds-button slds-button_neutral" onclick="ptAddYmmVehicles()">Add YMM</button>
+                <p id="pt-ymm-error" class="slds-text-body_small slds-text-color_error slds-m-top_x-small" role="alert" hidden></p>
+              </div>
             </div>
             <div class="slds-scrollable_x slds-m-bottom_x-small">
               <table id="pt-afv-table" class="slds-table slds-table_bordered ux-upsell-vehicle-table slds-no-row-hover">
@@ -3228,6 +3277,9 @@ WFOYXXTTGYPC30425
         if (sel) { sel.value = ''; }
       });
       document.getElementById('pt-missing-addfeature').hidden = true;
+      document.getElementById('pt-missing-ymm-check').checked = false;
+      document.getElementById('pt-missing-ymm-toggle').hidden = PT_AF_EVC;
+      ptToggleYmmMode();
       document.getElementById('pt-missing-vins-addfeature').value = '';
       var missingResult = document.getElementById('pt-missing-result-addfeature');
       missingResult.hidden = true;
@@ -3236,7 +3288,7 @@ WFOYXXTTGYPC30425
       var tbody = document.querySelector('#pt-afv-table tbody');
       ptAfCapturedList().forEach(function (info) {
         var row = Array.prototype.slice.call(tbody.querySelectorAll('tr')).filter(function (tr) {
-          return tr.querySelectorAll('td .slds-truncate')[2].textContent.trim() === info.vin;
+          return (tr.getAttribute('data-vid') || tr.querySelectorAll('td .slds-truncate')[2].textContent.trim()) === (info.vid || info.vin);
         })[0];
         if (!row) {
           row = ptAfvNewRow(info);
@@ -3274,7 +3326,7 @@ WFOYXXTTGYPC30425
 
     function ptAfRecord(info) {
       if (!ptAfCaptured[ptAfKey]) { ptAfCaptured[ptAfKey] = {}; }
-      ptAfCaptured[ptAfKey][info.vin] = info;
+      ptAfCaptured[ptAfKey][info.vid || info.vin] = info;
     }
 
     function ptAfFinishCapture() {
@@ -3290,7 +3342,7 @@ WFOYXXTTGYPC30425
         var features = {};
         Object.keys(PT_AF_TOTAL).forEach(function (k) { features[k] = 1; });
         var sel = tr.querySelector('.pt-afv-bt select');
-        ptAfRecord({ label: cells[0].textContent.trim(), ymm: cells[1].textContent.trim(), vin: cells[2].textContent.trim(),
+        ptAfRecord({ vid: tr.getAttribute('data-vid') || cells[2].textContent.trim(), label: cells[0].textContent.trim(), ymm: cells[1].textContent.trim(), vin: cells[2].textContent.trim(),
           status: cells[3].textContent.trim(), cls: cells[4].textContent.trim(), added: !!tr.getAttribute('data-added'),
           features: features, bt: sel ? sel.value : '' });
       });
@@ -3311,7 +3363,7 @@ WFOYXXTTGYPC30425
         });
         if (!Object.keys(features).length) { return; }
         ptAfRecord({ label: tb.querySelector('.pt-label').textContent, ymm: tb.querySelector('.pt-ymm').textContent,
-          vin: tb.dataset.vin, status: tb.querySelector('.pt-status').textContent, cls: tb.querySelector('.pt-class').textContent,
+          vid: tb.dataset.vin, vin: tb.querySelector('.pt-vin').textContent, status: tb.querySelector('.pt-status').textContent, cls: tb.querySelector('.pt-class').textContent,
           added: tb.dataset.added === '1', features: features, bt: bt });
       });
     }
@@ -3380,7 +3432,7 @@ WFOYXXTTGYPC30425
       ptAfSaveStore();
       ptAfBuildStep2(selected.map(function (cb) {
         var cells = cb.closest('tr').querySelectorAll('td .slds-truncate');
-        return { label: cells[0].textContent.trim(), ymm: cells[1].textContent.trim(), vin: cells[2].textContent.trim(),
+        return { vid: cb.closest('tr').getAttribute('data-vid') || cells[2].textContent.trim(), label: cells[0].textContent.trim(), ymm: cells[1].textContent.trim(), vin: cells[2].textContent.trim(),
           status: cells[3] ? cells[3].textContent.trim() : '', cls: cells[4] ? cells[4].textContent.trim() : '',
           added: !!cb.closest('tr').getAttribute('data-added') };
       }));
@@ -3444,7 +3496,7 @@ WFOYXXTTGYPC30425
       vehicles.forEach(function (v) {
         // One tbody per vehicle: row 1 = vehicle info, row 2 = its features + Add feature
         var tb = document.createElement('tbody');
-        tb.dataset.vin = v.vin;
+        tb.dataset.vin = v.vid;
         tb.dataset.added = v.added ? '1' : '';
         tb.innerHTML = '<tr class="slds-theme_shade"><td class="slds-border_top"><div class="slds-truncate pt-label"></div></td><td class="slds-border_top"><div class="slds-truncate pt-ymm"></div></td><td class="slds-border_top"><div class="slds-truncate pt-vin"></div></td>' +
           '<td class="slds-border_top"><div class="slds-truncate pt-status"></div></td><td class="slds-border_top"><div class="slds-truncate pt-class"></div></td></tr>' +
@@ -3455,7 +3507,7 @@ WFOYXXTTGYPC30425
         tb.querySelector('.pt-vin').textContent = v.vin;
         tb.querySelector('.pt-status').textContent = v.status;
         tb.querySelector('.pt-class').textContent = v.cls;
-        (ptAfStore[v.vin] || []).forEach(function (saved) {
+        (ptAfStore[v.vid] || []).forEach(function (saved) {
           ptAfInsertLine(tb, ptAfNewLine(saved.feature, saved.qty, saved.bt));
         });
         table.appendChild(tb);
@@ -3617,6 +3669,7 @@ WFOYXXTTGYPC30425
     function ptAfvNewRow(info) {
       var tr = document.createElement('tr');
       tr.setAttribute('data-added', '1');
+      if (info.vid) { tr.setAttribute('data-vid', info.vid); }
       tr.innerHTML = '<td><label class="slds-checkbox"><input type="checkbox" name="af-vehicle" onchange="ptAfvRefresh()">' +
         '<span class="slds-checkbox_faux"></span><span class="slds-assistive-text">Select vehicle</span></label></td>' +
         '<td><div class="slds-truncate pt-label"></div></td><td><div class="slds-truncate pt-ymm"></div></td><td><div class="slds-truncate pt-vin"></div></td>' +
@@ -3628,6 +3681,70 @@ WFOYXXTTGYPC30425
       tr.querySelector('.pt-class').textContent = info.cls || '';
       return tr;
     }
+
+    // YMM entry for vehicles without a VIN (not available for EVC bundles, which need a VIN)
+    var PT_YMM_MODELS = {
+      'Ford': ['F-150', 'F-250', 'Transit'],
+      'Freightliner': ['Cascadia', 'M2 106'],
+      'Kenworth': ['T680', 'W990'],
+      'Mack': ['Anthem', 'Pinnacle'],
+      'Volvo': ['VNL 760', 'VNR 640']
+    };
+    var ptYmmCounter = 0;
+
+    function ptYmmFill(id, placeholder, values) {
+      document.getElementById(id).innerHTML = '<option value="">' + placeholder + '</option>' +
+        values.map(function (v) { return '<option value="' + v + '">' + v + '</option>'; }).join('');
+    }
+
+    function ptYmmInit() {
+      var years = [];
+      for (var y = 2025; y >= 2018; y -= 1) { years.push(String(y)); }
+      ptYmmFill('pt-ymm-year', 'Select Year', years);
+      ptYmmFill('pt-ymm-make', 'Select Make', Object.keys(PT_YMM_MODELS));
+      ptYmmFill('pt-ymm-model', 'Select Model', []);
+    }
+
+    function ptYmmMakeChange() {
+      ptYmmFill('pt-ymm-model', 'Select Model', PT_YMM_MODELS[document.getElementById('pt-ymm-make').value] || []);
+    }
+
+    function ptToggleYmmMode() {
+      var ymm = document.getElementById('pt-missing-ymm-check').checked;
+      document.getElementById('pt-missing-vin-mode').hidden = ymm;
+      document.getElementById('pt-missing-ymm-mode').hidden = !ymm;
+      document.getElementById('pt-ymm-error').hidden = true;
+    }
+
+    function ptAddYmmVehicles() {
+      var year = document.getElementById('pt-ymm-year').value;
+      var make = document.getElementById('pt-ymm-make').value;
+      var model = document.getElementById('pt-ymm-model').value;
+      var qty = parseInt(document.getElementById('pt-ymm-qty').value, 10) || 0;
+      var error = document.getElementById('pt-ymm-error');
+      if (!year || !make || !model || qty < 1) {
+        error.textContent = 'Select a year, make and model and enter a quantity.';
+        error.hidden = false;
+        return;
+      }
+      error.hidden = true;
+      var tbody = document.querySelector('#pt-afv-table tbody');
+      for (var i = 0; i < qty; i += 1) {
+        ptYmmCounter += 1;
+        var tr = ptAfvNewRow({ vid: 'ymm-' + ptYmmCounter, vin: '', ymm: year + ' ' + make + ' ' + model });
+        tbody.insertBefore(tr, tbody.firstChild);
+        ptAfvDecorateRow(tr);
+        tr.querySelector('input[type="checkbox"]').checked = ptAfvSelected().length + ptAfvLocked() < PT_AF_CORE;
+      }
+      ptAfvRefresh();
+      ['pt-ymm-year', 'pt-ymm-make', 'pt-ymm-model'].forEach(function (id) { document.getElementById(id).value = ''; });
+      ptYmmMakeChange();
+      document.getElementById('pt-ymm-qty').value = '';
+      document.getElementById('pt-missing-addfeature').hidden = true;
+      window.ptShowToast(qty + (qty === 1 ? ' vehicle was' : ' vehicles were') + ' added to the table.', 'success');
+    }
+
+    window.addEventListener('DOMContentLoaded', ptYmmInit);
 
     // Missing vehicles added to the Step 1 table
     function ptAddSimRow(key, vin, ymm, tbody) {
